@@ -43,6 +43,7 @@ import {
   UserCheck,
   UserX,
   ShieldCheck,
+  MapPin,
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";

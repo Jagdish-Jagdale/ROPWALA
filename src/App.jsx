@@ -3,7 +3,6 @@ import { Toaster } from "react-hot-toast";
 import Protected from "./components/Protected";
 import AdminLayout from "./layouts/AdminLayout";
 import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
 import RoleRedirect from "./components/RoleRedirect";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
@@ -34,7 +33,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<RoleRedirect />} />
 
         {/* ADMIN (formerly SuperAdmin) */}

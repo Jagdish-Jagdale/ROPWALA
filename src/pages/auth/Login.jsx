@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
@@ -119,7 +119,7 @@ export default function Login() {
             <div className="pointer-events-none absolute inset-0 bg-[url('https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&auto=format&fit=crop&q=80')] bg-cover bg-center mix-blend-soft-light opacity-60" />
 
             <div className="max-w-xs text-white">
-              <h1 className="text-5xl font-bold leading-tight">
+              <h1 className="text-5xl font-bold leading-tight font-playfair">
                 ROPEWALA, Simplified
               </h1>
               <p className="mt-3 text-lg leading-relaxed text-white/90">
@@ -155,7 +155,7 @@ export default function Login() {
                 </div>
               </div>
 
-              <h2 className="mb-2 text-center text-3xl font-bold text-slate-800">
+              <h2 className="mb-2 text-center text-3xl font-bold text-slate-800 font-playfair">
                 Welcome!
               </h2>
               <p className="mb-7 text-center text-base text-green-700">
@@ -244,19 +244,7 @@ export default function Login() {
                   {loading ? "Logging in..." : "Login"}
                 </button>
 
-                <p
-                  style={{ marginTop: "10px" }}
-                  className="text-center text-sm text-slate-500"
-                >
-                  Don't have an account?{" "}
-                  <Link
-                    to="/register"
-                    style={{ textDecoration: "none", color: "#16a34a" }}
-                    className="font-semibold text-green-600 !no-underline hover:!text-green-700"
-                  >
-                    Register
-                  </Link>
-                </p>
+
               </form>
             </div>
           </div>

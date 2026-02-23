@@ -96,9 +96,9 @@ const NavItem = ({
             }`}
         >
           <div className="flex flex-col gap-1.5">
-            {submenu.map((item, index) => (
+            {submenu.map((item) => (
               <NavLink
-                key={index}
+                key={item.to}
                 to={item.to}
                 onClick={onItemClick}
                 className={({ isActive }) =>
@@ -277,7 +277,7 @@ export default function AdminLayout() {
           <div className="flex flex-col gap-2">
             {MENU.map((item) => (
               <NavItem
-                key={item.to}
+                key={item.to || item.label}
                 {...item}
                 collapsed={window.innerWidth >= 1024 ? collapsed : false}
                 isDropdownOpen={openDropdownKey === item.to}

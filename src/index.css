@@ -7,6 +7,9 @@
     --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     --font-heading: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-playfair: "Playfair Display", serif;
+    --font-standard: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    --font-sans: "ThemeWithNumbers", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 
     /* Semantic Color Mapping for Tailwind v4 */
     --color-canvas: var(--color-canvas);
@@ -128,10 +131,31 @@
         height: 100%;
     }
 
+    /* Intercept numbers globally with Playfair Display */
+    @font-face {
+        font-family: "ThemeWithNumbers";
+        src: url(https://fonts.gstatic.com/s/playfairdisplay/v30/nuFvEICUSZJc_vY-6UZMZJ_o4Ew.woff2) format('woff2');
+        /* Example URL for Playfair Display Regular */
+        unicode-range: U+0030-0039;
+        /* 0-9 */
+    }
+
+    /* Target inputs specifically as they sometimes don't inherit body fonts */
+    input,
+    button,
+    select,
+    textarea {
+        font-family: inherit;
+    }
+
+    .font-standard {
+        font-family: var(--font-standard) !important;
+    }
+
     body {
         background-color: var(--color-canvas);
         color: var(--color-content-primary);
-        font-family: var(--font-sans);
+        font-family: "ThemeWithNumbers", var(--font-sans);
         margin: 0;
         min-height: 100vh;
         -webkit-font-smoothing: antialiased;

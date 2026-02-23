@@ -55,8 +55,8 @@ export default function AdminFranchise() {
             );
             const querySnapshot = await getDocs(q);
             const apps = querySnapshot.docs.map((d) => ({
-                id: d.id,
                 ...d.data(),
+                id: d.id,
             }));
             setApplications(apps);
         } catch (e) {
@@ -66,8 +66,8 @@ export default function AdminFranchise() {
                 const fallbackQ = query(collection(db, "franchise_applications"));
                 const fallbackSnap = await getDocs(fallbackQ);
                 const apps = fallbackSnap.docs.map((d) => ({
-                    id: d.id,
                     ...d.data(),
+                    id: d.id,
                 })).sort((a, b) => (b.applicationDate || 0) - (a.applicationDate || 0));
                 setApplications(apps);
             } catch (err) {
@@ -79,8 +79,10 @@ export default function AdminFranchise() {
     };
 
     const updateStatus = async (id, newStatus) => {
+        if (!id) return;
         try {
-            const docRef = doc(db, "franchise_applications", id);
+            const docId = String(id);
+            const docRef = doc(db, "franchise_applications", docId);
             const statusToSave = newStatus.toUpperCase();
             await updateDoc(docRef, { status: statusToSave });
 
@@ -121,6 +123,7 @@ export default function AdminFranchise() {
     const getStatusColor = (status) => {
         const s = status?.toLowerCase();
         switch (s) {
+            case "approved":
             case "accepted": return "bg-green-100 text-green-700 border-green-200";
             case "hold": return "bg-amber-100 text-amber-700 border-amber-200";
             case "pending": return "bg-emerald-100 text-emerald-700 border-emerald-200";
@@ -161,8 +164,8 @@ export default function AdminFranchise() {
                         variant="gray"
                     />
                     <StatCard
-                        title="Accepted"
-                        value={applications.filter(a => a.status?.toUpperCase() === 'ACCEPTED').length}
+                        title="Approved"
+                        value={applications.filter(a => a.status?.toUpperCase() === 'APPROVED' || a.status?.toUpperCase() === 'ACCEPTED').length}
                         icon={CheckCircle}
                         variant="green"
                     />
@@ -210,7 +213,7 @@ export default function AdminFranchise() {
                             >
                                 <option value="all">All Statuses</option>
                                 <option value="pending">Pending</option>
-                                <option value="accepted">Accepted</option>
+                                <option value="approved">Approved</option>
                                 <option value="hold">Hold</option>
                             </select>
                         </div>
@@ -360,9 +363,9 @@ export default function AdminFranchise() {
                                             <td className="px-6 py-2.5 whitespace-nowrap text-center">
                                                 <div className="flex items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
                                                     <button
-                                                        onClick={() => updateStatus(app.id, "accepted")}
+                                                        onClick={() => updateStatus(app.id, "approved")}
                                                         className="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-full transition-colors"
-                                                        title="Accept"
+                                                        title="Approve"
                                                     >
                                                         <CheckCircle size={18} />
                                                     </button>
@@ -572,10 +575,10 @@ export default function AdminFranchise() {
                         <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-wrap justify-between items-center gap-3">
                             <div className="flex items-center gap-2">
                                 <button
-                                    onClick={() => updateStatus(selectedApp.id, "accepted")}
+                                    onClick={() => updateStatus(selectedApp.id, "approved")}
                                     className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-green-700 transition-all active:scale-95"
                                 >
-                                    <CheckCircle size={18} /> Accept
+                                    <CheckCircle size={18} /> Approve
                                 </button>
                                 <button
                                     onClick={() => updateStatus(selectedApp.id, "hold")}

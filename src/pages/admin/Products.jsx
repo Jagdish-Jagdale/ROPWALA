@@ -34,6 +34,7 @@ import {
     Box,
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
+import ProductViewModal from "../../components/ProductViewModal";
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
@@ -44,6 +45,7 @@ export default function AdminProducts() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     const [formData, setFormData] = useState({
@@ -367,8 +369,12 @@ export default function AdminProducts() {
                                     paginatedProducts.map((product, index) => (
                                         <tr
                                             key={product.id}
+                                            onClick={() => {
+                                                setSelectedProduct(product);
+                                                setIsViewModalOpen(true);
+                                            }}
                                             style={{ borderBottom: '1px solid #dae2eeff' }}
-                                            className="bg-white transition-colors hover:!bg-green-50/50"
+                                            className="bg-white transition-colors hover:!bg-green-50/50 cursor-pointer"
                                         >
                                             <td className="px-6 py-3 whitespace-nowrap text-center">
                                                 <span className="text-sm text-gray-900 font-medium">
@@ -402,7 +408,7 @@ export default function AdminProducts() {
                                                         {product.name}
                                                     </span>
                                                     <span className="text-[10px] text-gray-400 font-mono">
-                                                        SKU: {product.sku || product.id.slice(0, 8).toUpperCase()}
+                                                        SKU: {product.sku || (product.id ? String(product.id).slice(0, 8).toUpperCase() : "N/A")}
                                                     </span>
                                                 </div>
                                             </td>
@@ -451,7 +457,10 @@ export default function AdminProducts() {
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap text-center">
-                                                <div className="flex items-center justify-center gap-2">
+                                                <div
+                                                    className="flex items-center justify-center gap-2"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
                                                     {/* Accept Button */}
                                                     <button
                                                         onClick={() => handleUpdateStatus(product.id, "approved")}
@@ -511,6 +520,15 @@ export default function AdminProducts() {
                     </div>
                 </div>
             </div>
+
+            <ProductViewModal
+                isOpen={isViewModalOpen}
+                onClose={() => {
+                    setIsViewModalOpen(false);
+                    if (!isEditModalOpen) setSelectedProduct(null); // Keep if edit is open
+                }}
+                product={selectedProduct}
+            />
 
             {/* Add/Edit Modal */}
             {(isAddModalOpen || isEditModalOpen) && (
