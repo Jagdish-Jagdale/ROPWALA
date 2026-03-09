@@ -263,7 +263,7 @@ export default function AdminLayout() {
             </div>
             <div className="flex flex-col items-start">
               <span className="font-bold text-gray-900 text-lg leading-tight">
-                ROP WALA
+                ROPWALA
               </span>
               <span className="mt-1 px-2.5 py-0.5 text-xs font-bold bg-green-600 text-white rounded uppercase tracking-wide">
                 Admin

@@ -172,16 +172,9 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
                                     </div>
                                     <div className="grid grid-cols-[110px_1fr] gap-2 pt-1">
                                         <span className="text-gray-500">Ships from</span>
-                                        <span className="font-medium">{product.nurseryName || "Rop Wala"}</span>
+                                        <span className="font-medium">{product.nurseryName || "ROPWALA"}</span>
                                     </div>
-                                    <div className="grid grid-cols-[110px_1fr] gap-2 pt-1 border-t border-gray-100 mt-2">
-                                        <span className="text-gray-400 text-[11px] uppercase tracking-wider font-bold">Product ID</span>
-                                        <span className="text-gray-500 font-mono text-[11px] truncate">#{product.id ? String(product.id).slice(-8) : "N/A"}</span>
-                                    </div>
-                                    <div className="grid grid-cols-[110px_1fr] gap-2">
-                                        <span className="text-gray-400 text-[11px] uppercase tracking-wider font-bold">Seller ID</span>
-                                        <span className="text-gray-500 font-mono text-[11px] truncate">#{product.ownerId ? String(product.ownerId).slice(-8) : "N/A"}</span>
-                                    </div>
+
                                 </div>
                             </div>
 

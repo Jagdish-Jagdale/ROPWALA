@@ -36,6 +36,41 @@ import {
 import StatCard from "../../components/common/StatCard";
 import ProductViewModal from "../../components/ProductViewModal";
 
+const ProductImage = ({ src, alt, className = "", priority = false }) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(false);
+
+    return (
+        <div className={`relative overflow-hidden bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center ${className}`}>
+            {isLoading && !error && (
+                <div className="absolute inset-0 bg-gray-100 animate-pulse flex items-center justify-center">
+                    <ImageIcon size={18} className="text-gray-300" />
+                </div>
+            )}
+
+            {src && !error ? (
+                <img
+                    src={src}
+                    alt={alt}
+                    loading={priority ? "eager" : "lazy"}
+                    fetchPriority={priority ? "high" : "low"}
+                    decoding="async"
+                    className={`w-full h-full object-cover transition-all duration-150 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                    onLoad={() => setIsLoading(false)}
+                    onError={() => {
+                        setIsLoading(false);
+                        setError(true);
+                    }}
+                />
+            ) : (
+                <div className="flex flex-col items-center justify-center gap-1">
+                    <Package size={20} className="text-gray-300" />
+                </div>
+            )}
+        </div>
+    );
+};
+
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -72,6 +107,25 @@ export default function AdminProducts() {
                 id: doc.id,
                 ...doc.data(),
             }));
+
+            // Inject <link rel="preload"> into <head> for first 10 images.
+            // This gives them the HIGHEST browser network priority — same as
+            // stylesheets — and starts downloading before any JS Image() objects.
+            const existingPreloads = document.querySelectorAll('link[data-product-preload]');
+            existingPreloads.forEach(el => el.remove());
+
+            data.slice(0, 10).forEach(product => {
+                if (product.imageUrl) {
+                    const link = document.createElement('link');
+                    link.rel = 'preload';
+                    link.as = 'image';
+                    link.href = product.imageUrl;
+                    link.fetchPriority = 'high';
+                    link.dataset.productPreload = 'true';
+                    document.head.appendChild(link);
+                }
+            });
+
             setProducts(data);
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -196,6 +250,18 @@ export default function AdminProducts() {
     const totalPages = Math.ceil(filteredProducts.length / rowsPerPage);
     const startIndex = (currentPage - 1) * rowsPerPage;
     const paginatedProducts = filteredProducts.slice(startIndex, startIndex + rowsPerPage);
+
+    // Lazy preload for subsequent pages
+    useEffect(() => {
+        // Only preload images beyond the first 10 (already handled in fetch)
+        const beyond10 = paginatedProducts.slice(10);
+        beyond10.forEach(product => {
+            if (product.imageUrl) {
+                const img = new Image();
+                img.src = product.imageUrl;
+            }
+        });
+    }, [paginatedProducts]);
 
     return (
         <div className="font-sans min-h-screen p-0 pt-3">
@@ -384,21 +450,12 @@ export default function AdminProducts() {
 
                                             <td className="px-6 py-3 whitespace-nowrap">
                                                 <div className="flex items-center justify-center">
-                                                    <div className="w-12 h-12 rounded-lg bg-gray-50 border border-gray-100 overflow-hidden flex items-center justify-center">
-                                                        {product.imageUrl ? (
-                                                            <img
-                                                                src={product.imageUrl}
-                                                                alt={product.name}
-                                                                className="w-full h-full object-cover"
-                                                                onError={(e) => {
-                                                                    e.target.onerror = null;
-                                                                    e.target.src = "https://placehold.co/100x100?text=No+Image";
-                                                                }}
-                                                            />
-                                                        ) : (
-                                                            <Package size={20} className="text-gray-300" />
-                                                        )}
-                                                    </div>
+                                                    <ProductImage
+                                                        src={product.imageUrl}
+                                                        alt={product.name}
+                                                        className="w-12 h-12"
+                                                        priority={startIndex + index < 10}
+                                                    />
                                                 </div>
                                             </td>
 
