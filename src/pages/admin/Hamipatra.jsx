@@ -1,208 +1,140 @@
-import React, { useRef } from "react";
-import { Printer, ChevronLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import {
+    FileText,
+    Pen,
+    Stamp,
+    Flower,
+    Flower2,
+    Sprout
+} from "lucide-react";
 
 export default function AdminHamipatra() {
-    const componentRef = useRef();
-    const navigate = useNavigate();
-    const [currentTime, setCurrentTime] = React.useState(new Date());
-
-    React.useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        return () => clearInterval(timer);
-    }, []);
-
-    const formatDate = (date) => {
-        const day = date.getDate();
-        const months = ["जानेवारी", "फेब्रुवारी", "मार्च", "एप्रिल", "मे", "जून", "जुलै", "ऑगस्ट", "सप्टेंबर", "ऑक्टोबर", "नोव्हेंबर", "डिसेंबर"];
-        const month = months[date.getMonth()];
-        const year = date.getFullYear();
-        return `${day} ${month} ${year}`;
-    };
-
-    const formatTime = (date) => {
-        return date.toLocaleTimeString('en-US', { hour12: false });
-    };
-
-    const handlePrint = () => {
-        window.print();
-    };
-
-    const declarations = [
-        "मी स्वतः किंवा माझ्या कुटुंबातील सदस्य नियमित/कायम कर्मचारी म्हणून सरकारी विभाग/उपक्रम/मंडळ/भारत सरकार किंवा राज्य सरकारच्या स्थानिक संस्थेमध्ये कार्यरत नाही किंवा सेवानिवृत्तीनंतर निवृत्तीवेतन घेत नाही.",
-        "माझ्या कुटुंबाचे एकत्रित वार्षिक उत्पन्न रु.२.५० लाख रुपयांपेक्षा अधिक नाही.",
-        "माझ्याकडे उत्पन्न प्रमाणपत्र नसल्याने मला पिवळे किंवा केशरी रेशनकार्ड आधारे उत्पन्न प्रमाणपत्रातून सूट देण्यात यावी.",
-        "माझ्या कुटुंबातील सदस्य आयकरदाता नाही.",
-        "मी बाह्य यंत्रणेद्वारे कार्यरत असलेली कर्मचारी/स्वयंसेवी कामगार/कंत्राटी कर्मचारी असून माझे उत्पन्न रु.२.५० लाख पेक्षा कमी आहे.",
-        "मी शासनाच्या इतर विभागामार्फत राबविण्यात येणाऱ्या दरमह्रा रु.१,५००/- किंवा त्यापेक्षा अधिक रकमेचा आर्थिक योजनेचा लाभ घेतलेला नाही.",
-        "माझ्या कुटुंबातील सदस्य विद्यमान किंवा माजी खासदार/आमदार नाही.",
-        "माझ्या कुटुंबातील सदस्य भारत सरकार किंवा राज्य सरकारच्या बोर्ड/कॉर्पोरेशन/बोर्ड/उपक्रमाचे अध्यक्ष/उपाध्यक्ष/संचालक/सदस्य नाहीत.",
-        "माझ्याकडे किंवा माझ्या कुटुंबातील सदस्यांच्या नावावर चारचाकी वाहने (ट्रॅक्टर वगळून) नोंदणीकृत नाहीत.",
-        "माझ्या कुटुंबात एकापेक्षा जास्त अविवाहित महिलेने या योजनेचा लाभ घेतलेला नाही."
+    const bulletins = [
+        { text: "मी / आम्ही याप्रमाणे नमूद करतो की, नर्सरी व्यवस्थापन प्रणालीअंतर्गत फ्रँचायझी घेऊन व्यवसाय करत असताना सर्व नियम व अटींचे पालन करणे माझ्यावर / आमच्यावर बंधनकारक राईल.", icon: Flower, color: "text-pink-500" },
+        { text: "मी / आम्ही रोपवाला (नर्सरी व्यवस्थापन प्रणालीतून) दिलेल्या सर्व सूचना, मार्गदर्शक तत्त्वे व धोरणे यांचे पालन करीन / करू आणि संबंधित प्रशासनाने ठरविलेल्या अटी व शर्ती मान्य करतो / करते.", icon: Flower2, color: "text-orange-500" },
+        { text: "मी / आम्ही असेही नमूद करतो की, (रोपवाला) नर्सरी व्यवस्थापन प्रणालीचा वापर करून चालविल्या जाणाऱ्या व्यवसायातील सर्व व्यवहार, नोंदी व माहिती ही सत्य व अचूक राईल.", icon: Sprout, color: "text-green-500" },
+        { text: "मी / आम्ही खात्री देतो की, व्यवसायाशी संबंधित कोणतीही चुकीची माहिती देणार नाही तसेच कोणताही बेकायदेशीर व्यवहार करणार नाही.", icon: Flower, color: "text-blue-500" },
+        { text: "मी / आम्ही नर्सरी व्यवस्थापन प्रणालीद्वारे दिलेल्या डिजिटल नोंदी, दस्तऐवज व व्यवहार यांना वैध व अधिकृत मान्य करतो / करते.", icon: Flower2, color: "text-purple-500" },
+        { text: "मी / आम्ही याप्रमाणे खात्री देतो की, या फ्रँचायझी अंतर्गत चालणारा व्यवसाय संबंधित कायदे, नियम व शासनाच्या मार्गदर्शक सूचनांनुसारच चालविला जाईल.", icon: Sprout, color: "text-yellow-500" },
+        { text: "मी / आम्ही या हमीपत्राद्वारे असे नमूद करतो की, नर्सरी व्यवस्थापन प्रणाली अंतर्गत व्यवसाय करताना सर्व माहिती अचूक देणे व नियमांचे पालन करणे ही माझी / आमची जबाबदारी आहे.", icon: Flower, color: "text-indigo-500" },
+        { text: "जर या हमीपत्रातील माहिती खोटी आढळली किंवा नियमांचे उल्लंघन झाले तर संबंधित प्रशासनाला आवश्यक ती कारवाई करण्याचा पूर्ण अधिकार राईल.", icon: Flower2, color: "text-rose-500" }
     ];
 
     return (
-        <div className="p-6 bg-gray-200 min-h-screen pb-20 overflow-y-auto">
-            {/* Header Content (Hidden on Print) */}
-            <div className="max-w-[1000px] mx-auto mb-6 flex items-center justify-between print:hidden">
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="p-2 bg-white rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors shadow-sm"
-                    >
-                        <ChevronLeft size={20} />
-                    </button>
+        <div className="min-h-screen bg-transparent p-0 pt-3 font-sans">
+            {/* Google Fonts Integration */}
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+                
+                .hamipatra-document {
+                    font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+                }
+                
+                .hamipatra-marathi {
+                    font-family: 'Noto Sans Devanagari', sans-serif;
+                }
+            `}} />
+
+            {/* Header / Actions */}
+            <div className="w-full px-4 py-2">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
-                        <h1 className="text-xl font-bold text-gray-900">हमीपत्र (Invoice View)</h1>
-                        <p className="text-sm text-gray-500">Professional quotation format</p>
-                    </div>
-                </div>
-                <button
-                    onClick={handlePrint}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all font-bold shadow-lg"
-                >
-                    <Printer size={20} />
-                    <span>Print Document</span>
-                </button>
-            </div>
-
-            {/* Document Sheet (Quotation Layout) */}
-            <div
-                ref={componentRef}
-                className="mx-auto bg-white shadow-2xl p-[10mm] print:shadow-none print:border-none print:p-0 w-full max-w-[210mm] min-h-[297mm] relative transition-all"
-                style={{
-                    fontFamily: "'Noto Sans Devanagari', sans-serif"
-                }}
-            >
-                {/* Header Branding Section */}
-                <div className="flex justify-between items-start mb-4 px-6 pt-6">
-                    {/* Left: Logo and Quote Title */}
-                    <div className="flex flex-col items-center">
-                        <img src="/RopeWala.png" alt="Logo" className="w-28 h-28 object-contain mb-4" />
-                        <h2 className="text-2xl font-black text-blue-600 border-b-2 border-blue-600 px-4 pb-1 font-noto">
-                            किंमत पत्र (हमीपत्र)
-                        </h2>
-                    </div>
-
-                    {/* Right: Business Info */}
-                    <div className="text-right">
-                        <h1 className="text-4xl font-black text-red-600 mb-2 tracking-tighter uppercase italic font-noto">
-                            रोपेवाला
-                        </h1>
-                        <div className="text-[14px] font-extrabold text-gray-700 leading-tight space-y-1 font-noto">
-                            <p>बीड जिल्हा अधिकृत विक्रेता</p>
-                            <p>नर्सरी व्यवस्थापन, रोप पुरवठा आणि सर्व्हिस</p>
-                            <p>अंबाजोगाई रोड, जकात नाक्या जवळ, परळी वै.</p>
-                            <p className="text-red-600">मो: 9975059508, 9834879997</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="mx-6 h-[2px] bg-gray-900 mb-8 mt-4"></div>
-
-                {/* Information Box (Gray) */}
-                <div className="mx-6 mb-8 bg-gray-50 border border-gray-200 rounded-lg p-8 grid grid-cols-2 gap-x-12 gap-y-6">
-                    <div className="flex items-end gap-2 text-base font-noto">
-                        <span className="font-extrabold text-gray-900 whitespace-nowrap">श्री. रा. रा. : -</span>
-                        <div className="flex-grow border-b-2 border-gray-300 border-dashed min-h-[24px]"></div>
-                    </div>
-                    <div className="flex items-end gap-2 text-base font-noto">
-                        <span className="font-extrabold text-gray-900 whitespace-nowrap">दिनांक: {formatDate(currentTime)}</span>
-                    </div>
-
-                    <div className="flex items-end gap-2 text-base font-noto">
-                        <span className="font-extrabold text-gray-900 whitespace-nowrap">शहर: -</span>
-                        <div className="flex-grow border-b-2 border-gray-300 border-dashed min-h-[24px]"></div>
-                    </div>
-                    <div className="flex items-end gap-2 text-base font-noto">
-                        <span className="font-extrabold text-gray-900 whitespace-nowrap">पोस्ट: -</span>
-                        <div className="flex-grow border-b-2 border-gray-300 border-dashed min-h-[24px]"></div>
-                    </div>
-
-                    <div className="flex items-end gap-2 text-base font-noto">
-                        <span className="font-extrabold text-gray-900 whitespace-nowrap">तालुका: -</span>
-                        <div className="flex-grow border-b-2 border-gray-300 border-dashed min-h-[24px]"></div>
-                    </div>
-                    <div className="flex items-end gap-2 text-base font-noto">
-                        <span className="font-extrabold text-gray-900 whitespace-nowrap">जिल्हा: -</span>
-                        <div className="flex-grow border-b-2 border-gray-300 border-dashed min-h-[24px]"></div>
-                    </div>
-                </div>
-
-                {/* Declarations Table Header (Red) */}
-                <div className="mx-6 mb-8">
-                    <div className="bg-red-600 text-white rounded-t-lg flex font-black text-sm uppercase tracking-wider font-noto">
-                        <div className="w-20 py-4 px-4 border-r border-red-500 text-center">अनु.क्र.</div>
-                        <div className="flex-grow py-4 px-4 text-center tracking-[0.2em]">तपशील</div>
-                        <div className="w-40 py-4 px-4 border-l border-red-500 text-center">किंमत (₹)</div>
-                    </div>
-                    <div className="border-x border-b border-gray-200 rounded-b-lg overflow-hidden bg-white">
-                        {declarations.map((text, index) => (
-                            <div key={index} className="flex border-b border-gray-100 last:border-b-0 text-[14px] font-bold text-gray-800 odd:bg-white even:bg-gray-50/50 font-noto">
-                                <div className="w-20 py-4 px-4 bg-gray-50/80 border-r border-gray-100 text-center font-black">{index + 1}</div>
-                                <div className="flex-grow py-4 px-8 text-justify leading-relaxed">{text}</div>
-                                <div className="w-40 py-4 px-4 border-l border-gray-100 text-center"></div>
-                            </div>
-                        ))}
-                        {/* Total Row */}
-                        <div className="flex bg-gray-100 text-[14px] font-black font-noto text-gray-900">
-                            <div className="w-20 py-4 px-4 bg-gray-100 border-r border-gray-200"></div>
-                            <div className="flex-grow py-4 px-8 text-right pr-20 uppercase">अक्षरी रुपये: शून्य रुपये फक्त</div>
-                            <div className="w-40 py-4 px-4 border-l border-gray-200 text-center tracking-tighter">एकूण : 0</div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Terms and Conditions Section */}
-                <div className="mx-6 mb-12 px-6">
-                    <h3 className="text-xl font-black text-gray-900 mb-4 border-b-4 border-red-600 inline-block pb-1 font-noto">
-                        नियम आणि अटी :-
-                    </h3>
-                    <div className="space-y-4 text-[14px] font-extrabold text-gray-800 leading-relaxed text-justify font-noto">
-                        <p>
-                            मी वरीलप्रमाणे घोषित करतो की, "मुख्यमंत्री-माझी लाडकी बहीण" योजना संबंधित फ्रेंचायझी पोर्टलवर आधार क्रमांक आधारित प्रमाणीकरण प्रणाली सोबत स्वत:ला प्रमाणित करण्यास व आधार आधारित प्रमाणीकरणानंतर माझा आधार क्रमांक, बायोमेट्रिक किंवा वन टाइम पीन (OTP) माहिती प्रदान करण्याची सहमती देण्यात माझी हरकत नसेल. मी हे देखील सहमती देते की, "मुख्यमंत्री-माझी लाडकी बहीण" योजना माझी ओळख पटवण्यासाठी व प्रमाणित करण्यासाठी माझ्या आधार क्रमांकाचा वापर करू शकतात. मी केवळ शासकीय सेवा व योजनांचे लाभ प्राप्त करण्याच्या उद्देशाने अन्य राज्य किंवा केंद्र शासनाच्या विभागांशी माझे आधार ई-केवायसी (e-KYC) वर्णन पुरवण्यास सहमती देत आहे.
+                        <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
+                            Hamipatra
+                        </h3>
+                        <p className="text-base text-gray-600 font-normal mb-0">
+                            Manage and view the official nursery franchise agreement template
                         </p>
                     </div>
                 </div>
+                <hr className="mt-4 mb-5 border-gray-100" />
+            </div>
 
-                {/* Signatures Section */}
-                <div className="mt-auto px-12 pb-16 flex justify-between items-end font-black text-base text-gray-900 font-noto">
-                    <div className="flex flex-col items-center">
-                        <div className="h-24 w-48 border-b-2 border-gray-400 mb-3 shadow-inner"></div>
-                        <p>खरेदीदाराची सही</p>
+            {/* Document Container */}
+            <div className="max-w-4xl mx-auto bg-white shadow-2xl shadow-gray-200/50 rounded-2xl border border-gray-100 overflow-hidden relative overflow-x-auto hamipatra-document">
+                <div className="p-8 md:p-16 text-gray-800 leading-relaxed min-w-[700px]">
+
+                    {/* Official Stamp Concept */}
+                    <div className="absolute top-10 right-10 opacity-[0.03] pointer-events-none">
+                        <Stamp size={200} />
                     </div>
-                    <div className="flex flex-col items-center">
-                        <div className="h-24 w-48 mb-3 flex flex-col items-center justify-center relative">
-                            <img src="/RopeWala.png" alt="Seal" className="w-16 h-16 grayscale opacity-10 absolute pointer-events-none" />
-                            <div className="italic text-xs font-bold text-gray-300">(शिक्का)</div>
+
+                    {/* Header Section */}
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-6">
+                            <img
+                                src="/RopWala.png"
+                                className="w-24 h-24 object-contain"
+                                alt="Logo"
+                            />
+                            <div>
+                                <h2 className="text-4xl font-black text-gray-900 tracking-tight hamipatra-marathi">
+                                    हमीपत्र
+                                </h2>
+                                <p className="text-xl font-bold text-gray-500 mt-1 hamipatra-marathi">
+                                    (नर्सरी फ्रँचायझी)
+                                </p>
+                            </div>
                         </div>
-                        <p className="text-red-600">तर्फे : रोपेवाला</p>
+                        <div className="text-right">
+                            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">दिनांक</p>
+                            <span className="inline-block border-b-2 border-dashed border-gray-300 w-32 min-h-[30px]"></span>
+                        </div>
                     </div>
-                </div>
+                    <hr className="border-t-2 border-gray-100 mb-10" />
 
-                {/* Print Info */}
-                <div className="mx-6 pt-6 border-t border-gray-200 text-[11px] font-bold text-gray-400 flex justify-between tracking-widest font-noto">
-                    <p>PRINTED ON: {formatDate(currentTime)} {formatTime(currentTime)}</p>
-                    <p>ROPEWALA MANAGEMENT SYSTEM</p>
+                    {/* Main Content */}
+                    <div className="space-y-8 text-lg font-medium hamipatra-marathi">
+                        <p className="text-justify indent-12 mt-5">
+                            मी / आम्ही <span className="inline-block border-b-2 border-dashed border-gray-300 min-w-[250px] mx-1"></span> प्रतिज्ञापूर्वक म्हणतो / म्हणते की, मी / आम्ही <span className="inline-block border-b-2 border-dashed border-gray-300 min-w-[280px] mx-1"></span> (फ्रँचायझी धारकाचे नाव) हा / ही <span className="inline-block border-b-2 border-dashed border-gray-300 min-w-[280px] mx-1"></span> (पत्ता) येथे नर्सरी व्यवस्थापन व्यवसाय चालवत आहे / आहोत.
+                        </p>
+
+                        <div className="space-y-6">
+                            {bulletins.map((item, idx) => (
+                                <div key={idx} className="flex gap-4">
+                                    <div className="mt-1.5 min-w-[24px]">
+                                        <item.icon size={20} className={`${item.color} opacity-100`} />
+                                    </div>
+                                    <p className="text-justify text-gray-700 leading-snug">{item.text}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Footer / Signature Section */}
+                    <div className="mt-20 grid grid-cols-2 gap-x-8 items-end hamipatra-marathi">
+                        <div className="col-span-1">
+                            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">फ्रँचायझी धारकाचे नाव</p>
+                            <span className="inline-block border-b-2 border-dashed border-gray-300 w-full min-h-[40px]"></span>
+                        </div>
+
+                        <div className="col-span-1 text-center group">
+                            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 transition-colors group-hover:text-green-600">स्वाक्षरी (डिजिटल)</p>
+                            <div className="inline-block border-2 border-dashed border-gray-100 bg-gray-50/50 rounded-2xl w-full max-w-[200px] h-24 flex flex-col items-center justify-center p-4 group-hover:bg-green-50 transition-colors mx-auto">
+                                <Pen className="text-gray-200 group-hover:text-green-200 transition-colors" size={32} />
+                                <span className="text-[10px] text-gray-300 font-bold uppercase tracking-tighter mt-2">Sign Here</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Global Styles */}
+            {/* Print Styling */}
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @media print {
-                    @page { size: A4; margin: 0; }
-                    body { background: white !important; margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
-                    .h-screen { height: auto !important; overflow: visible !important; }
-                    main { padding: 0 !important; margin: 0 !important; }
-                    .bg-gray-200 { background: white !important; }
-                    .max-w-[210mm] { max-width: none !important; width: 210mm !important; height: 297mm !important; margin: 0 !important; border: none !important; box-shadow: none !important; }
-                    .print-hide { display: none !important; }
+                    .no-print { display: none !important; }
+                    body { background: white !important; padding: 0 !important; }
+                    .max-w-4xl { max-width: 100% !important; margin: 0 !important; width: 100% !important; }
+                    .shadow-2xl, .border, .rounded-2xl { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
+                    .bg-gray-50\\/50 { background: white !important; }
+                    .p-16 { padding: 0 !important; }
+                    .mt-20 { margin-top: 100px !important; }
+                    @page { margin: 2cm; }
+                    .hamipatra-document { font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif !important; }
+                    .hamipatra-marathi { font-family: 'Noto Sans Devanagari', sans-serif !important; }
                 }
-                @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700;800;900&display=swap');
-                
-                .font-noto { font-family: 'Noto Sans Devanagari', sans-serif; }
-            `}} />
+            ` }} />
         </div>
     );
 }

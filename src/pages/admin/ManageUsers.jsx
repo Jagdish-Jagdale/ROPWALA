@@ -10,6 +10,7 @@ import {
   deleteDoc,
   doc,
   setDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
 import { initializeApp, deleteApp } from "firebase/app";
@@ -91,42 +92,54 @@ export default function UsersManage() {
   }, [search, sortBy]);
 
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      try {
-        // Fetch All Users
-        // Fetch All Users
-        const usersQuery = query(
-          collection(db, "users")
-        );
-        const usersSnap = await getDocs(usersQuery);
-        const realUsers = usersSnap.docs
+    setLoading(true);
+
+    // Listen to Users
+    const usersQuery = query(collection(db, "users"));
+    const unsubscribeUsers = onSnapshot(
+      usersQuery,
+      (snapshot) => {
+        const realUsers = snapshot.docs
           .map((d) => ({ id: d.id, ...d.data() }))
           .sort((a, b) => {
-            const dateA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : new Date(a.createdAt || 0).getTime();
-            const dateB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : new Date(b.createdAt || 0).getTime();
+            const dateA = a.createdAt?.seconds
+              ? a.createdAt.seconds * 1000
+              : new Date(a.createdAt || 0).getTime();
+            const dateB = b.createdAt?.seconds
+              ? b.createdAt.seconds * 1000
+              : new Date(b.createdAt || 0).getTime();
             return dateB - dateA;
           });
         setUsers(realUsers);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error listening to users:", error);
+        toast.error("Failed to sync users");
+        setLoading(false);
+      }
+    );
 
-        // Fetch Nurseries (Owners)
-        const nurseriesQuery = query(
-          collection(db, "owners")
-        );
-        const nurseriesSnap = await getDocs(nurseriesQuery);
-        const nurseriesList = nurseriesSnap.docs.map((d) => ({
+    // Listen to Nurseries (Owners)
+    const nurseriesQuery = query(collection(db, "owners"));
+    const unsubscribeNurseries = onSnapshot(
+      nurseriesQuery,
+      (snapshot) => {
+        const nurseriesList = snapshot.docs.map((d) => ({
           id: d.id,
           ...d.data(),
         }));
         setNurseries(nurseriesList);
-      } catch (e) {
-        console.error(e);
-        toast.error("Failed to load data from database");
-      } finally {
-        setLoading(false);
+      },
+      (error) => {
+        console.error("Error listening to nurseries:", error);
       }
+    );
+
+    return () => {
+      unsubscribeUsers();
+      unsubscribeNurseries();
     };
-    load();
   }, []);
 
 
@@ -320,16 +333,6 @@ export default function UsersManage() {
         });
 
         toast.success("User added successfully!");
-
-        // Reload users
-        const usersQuery = query(
-          collection(db, "users")
-        );
-        const usersSnap = await getDocs(usersQuery);
-        const realUsers = usersSnap.docs
-          .map((d) => ({ id: d.id, ...d.data() }))
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setUsers(realUsers);
       }
 
       handleCloseModal();

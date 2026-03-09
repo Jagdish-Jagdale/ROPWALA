@@ -199,7 +199,7 @@ export default function AdminLayout() {
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-          <img src="/RopeWala.png" className="w-10 h-10 object-contain rounded-full shadow-sm" alt="Logo" />
+          <img src="/RopWala.png" className="w-10 h-10 object-contain rounded-full shadow-sm" alt="Logo" />
         </div>
       </div>
 
@@ -226,7 +226,7 @@ export default function AdminLayout() {
             <div className="flex flex-col items-center gap-3 w-full px-4 py-3">
               <div className="w-24 h-24 flex items-center justify-center transition-transform hover:scale-105 rounded-full overflow-hidden">
                 <img
-                  src="/RopeWala.png"
+                  src="/RopWala.png"
                   className="w-full h-full object-contain"
                   alt="Logo"
                 />
@@ -256,14 +256,14 @@ export default function AdminLayout() {
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0">
               <img
-                src="/RopeWala.png"
+                src="/RopWala.png"
                 className="w-14 h-14 object-contain"
                 alt="Logo"
               />
             </div>
             <div className="flex flex-col items-start">
               <span className="font-bold text-gray-900 text-lg leading-tight">
-                ROPEWALA
+                ROP WALA
               </span>
               <span className="mt-1 px-2.5 py-0.5 text-xs font-bold bg-green-600 text-white rounded uppercase tracking-wide">
                 Admin

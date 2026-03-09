@@ -75,7 +75,7 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
                                         <img
                                             src={selectedImage}
                                             alt={product.name}
-                                            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-125 cursor-crosshair mix-blend-multiply" // Amazon style zoom
+                                            className="w-full h-full object-contain mix-blend-multiply"
                                             onError={(e) => {
                                                 e.target.onerror = null;
                                                 e.target.src = "https://placehold.co/600x600?text=No+Image";
@@ -172,7 +172,7 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
                                     </div>
                                     <div className="grid grid-cols-[110px_1fr] gap-2 pt-1">
                                         <span className="text-gray-500">Ships from</span>
-                                        <span className="font-medium">{product.nurseryName || "Ropewala"}</span>
+                                        <span className="font-medium">{product.nurseryName || "Rop Wala"}</span>
                                     </div>
                                     <div className="grid grid-cols-[110px_1fr] gap-2 pt-1 border-t border-gray-100 mt-2">
                                         <span className="text-gray-400 text-[11px] uppercase tracking-wider font-bold">Product ID</span>
@@ -210,7 +210,7 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
                     <div className="mt-8 pt-6 border-t border-gray-100">
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="text-lg font-bold text-gray-900 uppercase tracking-tight">Customer feedback</h4>
-                            <button className="text-sm font-semibold text-green-700 hover:text-green-800 transition-colors">Write a review</button>
+
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">

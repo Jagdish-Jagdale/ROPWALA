@@ -6,6 +6,7 @@ import {
     updateDoc,
     doc,
     orderBy,
+    onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import toast from "react-hot-toast";
@@ -43,39 +44,37 @@ export default function AdminFranchise() {
     const [selectedApp, setSelectedApp] = useState(null);
 
     useEffect(() => {
-        fetchApplications();
+        const unsubscribe = fetchApplications();
+        return () => unsubscribe && unsubscribe();
     }, []);
 
-    const fetchApplications = async () => {
+    const fetchApplications = () => {
         setLoading(true);
-        try {
-            const q = query(
-                collection(db, "franchise_applications"),
-                orderBy("applicationDate", "desc")
-            );
-            const querySnapshot = await getDocs(q);
-            const apps = querySnapshot.docs.map((d) => ({
+        const q = query(
+            collection(db, "franchise_applications"),
+            orderBy("applicationDate", "desc")
+        );
+
+        return onSnapshot(q, (snapshot) => {
+            const apps = snapshot.docs.map((d) => ({
                 ...d.data(),
                 id: d.id,
             }));
             setApplications(apps);
-        } catch (e) {
-            console.error("Error fetching applications:", e);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error fetching applications:", error);
             // Fallback for case where index doesn't exist yet for applicationDate
-            try {
-                const fallbackQ = query(collection(db, "franchise_applications"));
-                const fallbackSnap = await getDocs(fallbackQ);
+            const fallbackQ = query(collection(db, "franchise_applications"));
+            onSnapshot(fallbackQ, (fallbackSnap) => {
                 const apps = fallbackSnap.docs.map((d) => ({
                     ...d.data(),
                     id: d.id,
                 })).sort((a, b) => (b.applicationDate || 0) - (a.applicationDate || 0));
                 setApplications(apps);
-            } catch (err) {
-                toast.error("Failed to load franchise applications");
-            }
-        } finally {
-            setLoading(false);
-        }
+                setLoading(false);
+            });
+        });
     };
 
     const updateStatus = async (id, newStatus) => {

@@ -120,10 +120,10 @@ export default function Login() {
 
             <div className="max-w-xs text-white">
               <h1 className="text-5xl font-bold leading-tight font-playfair">
-                ROPEWALA, Simplified
+                ROP WALA, Simplified
               </h1>
               <p className="mt-3 text-lg leading-relaxed text-white/90">
-                Manage your ROPEWALA inventory, track purchases, and grow your
+                Manage your ROP WALA inventory, track purchases, and grow your
                 business with our all-in-one platform
               </p>
             </div>
@@ -148,8 +148,8 @@ export default function Login() {
               <div className="mb-3 flex justify-center">
                 <div className="h-20 w-20 overflow-hidden rounded-full bg-white shadow-lg ring-2 ring-green-500/20">
                   <img
-                    src="/RopeWala.png"
-                    alt="ROPEWALA Logo"
+                    src="/RopWala.png"
+                    alt="ROP WALA Logo"
                     className="h-full w-full object-cover"
                   />
                 </div>
@@ -159,7 +159,7 @@ export default function Login() {
                 Welcome!
               </h2>
               <p className="mb-7 text-center text-base text-green-700">
-                Sign in to continue to ROPEWALA
+                Sign in to continue to ROP WALA
               </p>
 
               <form onSubmit={onSubmit} className="space-y-5">

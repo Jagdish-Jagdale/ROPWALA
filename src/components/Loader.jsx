@@ -16,13 +16,13 @@ export default function Loader() {
 
           {/* Static Logo Center with Glow */}
           <div className="relative z-10 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(45,90,61,0.15)] overflow-hidden p-3 animate-[pulse_3s_ease-in-out_infinite]">
-            <img src="/RopeWala.png" alt="Logo" className="w-full h-full object-contain drop-shadow-sm" />
+            <img src="/RopWala.png" alt="Logo" className="w-full h-full object-contain drop-shadow-sm" />
           </div>
         </div>
 
         {/* App Name Text */}
         <div className="flex flex-col items-center animate-pulse">
-          <h2 className="text-2xl font-serif font-bold text-[#2d5a3d] tracking-wide">ROPEWALA</h2>
+          <h2 className="text-2xl font-serif font-bold text-[#2d5a3d] tracking-wide">ROP WALA</h2>
           <div className="h-1 w-12 bg-gradient-to-r from-transparent via-[#2d5a3d]/50 to-transparent mt-2 rounded-full" />
         </div>
       </div>
