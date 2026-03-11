@@ -87,11 +87,11 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
 
                                     {/* Status Badge Over Image */}
                                     <div className="absolute top-4 left-4 z-10">
-                                        <span className={`inline-flex items-center px-3 py-1.5 rounded-sm text-[11px] font-bold border uppercase tracking-widest shadow-sm ${product.status === "approved" || product.status === "active" || product.status === "Available" ? "bg-green-600 text-white border-green-700" :
-                                            product.status === "pending" ? "bg-blue-600 text-white border-blue-700" :
-                                                "bg-red-600 text-white border-red-700"
+                                        <span className={`inline-flex items-center px-3 py-1.5 rounded-sm text-[11px] font-bold border uppercase tracking-widest shadow-sm ${['APPROVE', 'APPROVED', 'ACTIVE', 'AVAILABLE'].includes(String(product.status || "").toUpperCase()) ? "bg-green-600 text-white border-green-700" :
+                                            ['REJECT', 'REJECTED'].includes(String(product.status || "").toUpperCase()) ? "bg-red-600 text-white border-red-700" :
+                                                "bg-blue-600 text-white border-blue-700"
                                             }`}>
-                                            {product.status || "pending"}
+                                            {product.status || "PENDING"}
                                         </span>
                                     </div>
                                 </div>

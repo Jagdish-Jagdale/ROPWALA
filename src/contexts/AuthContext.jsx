@@ -13,7 +13,7 @@ const AuthContext = createContext(null);
 // Helper: check if UID exists in owners (by uid field) or users (by doc ID)
 async function isOwnerOrUser(uid) {
   const [ownerSnap, userSnap] = await Promise.all([
-    getDocs(query(collection(db, "owners"), where("uid", "==", uid))),
+    getDocs(query(collection(db, "franchise"), where("uid", "==", uid))),
     getDoc(doc(db, "users", uid)),
   ]);
   return !ownerSnap.empty || userSnap.exists();

@@ -51,7 +51,7 @@ export default function AdminFranchise() {
     const fetchApplications = () => {
         setLoading(true);
         const q = query(
-            collection(db, "franchise_applications"),
+            collection(db, "franchise"),
             orderBy("applicationDate", "desc")
         );
 
@@ -65,7 +65,7 @@ export default function AdminFranchise() {
         }, (error) => {
             console.error("Error fetching applications:", error);
             // Fallback for case where index doesn't exist yet for applicationDate
-            const fallbackQ = query(collection(db, "franchise_applications"));
+            const fallbackQ = query(collection(db, "franchise"));
             onSnapshot(fallbackQ, (fallbackSnap) => {
                 const apps = fallbackSnap.docs.map((d) => ({
                     ...d.data(),
@@ -81,7 +81,7 @@ export default function AdminFranchise() {
         if (!id) return;
         try {
             const docId = String(id);
-            const docRef = doc(db, "franchise_applications", docId);
+            const docRef = doc(db, "franchise", docId);
             const statusToSave = newStatus.toUpperCase();
             await updateDoc(docRef, { status: statusToSave });
 

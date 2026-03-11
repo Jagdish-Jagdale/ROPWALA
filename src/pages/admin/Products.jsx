@@ -104,8 +104,8 @@ export default function AdminProducts() {
             const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
             const querySnapshot = await getDocs(q);
             const data = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
                 ...doc.data(),
+                id: doc.id,
             }));
 
             // Inject <link rel="preload"> into <head> for first 10 images.
@@ -188,7 +188,8 @@ export default function AdminProducts() {
 
     const handleUpdateStatus = async (id, newStatus) => {
         try {
-            const productRef = doc(db, "products", id);
+            if (!id) throw new Error("Product ID is missing");
+            const productRef = doc(db, "products", String(id));
             await updateDoc(productRef, {
                 status: newStatus,
                 updatedAt: serverTimestamp(),
@@ -196,7 +197,8 @@ export default function AdminProducts() {
             toast.success(`Product marked as ${newStatus}`);
             fetchProducts();
         } catch (error) {
-            toast.error("Failed to update status");
+            console.error("Error updating status:", error);
+            toast.error(`Failed to update status: ${error.message}`);
         }
     };
 
@@ -289,7 +291,10 @@ export default function AdminProducts() {
                     />
                     <StatCard
                         title="Approved"
-                        value={products.filter(p => p.status === 'approved' || p.status === 'active').length}
+                        value={products.filter(p => {
+                            const s = String(p.status || "").toUpperCase();
+                            return s === 'APPROVE' || s === 'APPROVED' || s === 'ACTIVE' || s === 'AVAILABLE';
+                        }).length}
                         icon={CheckCircle}
                         variant="green"
                     />
@@ -301,7 +306,10 @@ export default function AdminProducts() {
                     />
                     <StatCard
                         title="Rejected"
-                        value={products.filter(p => p.status === 'rejected').length}
+                        value={products.filter(p => {
+                            const s = String(p.status || "").toUpperCase();
+                            return s === 'REJECT' || s === 'REJECTED';
+                        }).length}
                         icon={AlertCircle}
                         variant="red"
                     />
@@ -337,8 +345,8 @@ export default function AdminProducts() {
                             >
                                 <option value="all">All Statuses</option>
                                 <option value="pending">Pending Approval</option>
-                                <option value="approved">Approved</option>
-                                <option value="rejected">Rejected</option>
+                                <option value="APPROVE">Approved</option>
+                                <option value="REJECT">Rejected</option>
                                 <option value="out_of_stock">Out of Stock</option>
                             </select>
                         </div>
@@ -397,19 +405,19 @@ export default function AdminProducts() {
                                         Image
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Product Info
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Owner / Source
+                                        Product Name
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         Category
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Price
+                                        Owner Name
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Stock
+                                        Franchise
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                        Price
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         Status
@@ -422,7 +430,7 @@ export default function AdminProducts() {
                             <tbody className="bg-white">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={8} className="text-center py-12">
+                                        <td colSpan={9} className="text-center py-12">
                                             <div className="flex flex-col items-center justify-center gap-3">
                                                 <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                                 <span className="text-sm text-gray-500 font-medium">
@@ -460,14 +468,15 @@ export default function AdminProducts() {
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
-                                                <div className="flex flex-col">
-                                                    <span className="text-sm font-bold text-gray-900">
-                                                        {product.name}
-                                                    </span>
-                                                    <span className="text-[10px] text-gray-400 font-mono">
-                                                        SKU: {product.sku || (product.id ? String(product.id).slice(0, 8).toUpperCase() : "N/A")}
-                                                    </span>
-                                                </div>
+                                                <span className="text-sm font-bold text-gray-900">
+                                                    {product.name}
+                                                </span>
+                                            </td>
+
+                                            <td className="px-6 py-3 whitespace-nowrap">
+                                                <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                                                    {product.category}
+                                                </span>
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
@@ -482,8 +491,8 @@ export default function AdminProducts() {
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
-                                                <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider">
-                                                    {product.category}
+                                                <span className="text-sm font-medium text-gray-700">
+                                                    {product.nurseryName || "-"}
                                                 </span>
                                             </td>
 
@@ -492,24 +501,11 @@ export default function AdminProducts() {
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
-                                                <div className="flex flex-col">
-                                                    <span className={`text-sm font-bold ${product.stock < 10 ? 'text-red-600' : 'text-gray-900'}`}>
-                                                        {product.stock} Units
-                                                    </span>
-                                                    {product.stock < 10 && (
-                                                        <span className="text-[9px] font-extrabold text-red-500 uppercase tracking-tighter animate-pulse">
-                                                            Low Stock
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </td>
-
-                                            <td className="px-6 py-3 whitespace-nowrap">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider ${product.status === "approved" || product.status === "active" ? "bg-green-50 text-green-700 border-green-200" :
-                                                    product.status === "pending" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                                                        "bg-red-50 text-red-700 border-red-200"
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider ${['APPROVE', 'APPROVED', 'ACTIVE', 'AVAILABLE'].includes(String(product.status || "").toUpperCase()) ? "bg-green-50 text-green-700 border-green-200" :
+                                                    ['REJECT', 'REJECTED'].includes(String(product.status || "").toUpperCase()) ? "bg-red-50 text-red-700 border-red-200" :
+                                                        "bg-blue-50 text-blue-700 border-blue-200"
                                                     }`}>
-                                                    {product.status || "pending"}
+                                                    {product.status || "PENDING"}
                                                 </span>
                                             </td>
 
@@ -520,39 +516,20 @@ export default function AdminProducts() {
                                                 >
                                                     {/* Accept Button */}
                                                     <button
-                                                        onClick={() => handleUpdateStatus(product.id, "approved")}
-                                                        className={`p-1.5 rounded-full transition-colors border ${product.status === 'approved' ? 'bg-green-100 text-green-700 border-green-200' : 'text-green-600 hover:text-green-800 hover:bg-green-50 border-green-100'}`}
-                                                        title="Accept / Approve"
+                                                        onClick={() => handleUpdateStatus(product.id, "APPROVE")}
+                                                        className={`p-1.5 rounded-full transition-colors border ${String(product.status || "").toUpperCase() === 'APPROVE' ? 'bg-green-100 text-green-700 border-green-200' : 'text-green-600 hover:text-green-800 hover:bg-green-50 border-green-100'}`}
+                                                        title="Approve"
                                                     >
                                                         <CheckCircle size={18} />
                                                     </button>
 
-                                                    {/* Hold Button */}
+                                                    {/* Reject Button */}
                                                     <button
-                                                        onClick={() => handleUpdateStatus(product.id, "pending")}
-                                                        className={`p-1.5 rounded-full transition-colors border ${product.status === 'pending' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'text-amber-600 hover:text-amber-800 hover:bg-amber-50 border-amber-100'}`}
-                                                        title="Put on Hold"
-                                                    >
-                                                        <Clock size={18} />
-                                                    </button>
-
-                                                    {/* Cancel Button */}
-                                                    <button
-                                                        onClick={() => handleUpdateStatus(product.id, "rejected")}
-                                                        className={`p-1.5 rounded-full transition-colors border ${product.status === 'rejected' ? 'bg-red-100 text-red-700 border-red-200' : 'text-red-600 hover:text-red-800 hover:bg-red-50 border-red-100'}`}
-                                                        title="Cancel / Reject"
+                                                        onClick={() => handleUpdateStatus(product.id, "REJECT")}
+                                                        className={`p-1.5 rounded-full transition-colors border ${String(product.status || "").toUpperCase() === 'REJECT' ? 'bg-red-100 text-red-700 border-red-200' : 'text-red-600 hover:text-red-800 hover:bg-red-50 border-red-100'}`}
+                                                        title="Reject"
                                                     >
                                                         <X size={18} />
-                                                    </button>
-
-                                                    <div className="w-[1px] h-4 bg-gray-200 mx-1"></div>
-
-                                                    <button
-                                                        onClick={() => handleDeleteProduct(product.id)}
-                                                        className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors"
-                                                        title="Delete Product"
-                                                    >
-                                                        <Trash2 size={18} />
                                                     </button>
                                                 </div>
                                             </td>
@@ -560,7 +537,7 @@ export default function AdminProducts() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="py-12 text-center">
+                                        <td colSpan={9} className="py-12 text-center">
                                             <div className="flex flex-col items-center justify-center text-gray-400">
                                                 <div className="bg-gray-50 p-4 rounded-full mb-3">
                                                     <Package size={32} className="opacity-50" />
@@ -656,7 +633,7 @@ export default function AdminProducts() {
                                             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all appearance-none"
                                         >
                                             <option value="pending">Pending</option>
-                                            <option value="approved">Approved</option>
+                                            <option value="available">Available</option>
                                             <option value="rejected">Rejected</option>
                                         </select>
                                     </div>

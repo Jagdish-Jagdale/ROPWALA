@@ -121,7 +121,7 @@ export default function UsersManage() {
     );
 
     // Listen to Nurseries (Owners)
-    const nurseriesQuery = query(collection(db, "owners"));
+    const nurseriesQuery = query(collection(db, "franchise"));
     const unsubscribeNurseries = onSnapshot(
       nurseriesQuery,
       (snapshot) => {

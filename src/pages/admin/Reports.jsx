@@ -164,7 +164,7 @@ export default function Reports() {
     const fetchReportData = async () => {
       try {
         setLoading(true);
-        const ownersSnap = await getDocs(collection(db, "owners"));
+        const ownersSnap = await getDocs(collection(db, "franchise"));
         const ownersList = [];
         ownersSnap.forEach(doc => {
           ownersList.push({ id: doc.id, ...doc.data() });

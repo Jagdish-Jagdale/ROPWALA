@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import {
@@ -32,29 +33,29 @@ import {
   AlertCircle,
   UserPlus,
   Briefcase,
-  Sprout
+  Sprout,
+  Award
 } from "lucide-react";
 
 /* -------------------- Stat Card -------------------- */
-function StatCard({ title, value, change, icon, color, iconBg }) {
-  const isPositive = change >= 0;
+function StatCard({ title, value, icon, color, iconBg, to }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 hover:shadow-md transition-all">
+    <div
+      onClick={() => to && navigate(to)}
+      className={`bg-white rounded-xl p-3 shadow-sm border border-gray-100 hover:shadow-md transition-all group ${to ? 'cursor-pointer' : ''}`}
+    >
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-sm font-medium text-gray-500 mb-1">
+          <p className="text-sm font-medium text-gray-500 mb-1 group-hover:text-green-600 transition-colors">
             {title}
           </p>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+          <h3 className="text-2xl font-bold text-gray-900 mb-0">
             {value}
           </h3>
-          <div className={`inline-flex items-center gap-1 text-xs font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}>
-            {isPositive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-            {Math.abs(change)}%
-            <span className="text-gray-400 font-normal ml-1">vs last month</span>
-          </div>
         </div>
-        <div className={`p-2 rounded-lg ${iconBg} ${color}`}>
+        <div className={`p-2 rounded-lg ${iconBg} ${color} group-hover:scale-110 transition-transform`}>
           {icon}
         </div>
       </div>
@@ -62,55 +63,7 @@ function StatCard({ title, value, change, icon, color, iconBg }) {
   );
 }
 
-/* -------------------- Activity Item -------------------- */
-function ActivityItem({ type, title, time, isPositive = true }) {
-  const getIcon = () => {
-    switch (type) {
-      case "registration": return <UserPlus size={16} />;
-      case "subscription": return <CreditCard size={16} />;
-      case "listing": return <Sprout size={16} />;
-      default: return <Activity size={16} />;
-    }
-  };
-
-  return (
-    <div className="flex items-start mb-3 pb-3 border-b border-gray-100 last:border-0  last:mb-0 last:pb-0">
-      <div
-        className={`rounded-full flex items-center justify-center mr-3 border border-gray-100 ${isPositive
-          ? "bg-white text-green-600"
-          : "bg-white text-yellow-600"
-          }`}
-        style={{ width: "36px", height: "36px", minWidth: "36px" }}
-      >
-        {getIcon()}
-      </div>
-      <div className="flex-1 min-w-0">
-        <h6 className="mb-1 text-gray-900 font-semibold text-base">
-          {title}
-        </h6>
-        <p className="text-gray-500 mb-0 text-sm">
-          {time} ago
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* -------------------- Dashboard -------------------- */
 export default function Dashboard() {
-  // Subscription Revenue Data
-  const revenueData = useMemo(
-    () => [
-      { month: "Jan", revenue: 15000, newSubs: 45 },
-      { month: "Feb", revenue: 18500, newSubs: 52 },
-      { month: "Mar", revenue: 22000, newSubs: 58 },
-      { month: "Apr", revenue: 26000, newSubs: 65 },
-      { month: "May", revenue: 32000, newSubs: 80 },
-      { month: "Jun", revenue: 45200, newSubs: 120 },
-    ],
-    []
-  );
-
   // Subscription Plan Distribution
   const subscriptionPlans = useMemo(
     () => [
@@ -122,52 +75,21 @@ export default function Dashboard() {
     []
   );
 
-  const recentActivities = useMemo(
-    () => [
-      {
-        id: 1,
-        type: "registration",
-        title: "New Nursery 'Green Haven' Registered",
-        time: "10 mins",
-        isPositive: true,
-      },
-      {
-        id: 2,
-        type: "subscription",
-        title: "Subscription renewed by 'Flora World'",
-        time: "45 mins",
-        isPositive: true,
-      },
-      {
-        id: 3,
-        type: "listing",
-        title: "50+ New crops added by 'Nature's Gift'",
-        time: "2 hours",
-        isPositive: true,
-      },
-      {
-        id: 4,
-        type: "registration",
-        title: "New User Registration: John Doe",
-        time: "3 hours",
-        isPositive: true,
-      },
-    ],
-    []
-  );
-
-  // Top Performing Nurseries
-  const [stats, setStats] = useState({ nurseries: 0, users: 0, listings: 0 });
-  const [realActivities, setRealActivities] = useState([]);
+  // Dashboard Lists
+  const [stats, setStats] = useState({ nurseries: 0, users: 0, listings: 0, totalRevenue: 0 });
+  const [userGrowthData, setUserGrowthData] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [availableYears, setAvailableYears] = useState([new Date().getFullYear()]);
+  const [recentFranchises, setRecentFranchises] = useState([]);
+  const [topProductFranchises, setTopProductFranchises] = useState([]);
   const [loadingStats, setLoadingStats] = useState(true);
-  const [topNurseries, setTopNurseries] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoadingStats(true);
         const [ownersSnapshot, usersSnapshot, productsSnapshot] = await Promise.all([
-          getDocs(collection(db, "owners")),
+          getDocs(collection(db, "franchise")),
           getDocs(collection(db, "users")),
           getDocs(collection(db, "products")),
         ]);
@@ -176,46 +98,103 @@ export default function Dashboard() {
         const usersCount = usersSnapshot.size;
         const productsCount = productsSnapshot.size;
 
+        // Calculate Total Revenue
+        let totalRevenueSum = 0;
+        ownersSnapshot.forEach((doc) => {
+          const data = doc.data();
+          totalRevenueSum += Number(data.totalRevenue || 0);
+        });
+
         setStats({
           nurseries: ownersCount,
           users: usersCount,
           listings: productsCount,
+          totalRevenue: totalRevenueSum,
         });
 
-        const ownersList = [];
-        ownersSnapshot.forEach((doc) => ownersList.push({ id: doc.id, ...doc.data() }));
+        // Calculate User Growth Data (Last 6 months)
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const now = new Date();
+        const last6Months = [];
 
-        const sortedNurseries = [...ownersList]
-          .sort((a, b) => (b.rating || Math.random()) - (a.rating || Math.random()))
-          .slice(0, 4);
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          last6Months.push({
+            month: months[d.getMonth()],
+            year: d.getFullYear(),
+            count: 0,
+            timestamp: d.getTime()
+          });
+        }
 
-        const mappedTop = sortedNurseries.map((n) => ({
-          id: n.id,
-          name: n.nurseryName || n.name || "Unknown Nursery",
-          sales: n.totalOrders || Math.floor(Math.random() * 1000 + 100),
-          revenue: `₹${((n.totalRevenue || (Math.random() * 15 + 2)) * 1).toFixed(1)}L`,
-          rating: n.rating || 4.5,
+        usersSnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.createdAt) {
+            const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+            const monthName = months[date.getMonth()];
+            const year = date.getFullYear();
+
+            const monthIdx = last6Months.findIndex(m => m.month === monthName && m.year === year);
+            if (monthIdx !== -1) {
+              last6Months[monthIdx].count += 1;
+            }
+          }
+        });
+
+        setUserGrowthData(last6Months);
+
+        // Calculate available years from franchise for filtering
+        const years = new Set();
+        ownersSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const date = parseRegistrationDate(data.createdAt || data.applicationDate);
+          if (date) {
+            years.add(date.getFullYear());
+          }
+        });
+        const yearsList = Array.from(years).sort((a, b) => b - a);
+        if (yearsList.length > 0) {
+          setAvailableYears(yearsList);
+        } else {
+          setAvailableYears([new Date().getFullYear()]);
+        }
+
+        // Calculate Recent Franchises Added from the existing ownersSnapshot
+        const ownersList = ownersSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          timestamp: doc.data().createdAt?.toDate ? doc.data().createdAt.toDate().getTime() : 0
         }));
 
-        setTopNurseries(mappedTop);
-
-        // Try to get some recent activities from owners for display
-        const recentOwnersQuery = query(collection(db, "owners"), orderBy("createdAt", "desc"), limit(4));
-        const recentOwnersSnapshot = await getDocs(recentOwnersQuery);
-
-        const activities = [];
-        recentOwnersSnapshot.forEach((doc) => {
-          const data = doc.data();
-          activities.push({
-            id: doc.id,
-            type: "registration",
-            title: `New Nursery '${data.nurseryName || data.name || "Unknown"}' Registered`,
-            time: data.createdAt?.toDate ? calculateTimeAgo(data.createdAt.toDate()) : "Recently",
-            isPositive: true,
+        const sortedByRecent = [...ownersList]
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .slice(0, 5)
+          .map(f => {
+            const date = parseRegistrationDate(f.createdAt || f.applicationDate);
+            return {
+              ...f,
+              time: date ? calculateTimeAgo(date) : "Recently"
+            };
           });
+
+        setRecentFranchises(sortedByRecent);
+
+        // Calculate Top 5 Franchises by Approved Products
+        const productCounts = {};
+        productsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.status === "approved" || data.status === "active") {
+            const owner = data.ownerName || "Unknown Franchise";
+            productCounts[owner] = (productCounts[owner] || 0) + 1;
+          }
         });
 
-        setRealActivities(activities);
+        const sortedFranchises = Object.entries(productCounts)
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5);
+
+        setTopProductFranchises(sortedFranchises);
 
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -226,6 +205,74 @@ export default function Dashboard() {
 
     fetchDashboardData();
   }, []);
+
+  const fullYearData = useMemo(() => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthlyData = months.map(m => ({ month: m, count: 0 }));
+
+    // This would ideally be re-calculated when selectedYear changes
+    // Since we are fetching all users in the initial useEffect, we can filter here
+    // However, to keep it simple and reactive, I'll update the logic to re-run or rely on a state
+    return monthlyData;
+  }, [selectedYear]);
+
+  // Robust date parser for franchise registration
+  const parseRegistrationDate = (data) => {
+    if (!data) return null;
+
+    // Handle Firebase Timestamp
+    if (data.toDate) return data.toDate();
+
+    // Handle Numeric Timestamp
+    if (typeof data === 'number') return new Date(data);
+
+    // Handle DD-MM-YYYY string format
+    if (typeof data === 'string' && data.includes('-')) {
+      const parts = data.split(' ')[0].split('-');
+      if (parts.length === 3) {
+        // parts[0] is day, parts[1] is month, parts[2] is year
+        // Month is 0-indexed in JS Date
+        return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      }
+    }
+
+    // Fallback to standard parsing
+    const date = new Date(data);
+    return isNaN(date.getTime()) ? null : date;
+  };
+
+  // Refined useEffect for dynamic year filtering
+  const [filteredGrowthData, setFilteredGrowthData] = useState([]);
+
+  useEffect(() => {
+    const calculateGraphData = async () => {
+      try {
+        const ownersSnapshot = await getDocs(collection(db, "franchise"));
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const yearData = months.map(m => ({ month: m, count: 0 }));
+
+        // Calculate monthly totals (non-cumulative per user preference)
+        ownersSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const date = parseRegistrationDate(data.createdAt || data.applicationDate);
+
+          if (date && date.getFullYear() === selectedYear) {
+            const monthName = months[date.getMonth()];
+            const monthIdx = yearData.findIndex(m => m.month === monthName);
+            if (monthIdx !== -1) {
+              yearData[monthIdx].count += 1;
+            }
+          }
+        });
+
+        setFilteredGrowthData(yearData);
+      } catch (error) {
+        console.error("Error filtering graph data:", error);
+      }
+    };
+
+    calculateGraphData();
+  }, [selectedYear]);
 
   const calculateTimeAgo = (date) => {
     const seconds = Math.floor((new Date() - date) / 1000);
@@ -242,7 +289,6 @@ export default function Dashboard() {
     return Math.floor(seconds) + " seconds";
   };
 
-  const displayActivities = realActivities.length > 0 ? realActivities : recentActivities;
 
   return (
     <div className="w-full h-full bg-white py-3 px-4 pt-4 font-['Inter',sans-serif]">
@@ -260,36 +306,36 @@ export default function Dashboard() {
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         <StatCard
-          title="Total Nurseries"
+          title="Total Franchises"
           value={loadingStats ? "..." : stats.nurseries.toLocaleString()}
-          change={12.5}
           icon={<Store size={20} />}
           color="text-green-600"
           iconBg="bg-green-50"
+          to="/admin/franchise"
         />
         <StatCard
-          title="Active Users"
+          title="Total Users"
           value={loadingStats ? "..." : stats.users.toLocaleString()}
-          change={8.1}
           icon={<Users size={20} />}
           color="text-emerald-600"
           iconBg="bg-emerald-50"
+          to="/admin/manageusers"
         />
         <StatCard
-          title="Revenue (Subs)"
-          value="₹45.2k"
-          change={24.3}
-          icon={<span className="font-bold text-xl">₹</span>}
-          color="text-green-600"
-          iconBg="bg-green-50"
-        />
-        <StatCard
-          title="Active Listings"
+          title="Total Products"
           value={loadingStats ? "..." : stats.listings.toLocaleString()}
-          change={5.4}
           icon={<Sprout size={20} />}
           color="text-emerald-600"
           iconBg="bg-emerald-50"
+          to="/admin/products"
+        />
+        <StatCard
+          title="Total Revenue"
+          value={loadingStats ? "..." : `₹${stats.totalRevenue.toLocaleString()}`}
+          icon={<span className="font-bold text-xl">₹</span>}
+          color="text-green-600"
+          iconBg="bg-green-50"
+          to="/admin/reports"
         />
       </div>
 
@@ -299,25 +345,28 @@ export default function Dashboard() {
           <div className="h-full shadow-sm rounded-2xl bg-white border border-gray-200 p-5">
             <div className="flex justify-between items-center mb-6">
               <h5 className="mb-0 font-bold text-gray-900 text-base">
-                Subscription Revenue
+                Franchise Growth Overview
               </h5>
               <div className="flex gap-2">
-                <button className="px-3 py-1.5 text-sm font-medium border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 bg-white">
-                  Monthly
-                </button>
-                <button className="px-3 py-1.5 text-sm font-medium border border-gray-200 rounded-lg text-green-600 bg-white hover:bg-gray-50">
-                  Yearly
-                </button>
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  className="px-3 py-1.5 text-sm font-medium border border-gray-200 rounded-lg text-gray-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                >
+                  {availableYears.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <div style={{ width: '100%', height: '350px' }}>
               <ResponsiveContainer width="100%" height={350}>
                 <AreaChart
-                  data={revenueData}
+                  data={filteredGrowthData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                 >
                   <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="colorFranchise" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#16a34a" stopOpacity={0.8} />
                       <stop offset="95%" stopColor="#16a34a" stopOpacity={0.05} />
                     </linearGradient>
@@ -333,7 +382,11 @@ export default function Dashboard() {
                     axisLine={false}
                     tickLine={false}
                     tick={{ fill: '#64748b', fontSize: 12 }}
-                    tickFormatter={(value) => `$${value / 1000}k`}
+                    allowDecimals={false}
+                    tickFormatter={(value) => {
+                      if (value >= 1000) return `${(value / 1000).toFixed(1)}k`;
+                      return value;
+                    }}
                   />
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                   <Tooltip
@@ -343,16 +396,16 @@ export default function Dashboard() {
                       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                       borderRadius: '8px',
                     }}
-                    formatter={(value) => [`$${value}`, "Revenue"]}
+                    formatter={(value) => [value, "New Franchises"]}
                   />
                   <Area
                     type="monotone"
-                    dataKey="revenue"
-                    name="Revenue"
+                    dataKey="count"
+                    name="Franchises"
                     stroke="#16a34a"
                     strokeWidth={3}
                     fillOpacity={1}
-                    fill="url(#colorRevenue)"
+                    fill="url(#colorFranchise)"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -415,72 +468,78 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent System Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
+        {/* Recent Franchises Added */}
         <div className="h-full shadow-sm rounded-2xl bg-white border border-gray-200 p-5">
           <div className="flex justify-between items-center mb-6">
             <h5 className="mb-0 font-bold text-gray-900 text-base">
-              Recent System Activity
+              Recent Franchises Added
             </h5>
-            <button className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">
-              View Log
-            </button>
           </div>
-          <div className="space-y-4">
-            {displayActivities.map((activity) => (
-              <ActivityItem
-                key={activity.id}
-                type={activity.type}
-                title={activity.title}
-                time={activity.time}
-                isPositive={activity.isPositive}
-              />
-            ))}
+          <div className="flex flex-col gap-1">
+            {recentFranchises.length > 0 ? (
+              recentFranchises.map((franchise, idx) => (
+                <div key={franchise.id || idx}>
+                  <div className="flex items-start gap-4 p-1">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="w-10 h-10 rounded-full border border-green-50 bg-green-50/30 flex items-center justify-center">
+                        <UserPlus size={20} className="text-green-600" />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h6 className="text-[15px] font-semibold text-gray-900 mb-0.5 leading-snug">
+                        New Franchise '{franchise.nurseryName || franchise.name || franchise.userName || "Unknown"}' Registered
+                      </h6>
+                      <p className="text-sm text-gray-500 font-medium lowercase first-letter:uppercase">
+                        {franchise.time}
+                      </p>
+                    </div>
+                  </div>
+                  {idx < recentFranchises.length - 1 && (
+                    <hr className="my-1 border-gray-100/50" />
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="py-8 text-center text-gray-400 text-sm">No franchises found</div>
+            )}
           </div>
         </div>
 
-        {/* Top Nurseries */}
+        {/* Top Product Franchises */}
         <div className="h-full shadow-sm rounded-2xl bg-white border border-gray-200 p-5">
           <div className="flex justify-between items-center mb-6">
             <h5 className="mb-0 font-bold text-gray-900 text-base">
-              Top Performing Nurseries
+              Most Products Franchise
             </h5>
-            <button className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">
-              View All
-            </button>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="pb-3 pl-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nursery Name</th>
-                  <th className="pb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Total Sales</th>
-                  <th className="pb-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Revenue</th>
-                  <th className="pb-3 pr-2 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Rating</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {topNurseries.map((nursery) => (
-                  <tr key={nursery.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="py-3 pl-2">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-green-600 font-bold mr-3 text-xs">
-                          {nursery.name.substring(0, 2).toUpperCase()}
-                        </div>
-                        <span className="font-medium text-gray-900 text-sm">{nursery.name}</span>
+          <div className="flex flex-col gap-1">
+            {topProductFranchises.length > 0 ? (
+              topProductFranchises.map((franchise, idx) => (
+                <div key={`top-${idx}`}>
+                  <div className="flex items-start gap-4 p-1">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="w-10 h-10 rounded-full border border-green-50 bg-green-50/30 flex items-center justify-center">
+                        <Award size={20} className="text-green-600" />
                       </div>
-                    </td>
-                    <td className="py-3 text-right text-gray-600 text-sm font-medium">{nursery.sales}</td>
-                    <td className="py-3 text-right text-gray-900 text-sm font-bold">{nursery.revenue}</td>
-                    <td className="py-3 pr-2 text-right">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-white border border-gray-100 text-green-700">
-                        ★ {nursery.rating}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h6 className="text-[15px] font-semibold text-gray-900 mb-0.5 leading-snug">
+                        {franchise.count}+ Approved products added by '{franchise.name}'
+                      </h6>
+                      <p className="text-sm text-gray-500 font-medium">
+                        Top {index + 1} Franchise
+                      </p>
+                    </div>
+                  </div>
+                  {idx < topProductFranchises.length - 1 && (
+                    <hr className="my-1 border-gray-100/50" />
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="py-8 text-center text-gray-400 text-sm">No franchise data found</div>
+            )}
           </div>
         </div>
       </div>
