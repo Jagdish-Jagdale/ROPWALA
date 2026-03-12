@@ -3,6 +3,7 @@ import {
     collection,
     getDocs,
     addDoc,
+    onSnapshot,
     updateDoc,
     deleteDoc,
     doc,
@@ -76,12 +77,15 @@ export default function AdminProducts() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [nurseryFilter, setNurseryFilter] = useState("all");
+    const [categoryFilter, setCategoryFilter] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [nurseries, setNurseries] = useState([]); // Store franchise/nursery data
 
     const [formData, setFormData] = useState({
         name: "",
@@ -92,10 +96,28 @@ export default function AdminProducts() {
         status: "pending",
         imageUrl: "",
         ownerName: "Admin",
+        nurseryName: "",
     });
 
     useEffect(() => {
         fetchProducts();
+        
+        // Use onSnapshot for real-time nursery data
+        const unsubscribeNurseries = onSnapshot(
+            collection(db, "franchise"),
+            (snapshot) => {
+                const data = snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setNurseries(data);
+            },
+            (error) => {
+                console.error("Error fetching nurseries:", error);
+            }
+        );
+
+        return () => unsubscribeNurseries();
     }, []);
 
     const fetchProducts = async () => {
@@ -212,6 +234,7 @@ export default function AdminProducts() {
             status: "pending",
             imageUrl: "",
             ownerName: "Admin",
+            nurseryName: "",
         });
     };
 
@@ -226,6 +249,7 @@ export default function AdminProducts() {
             status: product.status,
             imageUrl: product.imageUrl || "",
             ownerName: product.ownerName || "Admin",
+            nurseryName: product.nurseryName || "",
         });
         setIsEditModalOpen(true);
     };
@@ -244,9 +268,20 @@ export default function AdminProducts() {
     const filteredProducts = products.filter((p) => {
         const matchesSearch =
             p.name?.toLowerCase().includes(search.toLowerCase()) ||
-            p.category?.toLowerCase().includes(search.toLowerCase());
-        const matchesStatus = statusFilter === "all" || p.status === statusFilter;
-        return matchesSearch && matchesStatus;
+            p.category?.toLowerCase().includes(search.toLowerCase()) ||
+            p.description?.toLowerCase().includes(search.toLowerCase());
+            
+        const matchesStatus = statusFilter === "all" || 
+            (statusFilter === "approved" && ['APPROVE', 'APPROVED', 'ACTIVE', 'AVAILABLE'].includes(String(p.status || "").toUpperCase())) ||
+            (statusFilter === "rejected" && ['REJECT', 'REJECTED'].includes(String(p.status || "").toUpperCase()));
+            
+        const matchesNursery = nurseryFilter === "all" || 
+            p.nurseryName?.trim().toLowerCase() === nurseryFilter?.trim().toLowerCase();
+            
+        const matchesCategory = categoryFilter === "all" || 
+            p.category?.trim().toLowerCase() === categoryFilter?.trim().toLowerCase();
+            
+        return matchesSearch && matchesStatus && matchesNursery && matchesCategory;
     });
 
     const totalPages = Math.ceil(filteredProducts.length / rowsPerPage);
@@ -318,49 +353,93 @@ export default function AdminProducts() {
                 {/* Search & Filters */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h5 className="text-xs font-semibold text-gray-900">Search & Filters</h5>
+                        <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+                        <div className="text-sm font-medium text-gray-500">
+                            Total {filteredProducts.length} records
+                        </div>
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-                        <div className="md:col-span-5 relative">
-                            <Search
-                                className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2"
-                                size={18}
-                            />
-                            <input
-                                type="search"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Search by product name, category, or description..."
-                                className="w-full pl-10 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
-                            />
+                    <div className="flex flex-row items-end gap-3 w-full">
+                        {/* Search Bar */}
+                        <div className="flex-grow flex flex-col gap-1.5">
+                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Search Products</label>
+                            <div className="relative">
+                                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
+                                <input
+                                    type="search"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="e.g. Arabian Jasmine or Plants"
+                                    className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
+                                />
+                            </div>
                         </div>
 
-                        <div className="md:col-span-3 relative">
-                            <Filter className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={16} />
-                            <select
-                                value={statusFilter}
-                                onChange={(e) => setStatusFilter(e.target.value)}
-                                className="w-full pl-9 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white"
-                            >
-                                <option value="all">All Statuses</option>
-                                <option value="pending">Pending Approval</option>
-                                <option value="APPROVE">Approved</option>
-                                <option value="REJECT">Rejected</option>
-                                <option value="out_of_stock">Out of Stock</option>
-                            </select>
-                        </div>
+                        {/* Filters Wrapper */}
+                        <div className="flex flex-row items-end gap-3 flex-none">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Nursery</label>
+                                <div className="relative group">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                                    <select
+                                        value={nurseryFilter}
+                                        onChange={(e) => setNurseryFilter(e.target.value)}
+                                        className="w-full pl-8 pr-6 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-white font-normal text-gray-700 min-w-[120px] uppercase tracking-tight"
+                                    >
+                                        <option value="all">All</option>
+                                        {[...new Set(nurseries.map(n => n.nurseryName))].filter(Boolean).map((name) => (
+                                            <option key={name} value={name.toLowerCase()}>
+                                                {name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
 
-                        <div className="md:col-span-4 flex justify-end items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-500">Rows:</span>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Status</label>
+                                <div className="relative group">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                                    <select
+                                        value={statusFilter}
+                                        onChange={(e) => setStatusFilter(e.target.value)}
+                                        className="w-full pl-8 pr-6 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-white font-normal text-gray-700 min-w-[120px] uppercase tracking-tight"
+                                    >
+                                        <option value="all">All</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Category</label>
+                                <div className="relative group">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                                    <select
+                                        value={categoryFilter}
+                                        onChange={(e) => setCategoryFilter(e.target.value)}
+                                        className="w-full pl-8 pr-6 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-white font-normal text-gray-700 min-w-[120px] uppercase tracking-tight"
+                                    >
+                                        <option value="all">All</option>
+                                        {[...new Set(products.map(p => p.category))].filter(Boolean).map((cat) => (
+                                            <option key={cat} value={cat.toLowerCase()}>
+                                                {cat}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Rows</label>
                                 <select
                                     value={rowsPerPage}
                                     onChange={(e) => {
                                         setRowsPerPage(Number(e.target.value));
                                         setCurrentPage(1);
                                     }}
-                                    className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-1.5"
+                                    className="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-green-500 focus:border-green-500 block p-2 font-normal min-w-[70px]"
                                 >
                                     {[5, 10, 25, 50].map((pageSize) => (
                                         <option key={pageSize} value={pageSize}>
@@ -368,25 +447,6 @@ export default function AdminProducts() {
                                         </option>
                                     ))}
                                 </select>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                    disabled={currentPage === 1}
-                                    className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-500"
-                                >
-                                    <ChevronLeft size={18} />
-                                </button>
-                                <span className="text-sm text-gray-700 whitespace-nowrap">
-                                    Page {currentPage} of {Math.max(1, totalPages)}
-                                </span>
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                    disabled={currentPage === totalPages || totalPages === 0}
-                                    className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-500"
-                                >
-                                    <ChevronRight size={18} />
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -468,36 +528,46 @@ export default function AdminProducts() {
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
-                                                <span className="text-sm font-bold text-gray-900">
-                                                    {product.name}
+                                                <span className="text-sm font-bold text-gray-900" title={product.name}>
+                                                    {product.name?.length > 20 ? product.name.substring(0, 20) + "..." : product.name}
                                                 </span>
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
-                                                <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider">
-                                                    {product.category}
+                                                <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider" title={product.category}>
+                                                    {product.category?.length > 15 ? product.category.substring(0, 15) + "..." : product.category}
                                                 </span>
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="w-7 h-7 rounded-full bg-green-50 flex items-center justify-center text-[10px] font-bold text-green-700 border border-green-100">
-                                                        {(product.ownerName || "A")[0]}
-                                                    </div>
-                                                    <span className="text-sm font-medium text-gray-700">
-                                                        {product.ownerName || "Admin"}
-                                                    </span>
+                                                    {(() => {
+                                                        const matchedNursery = nurseries.find(n => 
+                                                            n.nurseryName?.trim().toLowerCase() === product.nurseryName?.trim().toLowerCase()
+                                                        );
+                                                        const displayName = matchedNursery?.ownerName || product.ownerName || "Admin";
+                                                        return (
+                                                            <>
+                                                                <div className="w-7 h-7 rounded-full bg-green-50 flex items-center justify-center text-[10px] font-bold text-green-700 border border-green-100">
+                                                                    {displayName[0]}
+                                                                </div>
+                                                                <span className="text-sm font-medium text-gray-700" title={displayName}>
+                                                                    {displayName.length > 15 ? displayName.substring(0, 15) + "..." : displayName}
+                                                                </span>
+                                                            </>
+                                                        );
+                                                    })()}
                                                 </div>
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
-                                                <span className="text-sm font-medium text-gray-700">
-                                                    {product.nurseryName || "-"}
+                                                <span className="text-sm font-medium text-gray-700" title={product.nurseryName}>
+                                                    {product.nurseryName?.length > 15 ? product.nurseryName.substring(0, 15) + "..." : product.nurseryName || "-"}
                                                 </span>
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap text-sm font-bold text-gray-900">
-                                                ₹{product.price.toLocaleString("en-IN")}
+                                                {String(Math.floor(product.price)).length > 5 ? "..." : `₹${product.price.toLocaleString("en-IN")}`}
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap">
@@ -551,6 +621,29 @@ export default function AdminProducts() {
                                 )}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Table Footer - Pagination */}
+                    <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-end">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="p-1 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed text-gray-400 transition-colors"
+                            >
+                                <ChevronLeft size={22} />
+                            </button>
+                            <span className="text-base font-medium text-gray-500 whitespace-nowrap">
+                                Page {currentPage} of {Math.max(1, totalPages)}
+                            </span>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className="p-1 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed text-gray-400 transition-colors"
+                            >
+                                <ChevronRight size={22} />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -639,14 +732,35 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Select Franchise</label>
+                                        <select
+                                            value={formData.nurseryName}
+                                            onChange={(e) => {
+                                                const selectedNursery = nurseries.find(n => n.nurseryName === e.target.value);
+                                                setFormData({ 
+                                                    ...formData, 
+                                                    nurseryName: e.target.value,
+                                                    ownerName: selectedNursery ? selectedNursery.ownerName : "Admin"
+                                                });
+                                            }}
+                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all appearance-none"
+                                        >
+                                            <option value="">Admin / No Franchise</option>
+                                            {nurseries.map((n) => (
+                                                <option key={n.id} value={n.nurseryName}>
+                                                    {n.nurseryName} ({n.ownerName})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="space-y-1">
                                         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Owner Name</label>
                                         <input
-                                            required
+                                            readOnly
                                             type="text"
                                             value={formData.ownerName}
-                                            onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
-                                            placeholder="Admin or Nursery Name"
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
+                                            className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 outline-none cursor-not-allowed"
                                         />
                                     </div>
 

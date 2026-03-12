@@ -39,6 +39,8 @@ export default function AdminFranchise() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [nurseryFilter, setNurseryFilter] = useState("all");
+    const [dateSort, setDateSort] = useState("newest");
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedApp, setSelectedApp] = useState(null);
@@ -110,9 +112,27 @@ export default function AdminFranchise() {
             phoneStr.includes(search);
 
         const matchesStatus = statusFilter === "all" || app.status?.toLowerCase() === statusFilter.toLowerCase();
+        const matchesNursery = nurseryFilter === "all" || app.nurseryName === nurseryFilter;
 
-        return matchesSearch && matchesStatus;
+        return matchesSearch && matchesStatus && matchesNursery;
+    }).sort((a, b) => {
+        if (dateSort === "newest") {
+            const dateA = a.applicationDate?.seconds ? a.applicationDate.seconds * 1000 : new Date(a.applicationDate || 0).getTime();
+            const dateB = b.applicationDate?.seconds ? b.applicationDate.seconds * 1000 : new Date(b.applicationDate || 0).getTime();
+            return dateB - dateA;
+        }
+        if (dateSort === "oldest") {
+            const dateA = a.applicationDate?.seconds ? a.applicationDate.seconds * 1000 : new Date(a.applicationDate || 0).getTime();
+            const dateB = b.applicationDate?.seconds ? b.applicationDate.seconds * 1000 : new Date(b.applicationDate || 0).getTime();
+            return dateA - dateB;
+        }
+        if (dateSort === "name-asc") return (a.nurseryName || "").localeCompare(b.nurseryName || "");
+        if (dateSort === "name-desc") return (b.nurseryName || "").localeCompare(a.nurseryName || "");
+        return 0;
     });
+
+    // Get unique nursery names for filter
+    const uniqueNurseries = Array.from(new Set(applications.map(app => app.nurseryName).filter(Boolean))).sort();
 
     // Pagination
     const totalPages = Math.ceil(filteredApps.length / rowsPerPage);
@@ -185,74 +205,101 @@ export default function AdminFranchise() {
                 {/* Search & Filters */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h5 className="text-xs font-semibold text-gray-900">Search & Filters</h5>
+                        <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+                        <div className="text-sm font-medium text-gray-500">
+                            Total {filteredApps.length} records
+                        </div>
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-                        <div className="md:col-span-5 relative">
-                            <Search
-                                className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2"
-                                size={18}
-                            />
-                            <input
-                                type="search"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Search by name, email, nursery, or phone..."
-                                className="w-full pl-10 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
-                            />
-                        </div>
-
-                        <div className="md:col-span-3 relative">
-                            <Filter className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={16} />
-                            <select
-                                value={statusFilter}
-                                onChange={(e) => setStatusFilter(e.target.value)}
-                                className="w-full pl-9 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white"
-                            >
-                                <option value="all">All Statuses</option>
-                                <option value="pending">Pending</option>
-                                <option value="approved">Approved</option>
-                                <option value="hold">Hold</option>
-                            </select>
-                        </div>
-
-                        <div className="md:col-span-4 flex justify-end items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-500">Rows per page:</span>
-                                <select
-                                    value={rowsPerPage}
-                                    onChange={(e) => {
-                                        setRowsPerPage(Number(e.target.value));
-                                        setCurrentPage(1);
-                                    }}
-                                    className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-1.5"
-                                >
-                                    {[5, 10, 25, 50].map((pageSize) => (
-                                        <option key={pageSize} value={pageSize}>
-                                            {pageSize}
-                                        </option>
-                                    ))}
-                                </select>
+                    <div className="flex flex-row items-end gap-3 w-full">
+                        {/* Search Bar - Flex Grow to take space */}
+                        <div className="flex-grow flex flex-col gap-1.5">
+                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Search Applications</label>
+                            <div className="relative">
+                                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
+                                <input
+                                    type="search"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="e.g. Nursery name or applicant email"
+                                    className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
+                                />
                             </div>
-                            <div className="flex items-center gap-1">
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                    disabled={currentPage === 1}
-                                    className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-500"
-                                >
-                                    <ChevronLeft size={18} />
-                                </button>
-                                <span className="text-sm text-gray-700">
-                                    Page {currentPage} of {Math.max(1, totalPages)}
-                                </span>
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                    disabled={currentPage === totalPages || totalPages === 0}
-                                    className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-gray-500"
-                                >
-                                    <ChevronRight size={18} />
-                                </button>
+                        </div>
+
+                        {/* Filters & Rows consolidated */}
+                        <div className="flex flex-row items-end gap-3 flex-none">
+                            {/* Status Filter */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Status</label>
+                                <div className="relative w-[130px]">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                                    <select
+                                        value={statusFilter}
+                                        onChange={(e) => setStatusFilter(e.target.value)}
+                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                                    >
+                                        <option value="all">All</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="hold">Hold</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Franchise (Nursery) Filter */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Franchise</label>
+                                <div className="relative w-[140px]">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                                    <select
+                                        value={nurseryFilter}
+                                        onChange={(e) => setNurseryFilter(e.target.value)}
+                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                                    >
+                                        <option value="all">All</option>
+                                        {uniqueNurseries.map(name => (
+                                            <option key={name} value={name}>{name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Date sort Filter */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Sort By</label>
+                                <div className="relative w-[130px]">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                                    <select
+                                        value={dateSort}
+                                        onChange={(e) => setDateSort(e.target.value)}
+                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                                    >
+                                        <option value="newest">Newest</option>
+                                        <option value="oldest">Oldest</option>
+                                        <option value="name-asc">A-Z</option>
+                                        <option value="name-desc">Z-A</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Rows Selector */}
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Rows</label>
+                                <div className="flex items-center gap-1.5">
+                                    <select
+                                        value={rowsPerPage}
+                                        onChange={(e) => {
+                                            setRowsPerPage(Number(e.target.value));
+                                            setCurrentPage(1);
+                                        }}
+                                        className="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-green-500 focus:border-green-500 block p-2 font-normal min-w-[70px]"
+                                    >
+                                        {[5, 10, 20, 50].map(num => (
+                                            <option key={num} value={num}>{num}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -262,6 +309,7 @@ export default function AdminFranchise() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full border-separate border-spacing-0">
+                            {/* ... table content ... */}
                             <thead>
                                 <tr className="border-b border-gray-200 bg-gray-100">
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -402,6 +450,29 @@ export default function AdminFranchise() {
                                 )}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Table Footer - Pagination */}
+                    <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-end">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="p-1 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed text-gray-400 transition-colors"
+                            >
+                                <ChevronLeft size={22} />
+                            </button>
+                            <span className="text-base font-medium text-gray-500 whitespace-nowrap">
+                                Page {currentPage} of {Math.max(1, totalPages)}
+                            </span>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className="p-1 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed text-gray-400 transition-colors"
+                            >
+                                <ChevronRight size={22} />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

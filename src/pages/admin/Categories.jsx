@@ -208,9 +208,12 @@ export default function AdminCategories() {
         {/* Search & Filters */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h5 className="text-xs font-semibold text-gray-900">
-              Search & Filters
-            </h5>
+            <div className="flex items-center gap-4">
+              <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+              <div className="text-sm font-medium text-gray-500">
+                Total {filteredCategories.length} records
+              </div>
+            </div>
             <button
               onClick={() => handleOpenModal()}
               className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 hover:bg-green-700 transition-all shadow-sm text-sm"
