@@ -16,19 +16,18 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
 
 const DEFAULT_CONTENT = {
-    headerTitle: "हमीपत्र",
-    headerSubtitle: "(नर्सरी फ्रँचायझी)",
+    headerTitle: "नियम व अटी",
+    headerSubtitle: "(वापरकर्ता हमीपत्र)",
     logoUrl: "/RopWala.png",
-    introText: "मी / आम्ही ________ प्रतिज्ञापूर्वक म्हणतो / म्हणते की, मी / आम्ही ________ (फ्रँचायझी धारकाचे नाव) हा / ही ________ (पत्ता) येथे नर्सरी व्यवस्थापन व्यवसाय चालवत आहे / आहोत.",
+    introText: "मी / आम्ही ________ प्रतिज्ञापूर्वक म्हणतो / म्हणते की, मी / आम्ही ________ (वापरकर्त्याचे नाव) हा / ही ________ (पत्ता) येथे अधिकृत वापरकर्ता म्हणून खालील नियम व अटींच्या अधीन राहून सेवा घेत आहे / आहोत.",
     bulletins: [
-        { text: "मी / आम्ही याप्रमाणे नमूद करतो की, नर्सरी व्यवस्थापन प्रणालीअंतर्गत फ्रँचायझी घेऊन व्यवसाय करत असताना सर्व नियम व अटींचे पालन करणे माझ्यावर / आमच्यावर बंधनकारक राईल.", icon: "Flower", color: "text-pink-500" },
-        { text: "मी / आम्ही रोपवाला (नर्सरी व्यवस्थापन प्रणालीतून) दिलेल्या सर्व सूचना, मार्गदर्शक तत्त्वे व धोरणे यांचे पालन करीन / करू आणि संबंधित प्रशासनाने ठरविलेल्या अटी व शर्ती मान्य करतो / करते.", icon: "Flower2", color: "text-orange-500" },
-        { text: "मी / आम्ही असेही नमूद करतो की, (रोपवाला) नर्सरी व्यवस्थापन प्रणालीचा वापर करून चालविल्या जाणाऱ्या व्यवसायातील सर्व व्यवहार, नोंदी व माहिती ही सत्य व अचूक राईल.", icon: "Sprout", color: "text-green-500" },
-        { text: "मी / आम्ही खात्री देतो की, व्यवसायाशी संबंधित कोणतीही चुकीची माहिती देणार नाही तसेच कोणताही बेकायदेशीर व्यवहार करणार नाही.", icon: "Flower", color: "text-blue-500" },
-        { text: "मी / आम्ही नर्सरी व्यवस्थापन प्रणालीद्वारे दिलेल्या डिजिटल नोंदी, दस्तऐवज व व्यवहार यांना वैध व अधिकृत मान्य करतो / करते.", icon: "Flower2", color: "text-purple-500" },
-        { text: "मी / आम्ही याप्रमाणे खात्री देतो की, या फ्रँचायझी अंतर्गत चालणारा व्यवसाय संबंधित कायदे, नियम व शासनाच्या मार्गदर्शक सूचनांनुसारच चालविला जाईल.", icon: "Sprout", color: "text-yellow-500" },
-        { text: "मी / आम्ही या हमीपत्राद्वारे असे नमूद करतो की, नर्सरी व्यवस्थापन प्रणाली अंतर्गत व्यवसाय करताना सर्व माहिती अचूक देणे व नियमांचे पालन करणे ही माझी / आमची जबाबदारी आहे.", icon: "Flower", color: "text-indigo-500" },
-        { text: "जर या हमीपत्रातील माहिती खोटी आढळली किंवा नियमांचे उल्लंघन झाले तर संबंधित प्रशासनाला आवश्यक ती कारवाई करण्याचा पूर्ण अधिकार राईल.", icon: "Flower2", color: "text-rose-500" }
+        { text: "रोप खरेदी करण्यापूर्वी रोप निरोगी, दर्जेदार, जातीवंत तसेच सदर जातीच्या रोपांची रोपवाटिका धारकाची बियाणे खरेदी पावती, लॉट नंबर, बॅच नंबर, इत्यादी गोष्टीची खात्री करुनच रोप खरेदी केले.", icon: "Flower", color: "text-pink-500" },
+        { text: "रोप खरेदी करण्यापूर्वी ज्या हंगामात त्याची लागवड करायची आहे तो हंगाम त्या बियाण्यांच्या / रोपांच्या जातीसाठी योग्य आहे किंवा नाही याची खात्री सदरहून कंपनी प्रतिनिधी किंवा कंपनीच्या कस्टमर केअर नंबर वरती चौकशी करुनच या रोपांची खरेदी करीत आहोत.", icon: "Flower2", color: "text-orange-500" },
+        { text: "रोप लागवडीनंतर उत्पादन हे हवामान, हंगाम, जमिनीचा प्रकार, खत, औषधे, पाणी, मशागत, इत्यादी गोष्टीवर अवलंबून असते. त्यामुळे उत्पादनात फरक येऊ शकतो. तसेच रोप विक्रेत्याकडून अथवा नर्सरी कडून या घटकांमुळे आलेल्या नुकसानीसाठी कोणतीही भरपाई किंवा जबाबदारी स्विकारली जाणार नाही.", icon: "Sprout", color: "text-green-500" },
+        { text: "रोपांचे वय जास्त किंवा कमी असू शकते. या बाबत नर्सरी कडून मला योग्य माहीती देण्यात आली आहे. ती माहीती मला मान्य असून, मी ती रोपे माझ्या स्वतःच्या जबाबदारीवर रोपे खरेदी करीत आहोत.", icon: "Flower", color: "text-blue-500" },
+        { text: "ओपन पॉलिनेटेड (OP) प्रकारच्या वाणांमध्ये नैसर्गिकरित्या अनियमितता येऊ शकते. या बाबत नर्सरी धारकाने मला पुर्व कल्पना दिली आहे. आणि त्या अनियमिततेसाठी नर्सरी कोणत्याही प्रकारे जबाबदार राहणार नाही.", icon: "Flower2", color: "text-purple-500" },
+        { text: "रोपे खरेदी करतांना ती पुर्णपणे किड / रोग मुक्त असल्याची मी खात्री केली आहे. मी खात्री केलेली रोपे टजेलदार उत्तम वाढ झालेली आहेत.", icon: "Sprout", color: "text-yellow-500" },
+        { text: "वरील सर्व अटी व नियम मला मान्य असून मी रोपे स्वतःच्या जबाबदारीवर खरेदी करत आहे.", icon: "Flower", color: "text-indigo-500" }
     ]
 };
 
@@ -38,7 +37,7 @@ const ICON_MAP = {
     Sprout: Sprout
 };
 
-export default function AdminHamipatra() {
+export default function AdminUserHamipatra() {
     const [content, setContent] = useState(DEFAULT_CONTENT);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -52,7 +51,7 @@ export default function AdminHamipatra() {
     const fetchHamipatra = async () => {
         try {
             setLoading(true);
-            const hamipatraDoc = await getDoc(doc(db, "settings", "hamipatra"));
+            const hamipatraDoc = await getDoc(doc(db, "settings", "userhamipatra"));
             if (hamipatraDoc.exists()) {
                 const data = hamipatraDoc.data();
                 setContent({
@@ -63,8 +62,8 @@ export default function AdminHamipatra() {
                 setContent(DEFAULT_CONTENT);
             }
         } catch (error) {
-            console.error("Error fetching hamipatra:", error);
-            toast.error("Failed to load Hamipatra content");
+            console.error("Error fetching user hamipatra:", error);
+            toast.error("Failed to load User Hamipatra content");
             setContent(DEFAULT_CONTENT);
         } finally {
             setLoading(false);
@@ -83,15 +82,15 @@ export default function AdminHamipatra() {
     const handleSave = async () => {
         try {
             setSaveLoading(true);
-            await setDoc(doc(db, "settings", "hamipatra"), {
+            await setDoc(doc(db, "settings", "userhamipatra"), {
                 ...editedContent,
                 updatedAt: new Date()
             });
             setContent(editedContent);
             setIsEditing(false);
-            toast.success("Hamipatra updated successfully");
+            toast.success("User Hamipatra updated successfully");
         } catch (error) {
-            console.error("Error saving hamipatra:", error);
+            console.error("Error saving user hamipatra:", error);
             toast.error("Failed to save changes");
         } finally {
             setSaveLoading(false);
@@ -140,17 +139,18 @@ export default function AdminHamipatra() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
                         <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-                            Hamipatra
+                            User Hamipatra
                         </h3>
                         <p className="text-base text-gray-600 font-normal mb-0">
-                            Manage and view the official nursery franchise agreement template
+                            Manage and view the official nursery user agreement template
                         </p>
                     </div>
                     <div className="flex gap-2">
                         {!isEditing ? (
                             <button
                                 onClick={handleEdit}
-                                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-sm"
+                                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 font-bold transition-all shadow-sm font-sans"
+                                style={{ borderRadius: "12px" }}
                             >
                                 <Edit2 size={18} />
                                 Edit Page
@@ -159,7 +159,8 @@ export default function AdminHamipatra() {
                             <>
                                 <button
                                     onClick={handleCancel}
-                                    className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 px-4 py-2 rounded-lg font-bold transition-all"
+                                    className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 px-4 py-2 font-bold transition-all font-sans"
+                                    style={{ borderRadius: "12px" }}
                                 >
                                     <X size={18} />
                                     Cancel
@@ -167,7 +168,8 @@ export default function AdminHamipatra() {
                                 <button
                                     onClick={handleSave}
                                     disabled={saveLoading}
-                                    className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 font-bold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-sans"
+                                    style={{ borderRadius: "12px" }}
                                 >
                                     {saveLoading ? (
                                         <Loader2 size={18} className="animate-spin" />
@@ -301,12 +303,12 @@ export default function AdminHamipatra() {
 
                         <div className="mt-20 grid grid-cols-2 gap-x-8 items-end hamipatra-marathi">
                             <div className="col-span-1">
-                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">फ्रँचायझी धारकाचे नाव</p>
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">शेतकऱ्याची सही</p>
                                 <span className="inline-block border-b-2 border-dashed border-gray-300 w-full min-h-[40px]"></span>
                             </div>
 
                             <div className="col-span-1 text-center group">
-                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 transition-colors group-hover:text-green-600">स्वाक्षरी (डिजिटल)</p>
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 transition-colors group-hover:text-green-600">नर्सरी धारकाची सही व शिक्का</p>
                                 <div className="inline-block border-2 border-dashed border-gray-100 bg-gray-50/50 rounded-2xl w-full max-w-[200px] h-24 flex flex-col items-center justify-center p-4 group-hover:bg-green-50 transition-colors mx-auto">
                                     <Pen className="text-gray-200 group-hover:text-green-200 transition-colors" size={32} />
                                     <span className="text-[10px] text-gray-300 font-bold uppercase tracking-tighter mt-2">Sign Here</span>

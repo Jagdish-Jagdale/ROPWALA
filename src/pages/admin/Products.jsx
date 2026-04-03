@@ -313,6 +313,17 @@ export default function AdminProducts() {
                             View and manage your product catalog
                         </p>
                     </div>
+                    <button
+                        onClick={() => {
+                            resetForm();
+                            setIsAddModalOpen(true);
+                        }}
+                        className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white hover:bg-green-700 transition-all shadow-sm font-medium text-sm border border-transparent font-sans"
+                        style={{ borderRadius: "12px" }}
+                    >
+                        <Plus size={18} />
+                        Add Product
+                    </button>
                 </div>
                 <hr className="mt-4 mb-5 border-gray-100" />
 
@@ -821,13 +832,15 @@ export default function AdminProducts() {
                                         setIsEditModalOpen(false);
                                         resetForm();
                                     }}
-                                    className="px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-xl transition-all"
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all font-sans"
+                                    style={{ borderRadius: "12px" }}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-green-600 text-white rounded-xl text-sm font-bold shadow-sm hover:bg-green-700 transition-all active:scale-95 flex items-center gap-2"
+                                    className="px-6 py-2 bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-sm border border-transparent font-sans"
+                                    style={{ borderRadius: "12px" }}
                                 >
                                     <CheckCircle size={18} />
                                     {isAddModalOpen ? "Save Product" : "Update Product"}

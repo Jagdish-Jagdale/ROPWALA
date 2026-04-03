@@ -16,6 +16,7 @@ import {
   X,
   Package,
   Store,
+  LayoutPanelTop,
 } from "lucide-react";
 
 const MENU = [
@@ -31,6 +32,11 @@ const MENU = [
     icon: Package,
   },
   {
+    to: "/admin/ourproducts",
+    label: "Our Product",
+    icon: Package,
+  },
+  {
     to: "/admin/manageusers",
     label: "Users",
     icon: Users,
@@ -41,6 +47,11 @@ const MENU = [
     label: "Franchise",
     icon: Store,
   },
+  {
+    to: "/admin/banners",
+    label: "Banner",
+    icon: LayoutPanelTop,
+  },
   { to: "/admin/reports", label: "Reports", icon: FileText },
   {
     label: "Settings",
@@ -48,7 +59,8 @@ const MENU = [
     hasDropdown: true,
     submenu: [
       { to: "/admin/categories", label: "Categories" },
-      { to: "/admin/hamipatra", label: "Hamipatra" },
+      { to: "/admin/owner-hamipatra", label: "Owner Hamipatra" },
+      { to: "/admin/user-hamipatra", label: "User Hamipatra" },
     ],
   },
 ];

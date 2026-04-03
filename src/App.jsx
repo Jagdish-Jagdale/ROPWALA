@@ -8,10 +8,13 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import AdminReports from "./pages/admin/Reports";
 import AdminProducts from "./pages/admin/Products";
+import AdminOurProducts from "./pages/admin/OurProducts";
 import AdminFranchise from "./pages/admin/Franchise";
 import AdminSettings from "./pages/admin/Settings";
 import AdminCategories from "./pages/admin/Categories";
-import AdminHamipatra from "./pages/admin/Hamipatra";
+import AdminOwnerHamipatra from "./pages/admin/OwnerHamipatra";
+import AdminUserHamipatra from "./pages/admin/UserHamipatra";
+import AdminBanner from "./pages/admin/Banner";
 import { ROLES } from "./utils/roles";
 
 import ScrollToTop from "./components/ScrollToTop";
@@ -47,6 +50,7 @@ function App() {
               element={<ManageUsers />}
             />
             <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/ourproducts" element={<AdminOurProducts />} />
             <Route path="/admin/franchise" element={<AdminFranchise />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route
@@ -54,7 +58,9 @@ function App() {
               element={<AdminSettings />}
             />
             <Route path="/admin/categories" element={<AdminCategories />} />
-            <Route path="/admin/hamipatra" element={<AdminHamipatra />} />
+            <Route path="/admin/owner-hamipatra" element={<AdminOwnerHamipatra />} />
+            <Route path="/admin/user-hamipatra" element={<AdminUserHamipatra />} />
+            <Route path="/admin/banners" element={<AdminBanner />} />
           </Route>
         </Route>
 

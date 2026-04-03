@@ -230,7 +230,8 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
                 <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
                     <button
                         onClick={onClose}
-                        className="px-6 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm"
+                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all font-sans"
+                        style={{ borderRadius: "12px" }}
                     >
                         Close Details
                     </button>

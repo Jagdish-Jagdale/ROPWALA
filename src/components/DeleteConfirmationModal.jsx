@@ -23,7 +23,7 @@ export default function DeleteConfirmationModal({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
@@ -76,15 +76,17 @@ export default function DeleteConfirmationModal({
                         <div className="flex gap-3 w-full mt-2">
                             <button
                                 onClick={onClose}
-                                className="flex-1 px-4 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all"
+                                className="flex-1 px-4 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all font-sans"
                                 disabled={isGlobalLoading}
+                                style={{ borderRadius: "12px" }}
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={onConfirm}
                                 disabled={inputText !== confirmText || isGlobalLoading}
-                                className="flex-1 px-4 py-3 text-sm font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-600/20 active:scale-95 flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-3 text-sm font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-600/20 active:scale-95 flex items-center justify-center gap-2 font-sans"
+                                style={{ borderRadius: "12px" }}
                             >
                                 {isGlobalLoading ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

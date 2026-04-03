@@ -42,6 +42,13 @@ export default function AdminCategories() {
   const [subName, setSubName] = useState("");
   const [submittingSub, setSubmittingSub] = useState(false);
 
+  const [isSubEditModalOpen, setIsSubEditModalOpen] = useState(false);
+  const [subToEdit, setSubToEdit] = useState(null);
+  const [editSubName, setEditSubName] = useState("");
+  const [submittingEditSub, setSubmittingEditSub] = useState(false);
+  const [showSubDeleteModal, setShowSubDeleteModal] = useState(false);
+  const [subToDelete, setSubToDelete] = useState(null);
+
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -143,6 +150,65 @@ export default function AdminCategories() {
       setShowDeleteModal(false);
     } catch (e) {
       toast.error("Failed to delete category");
+    }
+  };
+
+  const handleUpdateSubCategory = async (e) => {
+    e.preventDefault();
+    if (!editSubName.trim() || !subToEdit || !selectedCategory) return;
+    setSubmittingEditSub(true);
+    try {
+      const subDocRef = doc(
+        db,
+        "categories",
+        selectedCategory.id,
+        "sub-categories",
+        subToEdit.id,
+      );
+      await updateDoc(subDocRef, {
+        name: editSubName.trim(),
+        updatedAt: serverTimestamp(),
+      });
+      toast.success("Sub-category updated");
+      setIsSubEditModalOpen(false);
+      // Update local state to reflect change without full fetch if possible, 
+      // but fetchCategories is safer given the nested structure
+      fetchCategories();
+      
+      // Also update selectedCategory for the View Modal
+      const updatedSubcategories = selectedCategory.subcategories.map(s => 
+        s.id === subToEdit.id ? { ...s, name: editSubName.trim() } : s
+      );
+      setSelectedCategory({ ...selectedCategory, subcategories: updatedSubcategories });
+    } catch (err) {
+      console.error("Error updating sub-category:", err);
+      toast.error("Failed to update sub-category");
+    } finally {
+      setSubmittingEditSub(false);
+    }
+  };
+
+  const handleDeleteSubCategory = async () => {
+    if (!subToDelete || !selectedCategory) return;
+    try {
+      const subDocRef = doc(
+        db,
+        "categories",
+        selectedCategory.id,
+        "sub-categories",
+        subToDelete.id,
+      );
+      await deleteDoc(subDocRef);
+      toast.success("Sub-category deleted");
+      setShowSubDeleteModal(false);
+      fetchCategories();
+      
+      // Also update selectedCategory for the View Modal
+      const updatedSubcategories = selectedCategory.subcategories.filter(s => s.id !== subToDelete.id);
+      setSelectedCategory({ ...selectedCategory, subcategories: updatedSubcategories });
+    } catch (err) {
+      console.error("Error deleting sub-category:", err);
+      toast.error("Failed to delete sub-category");
     }
   };
 
@@ -476,17 +542,41 @@ export default function AdminCategories() {
                       selectedCategory.subcategories.map((sub, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl hover:border-green-200 hover:bg-green-50/30 transition-all group"
-                          title={sub.name}
+                          className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl hover:border-green-200 hover:bg-green-50/10 transition-all group"
                         >
-                          <span className="text-sm font-medium text-gray-700">
-                            {sub.name?.length > 20
-                              ? sub.name.substring(0, 20) + "..."
-                              : sub.name}
-                          </span>
-                          <span className="text-[10px] text-gray-400 font-mono italic">
-                            Sub-{String(idx + 1).padStart(2, "0")}
-                          </span>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-gray-700 truncate max-w-[150px]" title={sub.name}>
+                              {sub.name}
+                            </span>
+                            <span className="text-[10px] text-gray-400 font-mono italic">
+                              Sub-{String(idx + 1).padStart(2, "0")}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSubToEdit(sub);
+                                setEditSubName(sub.name);
+                                setIsSubEditModalOpen(true);
+                              }}
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              title="Edit Sub-category"
+                            >
+                              <Edit2 size={14} />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSubToDelete(sub);
+                                setShowSubDeleteModal(true);
+                              }}
+                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Delete Sub-category"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </div>
                       ))
                     ) : (
@@ -516,15 +606,15 @@ export default function AdminCategories() {
         {isSubModalOpen && selectedCategory && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden scale-in-center border border-gray-100">
-              <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/80">
+              <div className="p-3 border-b border-gray-100 flex items-center justify-between bg-gray-50/80">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center text-green-600 shadow-sm border border-green-200/50">
-                    <Plus size={20} strokeWidth={2.5} />
+                  <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center text-green-600 shadow-sm border border-green-200/50">
+                    <Plus size={14} strokeWidth={2.5} />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900 leading-tight">
+                    <h4 className="text-base font-bold text-gray-900 leading-tight">
                       Add Sub-category
-                    </h2>
+                    </h4>
                     <p className="text-[11px] text-gray-500 font-medium">
                       Create a nested items list
                     </p>
@@ -563,10 +653,10 @@ export default function AdminCategories() {
                     setSubmittingSub(false);
                   }
                 }}
-                className="p-6 space-y-5"
+                className="p-3 space-y-2"
               >
-                <div className="space-y-4">
-                  <div className="bg-green-50/50 border border-green-100/50 p-3 rounded-xl flex items-center gap-3">
+                <div className="">
+                  <div className="bg-green-50/50 border border-green-100/50 p-2 rounded-md flex items-center gap-3">
                     <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm">
                       <Grid size={16} />
                     </div>
@@ -586,7 +676,7 @@ export default function AdminCategories() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide my-3">
                       Sub-category Name
                     </label>
                     <div className="relative">
@@ -596,7 +686,7 @@ export default function AdminCategories() {
                         autoFocus
                         value={subName}
                         onChange={(e) => setSubName(e.target.value)}
-                        className="w-full pl-4 pr-10 py-3 text-sm border border-gray-200 rounded-xl focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all outline-none bg-gray-50/30 placeholder:text-gray-400"
+                        className="w-full pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all outline-none bg-gray-50/30 placeholder:text-gray-400"
                         placeholder="e.g. Exotic Ferns"
                       />
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300">
@@ -610,7 +700,7 @@ export default function AdminCategories() {
                   <button
                     type="button"
                     onClick={() => setIsSubModalOpen(false)}
-                    className="flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors shadow-sm text-sm"
+                    className="flex-1 px-2 py-2 bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors shadow-sm text-sm"
                     style={{ borderRadius: "12px" }}
                   >
                     Cancel
@@ -618,7 +708,7 @@ export default function AdminCategories() {
                   <button
                     type="submit"
                     disabled={submittingSub}
-                    className="flex-1 px-4 py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all shadow-md shadow-green-200 disabled:bg-green-400 text-sm flex items-center justify-center gap-2"
+                    className="flex-1 px-2 py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all shadow-md shadow-green-200 disabled:bg-green-400 text-sm flex items-center justify-center gap-2"
                     style={{ borderRadius: "12px" }}
                   >
                     {submittingSub ? (
@@ -639,12 +729,120 @@ export default function AdminCategories() {
           </div>
         )}
 
+        {/* Edit Subcategory Modal */}
+        {isSubEditModalOpen && subToEdit && selectedCategory && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden scale-in-center border border-gray-100">
+              <div className="p-3 border-b border-gray-100 flex items-center justify-between bg-gray-50/80">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center text-green-600 shadow-sm border border-green-200/50">
+                    <Edit2 size={14} strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-gray-900 leading-tight">
+                      Edit Sub-category
+                    </h4>
+                    <p className="text-[11px] text-gray-500 font-medium">
+                      Update nested item name
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsSubEditModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100/50 rounded-full transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleUpdateSubCategory} className="p-3 space-y-2">
+                <div className="">
+                  <div className="bg-green-50/50 border border-green-100/50 p-2 rounded-md flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white shrink-0 shadow-sm">
+                      <Grid size={16} />
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="text-[10px] uppercase tracking-wider text-green-600 font-bold mb-0.5">
+                        Category Context
+                      </p>
+                      <p
+                        className="text-sm font-bold text-gray-900 truncate"
+                        title={selectedCategory.name}
+                      >
+                        {selectedCategory.name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide my-3">
+                      Sub-category Name
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        required
+                        autoFocus
+                        value={editSubName}
+                        onChange={(e) => setEditSubName(e.target.value)}
+                        className="w-full pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all outline-none bg-gray-50/30 placeholder:text-gray-400"
+                        placeholder="e.g. Exotic Ferns"
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300">
+                        <Edit2 size={14} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsSubEditModalOpen(false)}
+                    className="flex-1 px-2 py-2 bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors shadow-sm text-sm"
+                    style={{ borderRadius: "12px" }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submittingEditSub}
+                    className="flex-1 px-2 py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all shadow-md shadow-green-200 disabled:bg-green-400 text-sm flex items-center justify-center gap-2"
+                    style={{ borderRadius: "12px" }}
+                  >
+                    {submittingEditSub ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Updating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Edit2 size={18} />
+                        <span>Update</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <DeleteConfirmationModal
+          isOpen={showSubDeleteModal}
+          onClose={() => setShowSubDeleteModal(false)}
+          onConfirm={handleDeleteSubCategory}
+          title="Delete Sub-category"
+          itemName={subToDelete?.name}
+          confirmText={subToDelete?.name}
+        />
+
         <DeleteConfirmationModal
           isOpen={showDeleteModal}
-          title="Delete Category"
-          message={`Are you sure you want to delete "${categoryToDelete?.name}"? This action cannot be undone.`}
-          onCancel={() => setShowDeleteModal(false)}
+          onClose={() => setShowDeleteModal(false)}
           onConfirm={() => handleDelete(categoryToDelete?.id)}
+          title="Delete Category"
+          itemName={categoryToDelete?.name}
+          confirmText={categoryToDelete?.name}
         />
       </div>
     </div>
