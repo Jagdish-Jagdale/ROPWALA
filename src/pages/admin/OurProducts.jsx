@@ -89,6 +89,7 @@ export default function AdminOurProducts() {
         price: "",
         description: "",
         imageUrls: [],
+        showInOwnerDashboard: true,
     });
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
@@ -168,6 +169,7 @@ export default function AdminOurProducts() {
                 description: formData.description,
                 imageUrls: orderedUrls,
                 imageUrl: orderedUrls[0], // backward compat: main image
+                showInOwnerDashboard: formData.showInOwnerDashboard,
                 createdAt: serverTimestamp(),
             };
 
@@ -225,6 +227,7 @@ export default function AdminOurProducts() {
                 description: formData.description,
                 imageUrls: orderedUrls,
                 imageUrl: orderedUrls[0] || "",
+                showInOwnerDashboard: formData.showInOwnerDashboard,
                 updatedAt: serverTimestamp(),
             });
 
@@ -267,6 +270,7 @@ export default function AdminOurProducts() {
             price: "",
             description: "",
             imageUrls: [],
+            showInOwnerDashboard: true,
         });
         setImageFiles([]);
         setImagePreviews([]);
@@ -281,6 +285,7 @@ export default function AdminOurProducts() {
             price: product.price?.toString() || "",
             description: product.description || "",
             imageUrls: existingUrls,
+            showInOwnerDashboard: product.showInOwnerDashboard !== false, // default true if missing
         });
         setImageFiles([]);
         setImagePreviews([...existingUrls]);
@@ -462,6 +467,9 @@ export default function AdminOurProducts() {
                                         Description
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                        Dashboard
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         Action
                                     </th>
                                 </tr>
@@ -469,7 +477,7 @@ export default function AdminOurProducts() {
                             <tbody className="bg-white">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={6} className="text-center py-12">
+                                        <td colSpan={7} className="text-center py-12">
                                             <div className="flex flex-col items-center justify-center gap-3">
                                                 <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                                 <span className="text-sm text-gray-500 font-medium">
@@ -532,6 +540,20 @@ export default function AdminOurProducts() {
                                             </td>
 
                                             <td className="px-6 py-2.5 whitespace-nowrap text-center">
+                                                {p.showInOwnerDashboard !== false ? (
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-100 text-green-700">
+                                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                        Visible
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-500">
+                                                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                                                        Hidden
+                                                    </span>
+                                                )}
+                                            </td>
+
+                                            <td className="px-6 py-2.5 whitespace-nowrap text-center">
                                                 <div className="flex items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
                                                     <button
                                                         onClick={() => openEditModal(p)}
@@ -553,7 +575,7 @@ export default function AdminOurProducts() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={6} className="py-12 text-center">
+                                        <td colSpan={7} className="py-12 text-center">
                                             <div className="flex flex-col items-center justify-center text-gray-400">
                                                 <div className="bg-gray-50 p-4 rounded-full mb-3">
                                                     <Package size={32} className="opacity-50" />
@@ -638,6 +660,26 @@ export default function AdminOurProducts() {
                         {/* Modal Body */}
                         <form onSubmit={isAddModalOpen ? handleAddProduct : handleUpdateProduct}>
                             <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                                {/* Show in Owner Dashboard — Toggle (top) */}
+                                <div className="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-gray-50">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Owner Dashboard Visibility</span>
+                                        <span className={`text-sm font-semibold mt-0.5 ${
+                                            formData.showInOwnerDashboard ? 'text-green-700' : 'text-gray-500'
+                                        }`}>
+                                            {formData.showInOwnerDashboard ? 'Visible — shown on owner dashboard' : 'Hidden — not shown on owner dashboard'}
+                                        </span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, showInOwnerDashboard: !formData.showInOwnerDashboard })}
+                                        title={formData.showInOwnerDashboard ? 'Click to hide from owner dashboard' : 'Click to show on owner dashboard'}
+                                        style={{ width: '52px', height: '28px', borderRadius: '999px', padding: '3px', transition: 'background-color 0.25s', backgroundColor: formData.showInOwnerDashboard ? '#22c55e' : '#d1d5db', flexShrink: 0, display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer', outline: 'none', boxShadow: formData.showInOwnerDashboard ? '0 0 0 3px rgba(34,197,94,0.18)' : '0 0 0 3px rgba(0,0,0,0.06)' }}
+                                    >
+                                        <span style={{ width: '22px', height: '22px', borderRadius: '50%', backgroundColor: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.18)', display: 'block', transform: formData.showInOwnerDashboard ? 'translateX(24px)' : 'translateX(0px)', transition: 'transform 0.25s cubic-bezier(.4,0,.2,1)' }} />
+                                    </button>
+                                </div>
+
                                 {/* Product Name */}
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Product Name</label>
@@ -765,6 +807,8 @@ export default function AdminOurProducts() {
                                         className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all resize-none text-sm"
                                     ></textarea>
                                 </div>
+
+
                             </div>
 
                             {/* Modal Footer */}
