@@ -50,7 +50,7 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
                     {/* Main Layout Grid */}
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-6">
 
-                        {/* LEFT SECTION: Images (Thumbnails + Main Images) */}
+                        {/* LEFT SECTION: Images (Thumbnails + Main Image) */}
                         <div className="w-full lg:w-[60%] flex gap-4">
                             {/* Vertical Thumbnail Rail */}
                             {imagesList.length > 0 && (
