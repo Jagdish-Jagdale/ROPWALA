@@ -57,20 +57,22 @@ export default function DeleteConfirmationModal({
                             </p>
                         </div>
 
-                        {/* Input Confirmation */}
-                        <div className="w-full bg-gray-50 p-4 rounded-xl border border-gray-100 text-left mt-2">
-                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                                Type <span className="font-mono text-red-600 font-bold bg-white px-1 py-0.5 rounded border border-gray-200 select-all">{confirmText}</span> to confirm
-                            </label>
-                            <input
-                                type="text"
-                                value={inputText}
-                                onChange={(e) => setInputText(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-sm font-medium"
-                                placeholder={`Type ${confirmText} here...`}
-                                autoFocus
-                            />
-                        </div>
+                        {/* Input Confirmation (Optional) */}
+                        {confirmText && (
+                            <div className="w-full bg-gray-50 p-4 rounded-xl border border-gray-100 text-left mt-2">
+                                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                    Type <span className="font-mono text-red-600 font-bold bg-white px-1 py-0.5 rounded border border-gray-200 select-all">{confirmText}</span> to confirm
+                                </label>
+                                <input
+                                    type="text"
+                                    value={inputText}
+                                    onChange={(e) => setInputText(e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all text-sm font-medium"
+                                    placeholder={`Type ${confirmText} here...`}
+                                    autoFocus
+                                />
+                            </div>
+                        )}
 
                         {/* Actions */}
                         <div className="flex gap-3 w-full mt-2">
@@ -84,14 +86,14 @@ export default function DeleteConfirmationModal({
                             </button>
                             <button
                                 onClick={onConfirm}
-                                disabled={inputText !== confirmText || isGlobalLoading}
+                                disabled={(confirmText && inputText !== confirmText) || isGlobalLoading}
                                 className="flex-1 px-4 py-3 text-sm font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-600/20 active:scale-95 flex items-center justify-center gap-2 font-sans"
                                 style={{ borderRadius: "12px" }}
                             >
                                 {isGlobalLoading ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : (
-                                    "Delete Permanently"
+                                    "Delete"
                                 )}
                             </button>
                         </div>

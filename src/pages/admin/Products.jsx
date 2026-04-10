@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
 import ProductViewModal from "../../components/ProductViewModal";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 const ProductImage = ({ src, alt, className = "", priority = false }) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -86,6 +87,11 @@ export default function AdminProducts() {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [nurseries, setNurseries] = useState([]); // Store franchise/nursery data
+
+    // Delete Modal State
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -196,15 +202,29 @@ export default function AdminProducts() {
         }
     };
 
-    const handleDeleteProduct = async (id) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            try {
-                await deleteDoc(doc(db, "products", id));
-                toast.success("Product deleted");
-                fetchProducts();
-            } catch (error) {
-                toast.error("Failed to delete product");
-            }
+    const handleDeleteProduct = (id) => {
+        const product = products.find(p => p.id === id);
+        if (product) {
+            setProductToDelete(product);
+            setShowDeleteModal(true);
+        }
+    };
+
+    const confirmDeleteProduct = async () => {
+        if (!productToDelete) return;
+
+        try {
+            setIsDeleting(true);
+            await deleteDoc(doc(db, "products", productToDelete.id));
+            toast.success("Product deleted successfully");
+            setShowDeleteModal(false);
+            setProductToDelete(null);
+            fetchProducts();
+        } catch (error) {
+            console.error("Error deleting product:", error);
+            toast.error("Failed to delete product");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -612,6 +632,15 @@ export default function AdminProducts() {
                                                     >
                                                         <X size={18} />
                                                     </button>
+
+                                                    {/* Delete Button */}
+                                                    <button
+                                                        onClick={() => handleDeleteProduct(product.id)}
+                                                        className="p-1.5 rounded-full transition-colors border text-red-600 hover:text-red-800 hover:bg-red-50 border-red-100"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -666,6 +695,19 @@ export default function AdminProducts() {
                     if (!isEditModalOpen) setSelectedProduct(null); // Keep if edit is open
                 }}
                 product={selectedProduct}
+            />
+
+            <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setProductToDelete(null);
+                }}
+                onConfirm={confirmDeleteProduct}
+                title="Delete Product?"
+                message="This action cannot be undone. This will permanently delete the product from your inventory."
+                itemName={productToDelete?.name}
+                isGlobalLoading={isDeleting}
             />
 
             {/* Add/Edit Modal */}

@@ -4,6 +4,7 @@ import {
     getDocs,
     query,
     updateDoc,
+    deleteDoc,
     doc,
     orderBy,
     onSnapshot,
@@ -27,12 +28,14 @@ import {
     FileText,
     CheckCircle,
     X,
+    Trash2,
     Building,
     Trees,
     AlertCircle,
     ClipboardList,
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 export default function AdminFranchise() {
     const [applications, setApplications] = useState([]);
@@ -44,6 +47,11 @@ export default function AdminFranchise() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedApp, setSelectedApp] = useState(null);
+
+    // Delete Modal State
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [franchiseToDelete, setFranchiseToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const unsubscribe = fetchApplications();
@@ -95,6 +103,31 @@ export default function AdminFranchise() {
         } catch (e) {
             console.error("Error updating status:", e);
             toast.error("Failed to update status");
+        }
+    };
+
+    const handleDeleteFranchise = (id) => {
+        const app = applications.find(a => a.id === id);
+        if (app) {
+            setFranchiseToDelete(app);
+            setShowDeleteModal(true);
+        }
+    };
+
+    const confirmDeleteFranchise = async () => {
+        if (!franchiseToDelete) return;
+
+        try {
+            setIsDeleting(true);
+            await deleteDoc(doc(db, "franchise", franchiseToDelete.id));
+            toast.success("Franchise application deleted");
+            setShowDeleteModal(false);
+            setFranchiseToDelete(null);
+        } catch (error) {
+            console.error("Error deleting franchise:", error);
+            toast.error("Failed to delete franchise");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -430,6 +463,13 @@ export default function AdminFranchise() {
                                                     >
                                                         <Clock size={18} />
                                                     </button>
+                                                    <button
+                                                        onClick={() => handleDeleteFranchise(app.id)}
+                                                        className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -662,6 +702,15 @@ export default function AdminFranchise() {
                                 >
                                     <Clock size={18} /> Pending
                                 </button>
+                                <button
+                                    onClick={() => {
+                                        handleDeleteFranchise(selectedApp.id);
+                                        setSelectedApp(null);
+                                    }}
+                                    className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-red-700 transition-all active:scale-95"
+                                >
+                                    <Trash2 size={18} /> Delete
+                                </button>
                             </div>
                             <button
                                 onClick={() => setSelectedApp(null)}
@@ -673,6 +722,20 @@ export default function AdminFranchise() {
                     </div>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setFranchiseToDelete(null);
+                }}
+                onConfirm={confirmDeleteFranchise}
+                title="Delete Franchise?"
+                message="This action cannot be undone. This will permanently delete the franchise application and all associated data."
+                confirmText="DELETE FRANCHISE"
+                itemName={franchiseToDelete?.nurseryName || franchiseToDelete?.ownerName}
+                isGlobalLoading={isDeleting}
+            />
         </div>
     );
 }

@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
 import OurProductViewModal from "../../components/OurProductViewModal";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 const ProductImage = ({ src, alt, className = "", priority = false }) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -83,6 +84,11 @@ export default function AdminOurProducts() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+
+    // Delete Modal State
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -244,22 +250,33 @@ export default function AdminOurProducts() {
         }
     };
 
-    const handleDeleteProduct = async (product) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            try {
-                // Delete all images from storage
-                const urls = product.imageUrls || (product.imageUrl ? [product.imageUrl] : []);
-                for (const url of urls) {
-                    if (url && url.includes('firebasestorage')) {
-                        try { await deleteObject(ref(storage, url)); } catch (e) { /* ignore */ }
-                    }
+    const handleDeleteProduct = (product) => {
+        setProductToDelete(product);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDeleteProduct = async () => {
+        if (!productToDelete) return;
+
+        try {
+            setIsDeleting(true);
+            // Delete all images from storage
+            const urls = productToDelete.imageUrls || (productToDelete.imageUrl ? [productToDelete.imageUrl] : []);
+            for (const url of urls) {
+                if (url && url.includes('firebasestorage')) {
+                    try { await deleteObject(ref(storage, url)); } catch (e) { /* ignore */ }
                 }
-                await deleteDoc(doc(db, "ourproduct", product.id));
-                toast.success("Product deleted");
-                fetchProducts();
-            } catch (error) {
-                toast.error("Failed to delete product");
             }
+            await deleteDoc(doc(db, "ourproduct", productToDelete.id));
+            toast.success("Product deleted successfully");
+            setShowDeleteModal(false);
+            setProductToDelete(null);
+            fetchProducts();
+        } catch (error) {
+            console.error("Error deleting product:", error);
+            toast.error("Failed to delete product");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -623,6 +640,19 @@ export default function AdminOurProducts() {
                     if (!isEditModalOpen) setSelectedProduct(null); // Keep if edit is open
                 }}
                 product={selectedProduct}
+            />
+
+            <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setProductToDelete(null);
+                }}
+                onConfirm={confirmDeleteProduct}
+                title="Delete Our Product?"
+                message="This action cannot be undone. This will permanently delete the product from your inventory and remove all associated images."
+                itemName={productToDelete?.name}
+                isGlobalLoading={isDeleting}
             />
 
             {/* Add/Edit Modal */}
