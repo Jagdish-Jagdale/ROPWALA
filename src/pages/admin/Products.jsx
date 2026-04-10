@@ -892,6 +892,19 @@ export default function AdminProducts() {
                     </div>
                 </div>
             )}
+            <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setProductToDelete(null);
+                }}
+                onConfirm={confirmDeleteProduct}
+                title="Delete Product?"
+                message="This action cannot be undone. This will permanently delete the product from the inventory and remove it from all connected stores."
+                confirmText="DELETE PRODUCT"
+                itemName={productToDelete?.name}
+                isGlobalLoading={isDeleting}
+            />
         </div>
     );
 }

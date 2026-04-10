@@ -26,6 +26,7 @@ import {
     ChevronRight,
     LayoutPanelTop,
 } from "lucide-react";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 const BannerImage = ({ src, alt, className = "" }) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -71,6 +72,7 @@ export default function AdminBanners() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedBanner, setSelectedBanner] = useState(null);
     const [bannerToDelete, setBannerToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const [formData, setFormData] = useState({
         isActive: true,
@@ -185,7 +187,7 @@ export default function AdminBanners() {
         if (!bannerToDelete) return;
         
         try {
-            setIsSubmitting(true);
+            setIsDeleting(true);
             const { id, imageUrl } = bannerToDelete;
 
             // Delete image from storage if it exists
@@ -206,7 +208,7 @@ export default function AdminBanners() {
             console.error("Error deleting banner:", error);
             toast.error("Failed to delete banner");
         } finally {
-            setIsSubmitting(false);
+            setIsDeleting(false);
         }
     };
 
@@ -460,51 +462,21 @@ export default function AdminBanners() {
                     </div>
                 </div>
             )}
-            {/* Delete Confirmation Modal */}
-            {isDeleteModalOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                    <div
-                        className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
-                        onClick={() => !isSubmitting && setIsDeleteModalOpen(false)}
-                    ></div>
-                    <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all border border-gray-100">
-                        <div className="p-8 text-center">
-                            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-red-50/50">
-                                <Trash2 className="text-red-500" size={40} />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Banner?</h3>
-                            <p className="text-gray-500 text-sm mb-8 leading-relaxed">
-                                Are you sure you want to delete this banner? This action cannot be undone.
-                            </p>
-                            <div className="flex flex-col gap-3">
-                                <button
-                                    onClick={handleDeleteBanner}
-                                    disabled={isSubmitting}
-                                    className="w-full py-3.5 bg-red-600 text-white font-bold rounded-2xl hover:bg-red-700 transition-all shadow-lg shadow-red-200 disabled:opacity-50 flex items-center justify-center gap-2"
-                                    style={{ borderRadius: "12px" }}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                            Deleting...
-                                        </>
-                                    ) : (
-                                        "Yes, Delete Banner"
-                                    )}
-                                </button>
-                                <button
-                                    onClick={() => setIsDeleteModalOpen(false)}
-                                    disabled={isSubmitting}
-                                    className="w-full py-3.5 bg-gray-50 text-gray-500 font-bold rounded-2xl hover:bg-gray-100 transition-all border border-gray-100"
-                                    style={{ borderRadius: "12px" }}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => {
+                    if (!isDeleting) {
+                        setIsDeleteModalOpen(false);
+                        setBannerToDelete(null);
+                    }
+                }}
+                onConfirm={handleDeleteBanner}
+                title="Delete Marketing Banner?"
+                message="This action cannot be undone. This banner will no longer be visible to your customers."
+                confirmText="DELETE BANNER"
+                itemName="this banner"
+                isGlobalLoading={isDeleting}
+            />
         </div>
     );
 }

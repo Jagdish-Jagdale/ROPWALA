@@ -35,6 +35,7 @@ export default function AdminCategories() {
   const [submitting, setSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [sortBy, setSortBy] = useState("newest");
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -144,12 +145,16 @@ export default function AdminCategories() {
 
   const handleDelete = async (id) => {
     try {
+      setIsDeleting(true);
       await deleteDoc(doc(db, "categories", id));
       toast.success("Category deleted");
       fetchCategories();
       setShowDeleteModal(false);
+      setCategoryToDelete(null);
     } catch (e) {
       toast.error("Failed to delete category");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -191,6 +196,7 @@ export default function AdminCategories() {
   const handleDeleteSubCategory = async () => {
     if (!subToDelete || !selectedCategory) return;
     try {
+      setIsDeleting(true);
       const subDocRef = doc(
         db,
         "categories",
@@ -201,6 +207,7 @@ export default function AdminCategories() {
       await deleteDoc(subDocRef);
       toast.success("Sub-category deleted");
       setShowSubDeleteModal(false);
+      setSubToDelete(null);
       fetchCategories();
       
       // Also update selectedCategory for the View Modal
@@ -209,6 +216,8 @@ export default function AdminCategories() {
     } catch (err) {
       console.error("Error deleting sub-category:", err);
       toast.error("Failed to delete sub-category");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -831,18 +840,20 @@ export default function AdminCategories() {
           isOpen={showSubDeleteModal}
           onClose={() => setShowSubDeleteModal(false)}
           onConfirm={handleDeleteSubCategory}
-          title="Delete Sub-category"
+          title="Delete Sub-category?"
           itemName={subToDelete?.name}
-          confirmText={subToDelete?.name}
+          confirmText="DELETE SUB CATEGORY"
+          isGlobalLoading={isDeleting}
         />
 
         <DeleteConfirmationModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
           onConfirm={() => handleDelete(categoryToDelete?.id)}
-          title="Delete Category"
+          title="Delete Product Category?"
           itemName={categoryToDelete?.name}
-          confirmText={categoryToDelete?.name}
+          confirmText="DELETE CATEGORY"
+          isGlobalLoading={isDeleting}
         />
       </div>
     </div>

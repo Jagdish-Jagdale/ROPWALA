@@ -82,6 +82,7 @@ export default function UsersManage() {
   // Delete Modal State
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -195,10 +196,10 @@ export default function UsersManage() {
   };
 
   const confirmDelete = async () => {
-    // Validation is now handled inside the modal component
     if (!userToDelete) return;
 
     try {
+      setIsDeleting(true);
       await deleteDoc(doc(db, "users", userToDelete.id));
       setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
       toast.success("User deleted successfully");
@@ -207,6 +208,8 @@ export default function UsersManage() {
     } catch (error) {
       console.error("Error deleting user:", error);
       toast.error("Failed to delete user");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -690,16 +693,6 @@ export default function UsersManage() {
 
 
 
-        {/* Delete Confirmation Modal */}
-        <DeleteConfirmationModal
-          isOpen={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={confirmDelete}
-          title="Delete User?"
-          message="This action cannot be undone. This will permanently delete the user and remove their access to the system."
-          confirmText="DELETE USER"
-          itemName={userToDelete?.userName}
-        />
 
         {/* Tailwind Modal */}
         {
@@ -1099,11 +1092,47 @@ export default function UsersManage() {
                   </div>
                 </div>
 
-
+                {/* Modal Footer */}
+                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center gap-3">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        handleDelete(selectedUser, { stopPropagation: () => {} });
+                        setSelectedUser(null);
+                      }}
+                      className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-red-700 transition-all active:scale-95"
+                    >
+                      <Trash2 size={18} /> Delete
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedUser(null);
+                      setShowViewPassword(false);
+                    }}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-all shadow-sm"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           )
         }
+
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => {
+            setShowDeleteModal(false);
+            setUserToDelete(null);
+          }}
+          onConfirm={confirmDelete}
+          title="Delete User Account?"
+          message="This action cannot be undone. This will permanently delete the user's profile and remove their access to the system."
+          confirmText="DELETE USER"
+          itemName={userToDelete?.userName || userToDelete?.email}
+          isGlobalLoading={isDeleting}
+        />
       </div>
     </div>
   );
