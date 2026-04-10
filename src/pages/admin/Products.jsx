@@ -11,7 +11,8 @@ import {
     orderBy,
     serverTimestamp,
 } from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { db, storage } from "../../lib/firebase";
+import { ref, deleteObject } from "firebase/storage";
 import toast from "react-hot-toast";
 import {
     Package,
@@ -215,8 +216,21 @@ export default function AdminProducts() {
 
         try {
             setIsDeleting(true);
+
+            // 1. Delete Product Image from Storage (if applicable)
+            if (productToDelete.imageUrl && productToDelete.imageUrl.includes('firebasestorage')) {
+                try {
+                    const imageRef = ref(storage, productToDelete.imageUrl);
+                    await deleteObject(imageRef);
+                } catch (storageError) {
+                    console.error("Error deleting product image from Storage:", storageError);
+                    // Continue even if image deletion fails
+                }
+            }
+
+            // 2. Delete Product Doc from Firestore
             await deleteDoc(doc(db, "products", productToDelete.id));
-            toast.success("Product deleted successfully");
+            toast.success("Product and its image deleted successfully");
             setShowDeleteModal(false);
             setProductToDelete(null);
             fetchProducts();

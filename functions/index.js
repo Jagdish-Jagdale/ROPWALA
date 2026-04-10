@@ -89,3 +89,45 @@ exports.deleteAuthOwner = functions.firestore
             }
         }
     });
+
+/**
+ * Callable function to delete a user from Firebase Authentication by UID.
+ * This is used by the Admin Panel for synchronous deletion.
+ */
+exports.deleteUserAuth = functions.https.onCall(async (data, context) => {
+    // Check if the request is authenticated
+    if (!context.auth) {
+        throw new functions.https.HttpsError(
+            "unauthenticated",
+            "The function must be called while authenticated."
+        );
+    }
+
+    const uid = data.uid;
+    if (!uid) {
+        logger.error(`CALLABLE_ERROR: deleteUserAuth called without UID by Admin: ${context.auth.uid}`);
+        throw new functions.https.HttpsError(
+            "invalid-argument",
+            "The function must be called with a 'uid'."
+        );
+    }
+
+    logger.info(`CALLABLE_REQUEST: Attempting to delete Auth user [${uid}] requested by Admin [${context.auth.uid}]`);
+
+    try {
+        await admin.auth().deleteUser(uid);
+        logger.info(`CALLABLE_SUCCESS: Deleted Firebase Auth user [${uid}]`);
+        return { success: true, message: `Successfully deleted user ${uid}` };
+    } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+            logger.warn(`CALLABLE_NOTICE: Auth user [${uid}] not found. Record was likely deleted manually or never existed.`);
+            return { success: true, message: "User not found in Auth, nothing to delete." };
+        } else {
+            logger.error(`CALLABLE_FAILURE: Failed to delete auth user [${uid}]`, error);
+            throw new functions.https.HttpsError(
+                "internal",
+                `Failed to delete user: ${error.message}`
+            );
+        }
+    }
+});

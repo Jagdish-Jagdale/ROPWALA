@@ -23,7 +23,7 @@ export default function DeleteConfirmationModal({
             {/* Modal Content */}
             <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-[510px] overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
                 <div className="px-4 py-4">
-                    <div className="flex items-start gap-5">
+                    <div className="flex items-start gap-3">
                         {/* Warning Icon (Left Side) */}
                         <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
                             <div className="w-9 h-9 rounded-full bg-red-100/80 flex items-center justify-center shadow-inner">

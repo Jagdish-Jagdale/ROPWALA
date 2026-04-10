@@ -8,8 +8,11 @@ import {
     doc,
     orderBy,
     onSnapshot,
+    where,
 } from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { httpsCallable } from "firebase/functions";
+import { db, functions, storage } from "../../lib/firebase";
+import { ref, deleteObject } from "firebase/storage";
 import toast from "react-hot-toast";
 import {
     Search,
@@ -119,13 +122,68 @@ export default function AdminFranchise() {
 
         try {
             setIsDeleting(true);
+
+            // 1. Delete from Firebase Authentication via Cloud Function (if UID exists)
+            if (franchiseToDelete.uid) {
+                await toast.promise(
+                    (async () => {
+                        const deleteAuthFn = httpsCallable(functions, "deleteUserAuth");
+                        const result = await deleteAuthFn({ uid: franchiseToDelete.uid });
+                        
+                        if (!result.data.success) {
+                            throw new Error(result.data.message || "Failed to delete from Auth");
+                        }
+                        return result.data;
+                    })(),
+                    {
+                        loading: "Removing franchise credentials...",
+                        success: (data) => data.message || "Credentials removed",
+                        error: (err) => `Auth cleanup failed: ${err.message}`,
+                    }
+                );
+            } else {
+                toast.error("Notice: This application has no associated Auth UID. It will be removed from Firestore only.", { duration: 5000 });
+            }
+
+            // 2. Cascading Cleanup: Delete all products belonging to this franchise
+            try {
+                const productsQuery = query(
+                    collection(db, "products"), 
+                    where("ownerId", "==", franchiseToDelete.id)
+                );
+                const productSnapshot = await getDocs(productsQuery);
+                
+                for (const productDoc of productSnapshot.docs) {
+                    const productData = productDoc.data();
+                    
+                    // a) Delete Product Image from Storage
+                    if (productData.imageUrl && productData.imageUrl.includes('firebasestorage')) {
+                        try {
+                            const imageRef = ref(storage, productData.imageUrl);
+                            await deleteObject(imageRef);
+                        } catch (e) {
+                            console.error(`Error deleting image for product ${productDoc.id}:`, e);
+                        }
+                    }
+                    
+                    // b) Delete Product Doc from Firestore
+                    await deleteDoc(doc(db, "products", productDoc.id));
+                }
+                console.log(`Cascade cleanup complete: Deleted ${productSnapshot.size} products.`);
+            } catch (cascadeError) {
+                console.error("Error during cascading product cleanup:", cascadeError);
+                // We proceed with franchise deletion even if cascade fails
+            }
+
+            // 3. Delete from Firestore (Proceed even if no UID)
             await deleteDoc(doc(db, "franchise", franchiseToDelete.id));
-            toast.success("Franchise application deleted");
+            toast.success("Franchise and all associated products deleted successfully");
             setShowDeleteModal(false);
             setFranchiseToDelete(null);
         } catch (error) {
             console.error("Error deleting franchise:", error);
-            toast.error("Failed to delete franchise");
+            // We only abort if there was a UID to delete and it failed.
+            toast.error("Process aborted to protect synchronization");
         } finally {
             setIsDeleting(false);
         }

@@ -14,8 +14,9 @@ import {
 } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
 import { initializeApp, deleteApp } from "firebase/app";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, auth, storage } from "../../lib/firebase";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { httpsCallable } from "firebase/functions";
+import { db, auth, storage, functions } from "../../lib/firebase";
 import { ROLES } from "../../utils/roles";
 import toast from "react-hot-toast";
 import {
@@ -191,7 +192,6 @@ export default function UsersManage() {
   const handleDelete = (user, e) => {
     e.stopPropagation();
     setUserToDelete(user);
-    // setDeleteConfirmationText(""); // No longer needed here, handled inside modal
     setShowDeleteModal(true);
   };
 
@@ -200,14 +200,52 @@ export default function UsersManage() {
 
     try {
       setIsDeleting(true);
+
+      const targetUid = userToDelete.uid || userToDelete.id;
+
+      // 1. Delete from Firebase Authentication via Cloud Function
+      await toast.promise(
+        (async () => {
+          const deleteAuthFn = httpsCallable(functions, "deleteUserAuth");
+          const result = await deleteAuthFn({ uid: targetUid });
+          
+          if (!result.data.success) {
+            throw new Error(result.data.message || "Failed to delete from Auth");
+          }
+          return result.data;
+        })(),
+        {
+          loading: "Removing Authentication credentials...",
+          success: (data) => data.message || "Authentication credentials removed",
+          error: (err) => `Auth cleanup failed: ${err.message}`,
+        }
+      );
+
+      // 2. Delete Profile Image from Storage (if applicable)
+      if (userToDelete.profileImage && userToDelete.profileImage.includes('firebasestorage')) {
+        try {
+          const imageRef = ref(storage, userToDelete.profileImage);
+          await deleteObject(imageRef);
+          console.log("Profile image deleted from Storage");
+        } catch (storageError) {
+          console.error("Error deleting profile image from Storage:", storageError);
+          // We continue even if image deletion fails
+        }
+      }
+
+      // 3. Delete from Firestore
       await deleteDoc(doc(db, "users", userToDelete.id));
+      
       setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
-      toast.success("User deleted successfully");
+      toast.success("Firestore record deleted successfully");
       setShowDeleteModal(false);
       setUserToDelete(null);
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error("Failed to delete user");
+      // We don't automatically delete Firestore doc if auth fails because the user
+      // would see the "record deleted" success but the credentials would remain.
+      // This way it's safer.
+      toast.error("Process aborted to protect synchronization");
     } finally {
       setIsDeleting(false);
     }
