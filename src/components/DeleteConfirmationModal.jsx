@@ -1,5 +1,6 @@
 import React from "react";
 import { AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function DeleteConfirmationModal({
     isOpen,
@@ -10,6 +11,7 @@ export default function DeleteConfirmationModal({
     itemName,
     isGlobalLoading = false,
 }) {
+    const { t } = useTranslation(['common']);
     if (!isOpen) return null;
 
     return (
@@ -39,12 +41,12 @@ export default function DeleteConfirmationModal({
                             <div className="text-[14px] text-[#4a5568] leading-relaxed mb-0.5">
                                 {message || (
                                     <>
-                                        Are you sure you want to delete <span className="font-semibold text-gray-900">{itemName || "this resource"}</span>?
+                                        {t('common:delete_confirm_msg', { defaultValue: 'Are you sure you want to delete' })} <span className="font-semibold text-gray-900">{itemName || t('common:this_resource', 'this resource')}</span>?
                                     </>
                                 )}
                             </div>
                             <p className="text-[12px] text-gray-400 font-medium tracking-wide">
-                                This action cannot be undone.
+                                {t('common:delete_undone')}
                             </p>
                         </div>
                     </div>
@@ -53,20 +55,20 @@ export default function DeleteConfirmationModal({
                     <div className="flex justify-end gap-3 mt-2">
                         <button
                             onClick={onClose}
-                            className="px-6 py-2 text-sm font-bold text-[#2d3748] bg-[#f1f5f9] hover:bg-[#e2e8f0] !rounded-md transition-all active:scale-[0.98] min-w-[100px]"
+                            className="px-6 py-2 text-sm font-bold text-[#2d3748] bg-[#f1f5f9] hover:bg-[#e2e8f0] !rounded-sm transition-all active:scale-[0.98] min-w-[100px]"
                             disabled={isGlobalLoading}
                         >
-                            Cancel
+                            {t('common:cancel')}
                         </button>
                         <button
                             onClick={onConfirm}
                             disabled={isGlobalLoading}
-                            className="px-6 py-2 text-sm font-bold text-white bg-[#ff0000] hover:bg-[#e60000] !rounded-md disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-600/10 active:scale-[0.98] flex items-center justify-center gap-2 min-w-[100px]"
+                            className="px-6 py-2 text-sm font-bold text-white bg-[#ff0000] hover:bg-[#e60000] !rounded-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-600/10 active:scale-[0.98] flex items-center justify-center gap-2 min-w-[100px]"
                         >
                             {isGlobalLoading ? (
-                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white !rounded-sm animate-spin" />
                             ) : (
-                                "Delete"
+                                t('common:delete')
                             )}
                         </button>
                     </div>

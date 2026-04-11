@@ -296,7 +296,7 @@ export default function Dashboard() {
   return (
     <div className="w-full h-full bg-white py-3 px-4 pt-4 font-['Inter',sans-serif]">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
           <h3 className="text-xl mb-2 text-gray-900 font-extrabold">{t('common:dashboard')}</h3>
           <p className="text-m text-gray-600 font-normal mb-0">
@@ -307,7 +307,7 @@ export default function Dashboard() {
       <hr className="mt-4 mb-5 border-gray-10" />
 
       {/* Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title={t('dashboard:total_franchises')}
           value={loadingStats ? "..." : stats.nurseries.toLocaleString()}

@@ -58,7 +58,9 @@
       "email_format": "Please enter a valid email address",
       "duplicate_email": "Email already in use",
       "sync_error": "Failed to sync users",
-      "delete_confirm": "Process aborted to protect synchronization"
+      "delete_confirm": "Process aborted to protect synchronization",
+      "delete_title": "Delete User Account?",
+      "delete_msg": "This action cannot be undone. This will permanently delete the user's profile and remove their access to the system."
     },
     "status_active": "Active",
     "status_inactive": "Inactive"

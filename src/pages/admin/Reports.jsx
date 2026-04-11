@@ -30,7 +30,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Star,
-  MapPin
+  MapPin,
+  Filter
 } from "lucide-react";
 
 /* --- Dummy Data for Charts --- */
@@ -307,46 +308,60 @@ export default function Reports() {
         <hr className="mt-4 mb-5 border-gray-100" />
 
         {/* 2. Advanced Filter Bar */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
-            <div className="lg:col-span-8 relative">
-              <Search
-                className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2"
-                size={16}
-              />
-              <input
-                type="text"
-                placeholder={t('reports:filters.search_placeholder')}
-                className="w-full pl-9 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="w-full px-3 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 cursor-pointer"
-              >
-                <option value="Today">{t('reports:filters.date.today')}</option>
-                <option value="This Week">{t('reports:filters.date.week')}</option>
-                <option value="This Month">{t('reports:filters.date.month')}</option>
-                <option value="Last 3 Months">{t('reports:filters.date.last_3_months')}</option>
-              </select>
-            </div>
-            {/* Report Type Filter Removed */}
-            <div className="lg:col-span-2">
-              <select className="w-full px-3 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 cursor-pointer">
-                <option value="All Regions">{t('reports:filters.regions.all')}</option>
-                <option value="Maharashtra">{t('reports:filters.regions.maharashtra')}</option>
-                <option value="Karnataka">{t('reports:filters.regions.karnataka')}</option>
-                <option value="Gujarat">{t('reports:filters.regions.gujarat')}</option>
-              </select>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex flex-col xl:flex-row xl:items-end gap-4 w-full">
+            {/* Row 1: Search Bar */}
+            <div className="w-full flex flex-col gap-1.5 xl:flex-1">
+              <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('reports:filters.search_placeholder')}</label>
+              <div className="relative group">
+                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={18} />
+                <input
+                  type="text"
+                  placeholder={t('reports:filters.search_placeholder')}
+                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all font-medium text-gray-700 bg-gray-50/30"
+                />
+              </div>
             </div>
 
+            {/* Row 2: Filters Grid */}
+            <div className="flex justify-start gap-4 w-full xl:w-auto">
+              <div className="flex flex-col gap-1.5 w-full sm:w-[160px]">
+                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('reports:filters.date.title', 'Date Range')}</label>
+                <div className="relative group">
+                  <Filter className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
+                  <select
+                    value={dateRange}
+                    onChange={(e) => setDateRange(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
+                  >
+                    <option value="Today">{t('reports:filters.date.today')}</option>
+                    <option value="This Week">{t('reports:filters.date.week')}</option>
+                    <option value="This Month">{t('reports:filters.date.month')}</option>
+                    <option value="Last 3 Months">{t('reports:filters.date.last_3_months')}</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-1.5 w-full sm:w-[160px]">
+                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('reports:filters.regions.title', 'Region')}</label>
+                <div className="relative group">
+                  <MapPin className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
+                  <select
+                    className="w-full pl-9 pr-4 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
+                  >
+                    <option value="All Regions">{t('reports:filters.regions.all')}</option>
+                    <option value="Maharashtra">{t('reports:filters.regions.maharashtra')}</option>
+                    <option value="Karnataka">{t('reports:filters.regions.karnataka')}</option>
+                    <option value="Gujarat">{t('reports:filters.regions.gujarat')}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* 3. KPI Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {kpiStatsData.map((stat, i) => (
             <div
               key={i}

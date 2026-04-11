@@ -37,6 +37,7 @@ import {
     Trees,
     AlertCircle,
     ClipboardList,
+    PauseCircle
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
@@ -270,7 +271,7 @@ export default function AdminFranchise() {
                 <hr className="mt-4 mb-5 border-gray-100" />
 
                 {/* Stats Summary */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <StatCard
                         title={t('franchise:total_apps')}
                         value={applications.length}
@@ -306,33 +307,33 @@ export default function AdminFranchise() {
                         </div>
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
-                    <div className="flex flex-row items-end gap-3 w-full">
-                        {/* Search Bar - Flex Grow to take space */}
-                        <div className="flex-grow flex flex-col gap-1.5">
-                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:search_apps')}</label>
-                            <div className="relative">
-                                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
+                    <div className="flex flex-col xl:flex-row xl:items-end gap-4 w-full">
+                        {/* Row 1: Search Bar */}
+                        <div className="w-full flex flex-col gap-1.5 xl:flex-1">
+                            <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('franchise:search_apps')}</label>
+                            <div className="relative group">
+                                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={18} />
                                 <input
                                     type="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder={t('franchise:search_placeholder')}
-                                    className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
+                                    className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all font-medium text-gray-700 bg-gray-50/30"
                                 />
                             </div>
                         </div>
 
-                        {/* Filters & Rows consolidated */}
-                        <div className="flex flex-row items-end gap-3 flex-none">
+                        {/* Row 2: Filters Grid */}
+                        <div className="grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 w-full xl:w-auto">
                             {/* Status Filter */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:status_label')}</label>
-                                <div className="relative w-[130px]">
-                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                            <div className="flex flex-col gap-1.5 col-span-1 lg:flex-none lg:w-[130px]">
+                                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('franchise:status_label')}</label>
+                                <div className="relative group">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
                                     <select
                                         value={statusFilter}
                                         onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                                        className="w-full pl-8 pr-2 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all appearance-none cursor-pointer bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
                                     >
                                         <option value="all">{t('common:all')}</option>
                                         <option value="pending">{t('franchise:pending')}</option>
@@ -343,14 +344,14 @@ export default function AdminFranchise() {
                             </div>
 
                             {/* Franchise (Nursery) Filter */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:franchise_label')}</label>
-                                <div className="relative w-[140px]">
-                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                            <div className="flex flex-col gap-1.5 col-span-2 lg:col-span-1 lg:flex-none lg:w-[150px]">
+                                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('franchise:franchise_label')}</label>
+                                <div className="relative group">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
                                     <select
                                         value={nurseryFilter}
                                         onChange={(e) => setNurseryFilter(e.target.value)}
-                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                                        className="w-full pl-8 pr-2 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all appearance-none cursor-pointer bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
                                     >
                                         <option value="all">{t('common:all')}</option>
                                         {uniqueNurseries.map(name => (
@@ -361,14 +362,14 @@ export default function AdminFranchise() {
                             </div>
 
                             {/* Date sort Filter */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:sort_by')}</label>
-                                <div className="relative w-[130px]">
-                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+                            <div className="flex flex-col gap-1.5 col-span-1 lg:flex-none lg:w-[130px]">
+                                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('franchise:sort_by')}</label>
+                                <div className="relative group">
+                                    <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
                                     <select
                                         value={dateSort}
                                         onChange={(e) => setDateSort(e.target.value)}
-                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                                        className="w-full pl-8 pr-2 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all appearance-none cursor-pointer bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
                                     >
                                         <option value="newest">{t('franchise:newest')}</option>
                                         <option value="oldest">{t('franchise:oldest')}</option>
@@ -379,22 +380,20 @@ export default function AdminFranchise() {
                             </div>
 
                             {/* Rows Selector */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('common:rows')}</label>
-                                <div className="flex items-center gap-1.5">
-                                    <select
-                                        value={rowsPerPage}
-                                        onChange={(e) => {
-                                            setRowsPerPage(Number(e.target.value));
-                                            setCurrentPage(1);
-                                        }}
-                                        className="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-green-500 focus:border-green-500 block p-2 font-normal min-w-[70px]"
-                                    >
-                                        {[5, 10, 20, 50].map(num => (
-                                            <option key={num} value={num}>{num}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                            <div className="flex flex-col gap-1.5 col-span-2 lg:flex-none lg:w-[100px]">
+                                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('common:rows')}</label>
+                                <select
+                                    value={rowsPerPage}
+                                    onChange={(e) => {
+                                        setRowsPerPage(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
+                                    className="w-full px-4 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-gray-50/30 font-semibold text-gray-700 transition-all text-center"
+                                >
+                                    {[5, 10, 20, 50].map(num => (
+                                        <option key={num} value={num}>{num}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     </div>

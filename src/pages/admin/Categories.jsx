@@ -301,35 +301,39 @@ export default function AdminCategories() {
             </button>
           </div>
           <hr className="mt-0 mb-4 border-gray-200" />
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-            <div className="md:col-span-8 relative">
-              <Search
-                className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2"
-                size={18}
-              />
-              <input
-                type="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={t('category:search_placeholder')}
-                className="w-full pl-10 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
-              />
+          <div className="flex flex-col xl:flex-row xl:items-end gap-4 w-full">
+            {/* Row 1: Search Bar */}
+            <div className="w-full flex flex-col gap-1.5 xl:flex-1">
+              <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('category:search_placeholder')}</label>
+              <div className="relative group">
+                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={18} />
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t('category:search_placeholder')}
+                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all font-medium text-gray-700 bg-gray-50/30"
+                />
+              </div>
             </div>
 
-            <div className="md:col-span-4 relative">
-              <Filter
-                className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2"
-                size={16}
-              />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white"
-              >
-                <option value="newest">{t('common:newest_first')}</option>
-                <option value="oldest">{t('common:oldest_first')}</option>
-                <option value="name">{t('common:name_az')}</option>
-              </select>
+            {/* Row 2: Filters Grid */}
+            <div className="flex justify-start w-full xl:w-auto">
+              <div className="flex flex-col gap-1.5 w-full sm:w-[200px]">
+                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('common:sort_by', 'Sort By')}</label>
+                <div className="relative group">
+                  <Filter className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
+                  >
+                    <option value="newest">{t('common:newest_first')}</option>
+                    <option value="oldest">{t('common:oldest_first')}</option>
+                    <option value="name">{t('common:name_az')}</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -25,5 +25,19 @@
   "cancel": "Cancel",
   "save": "Save",
   "update": "Update",
-  "pagination": "Page {{current}} of {{total}}"
+  "pagination": "Page {{current}} of {{total}}",
+  "all": "All",
+  "newest": "Newest",
+  "name_asc": "Name (A-Z)",
+  "name_desc": "Name (Z-A)",
+  "sort_by": "Sort By",
+  "n_a": "N/A",
+  "no_email": "No Email",
+  "unknown_user": "Unknown User",
+  "delete": "Delete",
+  "close": "Close",
+  "delete_undone": "This action cannot be undone.",
+  "delete_confirm_msg": "Are you sure you want to delete",
+  "this_resource": "this resource",
+  "approve": "Approve"
 }

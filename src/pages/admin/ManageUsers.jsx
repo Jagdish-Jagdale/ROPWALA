@@ -210,7 +210,7 @@ export default function UsersManage() {
         (async () => {
           const deleteAuthFn = httpsCallable(functions, "deleteUserAuth");
           const result = await deleteAuthFn({ uid: targetUid });
-          
+
           if (!result.data.success) {
             throw new Error(result.data.message || "Failed to delete from Auth");
           }
@@ -237,7 +237,7 @@ export default function UsersManage() {
 
       // 3. Delete from Firestore
       await deleteDoc(doc(db, "users", userToDelete.id));
-      
+
       setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
       toast.success(t('users:toast.firestore_success'));
       setShowDeleteModal(false);
@@ -442,7 +442,7 @@ export default function UsersManage() {
         <hr className="mt-4 mb-5 border-gray-100" />
 
         {/* Stats Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <StatCard
             title={t('users:stats.total')}
             value={users.length}
@@ -479,33 +479,33 @@ export default function UsersManage() {
           </div>
           <hr className="mt-0 mb-4 border-gray-200" />
 
-          <div className="flex flex-row items-center gap-3 w-full">
-            {/* Search Bar - Flex Grow to take space */}
-            <div className="flex-grow flex flex-col gap-1.5">
-              <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.search_label')}</label>
-              <div className="relative">
-                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
+          <div className="flex flex-col xl:flex-row xl:items-end gap-4 w-full">
+            {/* Row 1: Search Bar */}
+            <div className="w-full flex flex-col gap-1.5 xl:flex-1">
+              <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('users:filters.search_label')}</label>
+              <div className="relative group">
+                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={18} />
                 <input
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('users:filters.search_placeholder')}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
+                  className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all font-medium text-gray-700 bg-gray-50/30"
                 />
               </div>
             </div>
 
-            {/* Filters and Rows - Fixed widths to keep row tight */}
-            <div className="flex flex-row items-end gap-3 flex-none">
+            {/* Row 2: Filters Grid */}
+            <div className="grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 w-full xl:w-auto">
               {/* Status Filter First */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.status')}</label>
-                <div className="relative w-[130px]">
-                  <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+              <div className="flex flex-col gap-1.5 col-span-1 lg:flex-none lg:w-[130px]">
+                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('users:filters.status')}</label>
+                <div className="relative group">
+                  <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                    className="w-full pl-8 pr-2 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all appearance-none cursor-pointer bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
                   >
                     <option value="all">{t('common:all')}</option>
                     <option value="active">{t('users:modals.status_active')}</option>
@@ -515,14 +515,14 @@ export default function UsersManage() {
               </div>
 
               {/* Sort Filter Second */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.sort_by')}</label>
-                <div className="relative w-[130px]">
-                  <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
+              <div className="flex flex-col gap-1.5 col-span-1 lg:flex-none lg:w-[130px]">
+                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('users:filters.sort_by')}</label>
+                <div className="relative group">
+                  <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={14} />
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
+                    className="w-full pl-8 pr-2 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all appearance-none cursor-pointer bg-gray-50/30 font-semibold text-gray-700 uppercase tracking-tight"
                   >
                     <option value="newest">{t('common:newest')}</option>
                     <option value="name-asc">{t('common:name_asc')}</option>
@@ -532,24 +532,22 @@ export default function UsersManage() {
               </div>
 
               {/* Rows Selector */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.rows')}</label>
-                <div className="flex items-center gap-1.5">
-                  <select
-                    value={rowsPerPage}
-                    onChange={(e) => {
-                      setRowsPerPage(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                    className="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-green-500 focus:border-green-500 block p-2 font-normal min-w-[70px]"
-                  >
-                    {[10, 25, 50].map((pageSize) => (
-                      <option key={pageSize} value={pageSize}>
-                        {pageSize}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="flex flex-col gap-1.5 col-span-2 lg:flex-none lg:w-[100px]">
+                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('users:filters.rows')}</label>
+                <select
+                  value={rowsPerPage}
+                  onChange={(e) => {
+                    setRowsPerPage(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="w-full px-4 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-gray-50/30 font-semibold text-gray-700 transition-all text-center"
+                >
+                  {[10, 25, 50].map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      {pageSize}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
@@ -1050,10 +1048,12 @@ export default function UsersManage() {
 
                       {/* Address */}
                       <div className="space-y-1.5 md:col-span-2">
-                        <label className="text-base font-medium text-gray-700 flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                           <MapPin size={16} className="text-red-600" />
-                          {t('users:modals.fields.address')}
-                        </label>
+                          <label className="text-base font-medium text-gray-700">
+                            {t('users:modals.fields.address')}
+                          </label>
+                        </div>
                         <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900 min-h-[3rem] whitespace-pre-wrap">
                           {selectedUser.address || t('common:n_a')}
                         </div>
@@ -1133,26 +1133,24 @@ export default function UsersManage() {
                 </div>
 
                 {/* Modal Footer */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center gap-3">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        handleDelete(selectedUser, { stopPropagation: () => {} });
-                        setSelectedUser(null);
-                      }}
-                      className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-red-700 transition-all active:scale-95"
-                    >
-                      <Trash2 size={18} /> {t('common:delete')}
-                    </button>
-                  </div>
+                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end items-center gap-3">
                   <button
                     onClick={() => {
                       setSelectedUser(null);
                       setShowViewPassword(false);
                     }}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-all shadow-sm"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 !rounded-sm transition-all shadow-sm"
                   >
-                    {t('common:close')}
+                    {t('common:close', 'Close')}
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleDelete(selectedUser, { stopPropagation: () => { } });
+                      setSelectedUser(null);
+                    }}
+                    className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 !rounded-sm text-sm font-bold shadow-sm hover:bg-red-700 transition-all active:scale-95"
+                  >
+                    <Trash2 size={18} /> {t('common:delete')}
                   </button>
                 </div>
               </div>

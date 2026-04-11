@@ -24,7 +24,6 @@
   "form_slug": "Slug",
   "form_status": "Status",
   "form_order": "Order",
-  "form_order": "Order",
   "confirm_delete": "Are you sure you want to delete this category?",
   "delete_success": "Category deleted successfully",
   "add_success": "Category added successfully",

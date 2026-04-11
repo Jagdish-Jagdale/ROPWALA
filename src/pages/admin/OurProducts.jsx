@@ -407,7 +407,7 @@ export default function AdminOurProducts() {
                 <hr className="mt-4 mb-5 border-gray-100" />
 
                 {/* Stats Summary (Mini) */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <StatCard
                         title={t('product:total_our_products')}
                         value={products.length}
@@ -425,33 +425,33 @@ export default function AdminOurProducts() {
                         </div>
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
-                    <div className="flex flex-row items-end gap-3 w-full">
-                        {/* Search Bar */}
-                        <div className="flex-grow flex flex-col gap-1.5">
-                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:search_products')}</label>
-                            <div className="relative">
-                                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
+                    <div className="flex flex-col xl:flex-row xl:items-end gap-4 w-full">
+                        {/* Row 1: Search Bar */}
+                        <div className="w-full flex flex-col gap-1.5 xl:flex-1">
+                            <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('product:search_products')}</label>
+                            <div className="relative group">
+                                <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2 group-focus-within:text-green-600 transition-colors" size={18} />
                                 <input
                                     type="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder={t('product:search_placeholder')}
-                                    className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
+                                    className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all font-medium text-gray-700 bg-gray-50/30"
                                 />
                             </div>
                         </div>
 
-                        {/* Filters Wrapper */}
-                        <div className="flex flex-row items-end gap-3 flex-none">
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:rows')}</label>
+                        {/* Row 2: Filters Grid */}
+                        <div className="grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 w-full xl:w-auto">
+                            <div className="flex flex-col gap-1.5 col-span-2 lg:flex-none lg:w-[100px]">
+                                <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('product:rows')}</label>
                                 <select
                                     value={rowsPerPage}
                                     onChange={(e) => {
                                         setRowsPerPage(Number(e.target.value));
                                         setCurrentPage(1);
                                     }}
-                                    className="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-green-500 focus:border-green-500 block p-2 font-normal min-w-[70px]"
+                                    className="w-full px-4 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-gray-50/30 font-semibold text-gray-700 transition-all text-center"
                                 >
                                     {[5, 10, 25, 50].map((pageSize) => (
                                         <option key={pageSize} value={pageSize}>
