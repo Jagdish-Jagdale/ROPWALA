@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
@@ -204,11 +204,19 @@ export default function AdminLayout() {
   // State for dropdowns
   const [openDropdownKey, setOpenDropdownKey] = useState(null);
 
-  // Close mobile menu on route change
+  // Scroll reset for main content on route change
+  const mainContentRef = useRef(null);
+
+  // Close mobile menu on route change and reset scroll
   useEffect(() => {
     setMobileMenuOpen(false);
     // Auto-close dropdown when route changes
     setOpenDropdownKey(null);
+
+    // Reset scroll to top
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo(0, 0);
+    }
   }, [location.pathname]);
 
   const handleLogout = async () => {
@@ -363,7 +371,10 @@ export default function AdminLayout() {
 
       {/* Content */}
       <main className="flex-1 min-w-0 transition-all duration-300 ease-in-out lg:pr-4 lg:py-4 h-full overflow-hidden">
-        <div className="h-full w-full overflow-y-auto no-scrollbar rounded-2xl">
+        <div 
+          ref={mainContentRef}
+          className="h-full w-full overflow-y-auto no-scrollbar rounded-2xl scroll-smooth"
+        >
           <Outlet />
         </div>
       </main>

@@ -19,8 +19,8 @@ import {
     Search,
     Filter,
     MapPin,
+    XCircle,
     Clock,
-    PauseCircle,
     Mail,
     Phone,
     ChevronLeft,
@@ -239,6 +239,8 @@ export default function AdminFranchise() {
             case "accepted": return "bg-green-100 text-green-700 border-green-200";
             case "hold": return "bg-amber-100 text-amber-700 border-amber-200";
             case "pending": return "bg-emerald-100 text-emerald-700 border-emerald-200";
+            case "rejected": 
+            case "reject": return "bg-red-100 text-red-700 border-red-200";
             default: return "bg-gray-100 text-gray-700 border-gray-200";
         }
     };
@@ -288,10 +290,10 @@ export default function AdminFranchise() {
                         variant="blue"
                     />
                     <StatCard
-                        title={t('franchise:on_hold')}
-                        value={applications.filter(a => a.status?.toUpperCase() === 'HOLD').length}
-                        icon={PauseCircle}
-                        variant="amber"
+                        title={t('franchise:rejected')}
+                        value={applications.filter(a => a.status?.toUpperCase() === 'REJECTED' || a.status?.toUpperCase() === 'REJECT').length}
+                        icon={XCircle}
+                        variant="red"
                     />
                 </div>
 
@@ -335,7 +337,7 @@ export default function AdminFranchise() {
                                         <option value="all">{t('common:all')}</option>
                                         <option value="pending">{t('franchise:pending')}</option>
                                         <option value="approved">{t('franchise:approved')}</option>
-                                        <option value="hold">{t('franchise:on_hold')}</option>
+                                        <option value="rejected">{t('franchise:rejected')}</option>
                                     </select>
                                 </div>
                             </div>
@@ -510,18 +512,11 @@ export default function AdminFranchise() {
                                                         <CheckCircle size={18} />
                                                     </button>
                                                     <button
-                                                        onClick={() => updateStatus(app.id, "hold")}
-                                                        className="p-1.5 text-amber-600 hover:text-amber-800 hover:bg-amber-50 rounded-full transition-colors"
-                                                        title={t('franchise:on_hold')}
+                                                        onClick={() => updateStatus(app.id, "rejected")}
+                                                        className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors"
+                                                        title={t('franchise:reject')}
                                                     >
-                                                        <PauseCircle size={18} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => updateStatus(app.id, "pending")}
-                                                        className="p-1.5 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-full transition-colors"
-                                                        title={t('franchise:set_to_pending')}
-                                                    >
-                                                        <Clock size={18} />
+                                                        <XCircle size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteFranchise(app.id)}
