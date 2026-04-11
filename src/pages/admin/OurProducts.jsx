@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     collection,
     getDocs,
@@ -75,6 +76,7 @@ const ProductImage = ({ src, alt, className = "", priority = false }) => {
 };
 
 export default function AdminOurProducts() {
+    const { t } = useTranslation(['product', 'common']);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -384,10 +386,10 @@ export default function AdminOurProducts() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
                         <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-                            Our Products
+                            {t('product:our_products')}
                         </h3>
                         <p className="text-base text-gray-600 font-normal mb-0">
-                            View and manage your own product catalog
+                            {t('product:our_products_desc')}
                         </p>
                     </div>
                     <button
@@ -399,7 +401,7 @@ export default function AdminOurProducts() {
                         style={{ borderRadius: "12px" }}
                     >
                         <Plus size={18} />
-                        Add Our Product
+                        {t('product:add_our_product')}
                     </button>
                 </div>
                 <hr className="mt-4 mb-5 border-gray-100" />
@@ -407,7 +409,7 @@ export default function AdminOurProducts() {
                 {/* Stats Summary (Mini) */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <StatCard
-                        title="Total Our Products"
+                        title={t('product:total_our_products')}
                         value={products.length}
                         icon={Package}
                         variant="green"
@@ -417,23 +419,23 @@ export default function AdminOurProducts() {
                 {/* Search & Filters */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+                        <h5 className="text-lg font-bold text-gray-900">{t('common:search_filters')}</h5>
                         <div className="text-sm font-medium text-gray-500">
-                            Total {filteredProducts.length} records
+                            {t('common:total_records', { count: filteredProducts.length })}
                         </div>
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
                     <div className="flex flex-row items-end gap-3 w-full">
                         {/* Search Bar */}
                         <div className="flex-grow flex flex-col gap-1.5">
-                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Search Products</label>
+                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:search_products')}</label>
                             <div className="relative">
                                 <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
                                 <input
                                     type="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="e.g. Arabian Jasmine or Plants"
+                                    placeholder={t('product:search_placeholder')}
                                     className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
                                 />
                             </div>
@@ -442,7 +444,7 @@ export default function AdminOurProducts() {
                         {/* Filters Wrapper */}
                         <div className="flex flex-row items-end gap-3 flex-none">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Rows</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:rows')}</label>
                                 <select
                                     value={rowsPerPage}
                                     onChange={(e) => {
@@ -469,25 +471,25 @@ export default function AdminOurProducts() {
                             <thead>
                                 <tr className="border-b border-gray-200 bg-gray-100">
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Sr No
+                                        {t('product:sr_no')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Image
+                                        {t('product:image')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Product Name
+                                        {t('product:product_name')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Price
+                                        {t('product:price')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Description
+                                        {t('product:description_label')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Dashboard
+                                        {t('product:status')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Action
+                                        {t('product:action')}
                                     </th>
                                 </tr>
                             </thead>
@@ -498,7 +500,7 @@ export default function AdminOurProducts() {
                                             <div className="flex flex-col items-center justify-center gap-3">
                                                 <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                                 <span className="text-sm text-gray-500 font-medium">
-                                                    Loading inventory...
+                                                    {t('product:loading_inventory')}
                                                 </span>
                                             </div>
                                         </td>
@@ -552,7 +554,7 @@ export default function AdminOurProducts() {
                                                 <p className="text-xs text-gray-500 line-clamp-1 max-w-[300px]" title={p.description}>
                                                     {p.description && p.description.length > 60 
                                                         ? p.description.substring(0, 60) + "..." 
-                                                        : (p.description || "No description provided")}
+                                                        : (p.description || t('common:no_description'))}
                                                 </p>
                                             </td>
 
@@ -560,12 +562,12 @@ export default function AdminOurProducts() {
                                                 {p.showInOwnerDashboard !== false ? (
                                                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-100 text-green-700">
                                                         <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                        Visible
+                                                        {t('product:visible')}
                                                     </span>
                                                 ) : (
                                                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-500">
                                                         <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
-                                                        Hidden
+                                                        {t('product:hidden')}
                                                     </span>
                                                 )}
                                             </td>
@@ -575,14 +577,14 @@ export default function AdminOurProducts() {
                                                     <button
                                                         onClick={() => openEditModal(p)}
                                                         className="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-full transition-colors"
-                                                        title="Edit Details"
+                                                        title={t('product:edit')}
                                                     >
                                                         <Edit2 size={16} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteProduct(p)}
                                                         className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors"
-                                                        title="Delete Product"
+                                                        title={t('product:delete')}
                                                     >
                                                         <Trash2 size={16} />
                                                     </button>
@@ -598,7 +600,7 @@ export default function AdminOurProducts() {
                                                     <Package size={32} className="opacity-50" />
                                                 </div>
                                                 <p className="text-sm font-medium">
-                                                    No products found in your inventory.
+                                                    {t('product:no_products')}
                                                 </p>
                                             </div>
                                         </td>
@@ -619,7 +621,7 @@ export default function AdminOurProducts() {
                                 <ChevronLeft size={22} />
                             </button>
                             <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                                Page {currentPage} of {Math.max(1, totalPages)}
+                                {t('product:page_x_of_y', { current: currentPage, total: Math.max(1, totalPages) })}
                             </span>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -649,8 +651,8 @@ export default function AdminOurProducts() {
                     setProductToDelete(null);
                 }}
                 onConfirm={confirmDeleteProduct}
-                title="Delete Our Product?"
-                message="This action cannot be undone. This will permanently delete the product from your inventory and remove all associated images."
+                title={t('product:delete_our_product_q')}
+                message={t('product:delete_our_msg')}
                 itemName={productToDelete?.name}
                 isGlobalLoading={isDeleting}
             />
@@ -718,7 +720,7 @@ export default function AdminOurProducts() {
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="e.g., Arabian Jasmine Plant"
+                                        placeholder={t('product:name_placeholder')}
                                         className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
                                     />
                                 </div>
@@ -727,11 +729,11 @@ export default function AdminOurProducts() {
                                 <div className="space-y-1.5">
                                     <div className="flex items-center justify-between ml-1">
                                         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                            Product Images
+                                            {t('product:product_images')}
                                         </label>
                                         {imagePreviews.length > 0 && (
                                             <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-lg">
-                                                {imagePreviews.length} image{imagePreviews.length !== 1 ? 's' : ''}
+                                                {imagePreviews.length === 1 ? t('product:images_count', { count: 1 }) : t('product:images_count_plural', { count: imagePreviews.length })}
                                             </span>
                                         )}
                                     </div>
@@ -752,7 +754,7 @@ export default function AdminOurProducts() {
                                                         {/* Main badge */}
                                                         {mainImageIndex === idx && (
                                                             <span className="absolute bottom-1.5 left-1.5 bg-green-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider">
-                                                                Main
+                                                                {t('product:main')}
                                                             </span>
                                                         )}
 
@@ -797,7 +799,7 @@ export default function AdminOurProducts() {
                                                 style={{ borderRadius: "12px" }}
                                             >
                                                 <Upload size={16} />
-                                                {imagePreviews.length === 0 ? "Upload Product Images" : "Add More Images"}
+                                                {imagePreviews.length === 0 ? t('product:upload_images') : t('product:add_more_images')}
                                             </label>
                                         </>
 
@@ -811,7 +813,7 @@ export default function AdminOurProducts() {
 
                                 {/* Price */}
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Price (₹)</label>
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{t('product:price_label')}</label>
                                     <div className="relative">
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
                                         <input
@@ -828,12 +830,12 @@ export default function AdminOurProducts() {
 
                                 {/* Description */}
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Description</label>
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{t('product:description_label')}</label>
                                     <textarea
                                         rows={4}
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                        placeholder="Briefly describe the product..."
+                                        placeholder={t('product:brief_desc_placeholder')}
                                         className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all resize-none text-sm"
                                     ></textarea>
                                 </div>
@@ -854,7 +856,7 @@ export default function AdminOurProducts() {
                                     className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-all disabled:opacity-50"
                                     style={{ borderRadius: "12px" }}
                                 >
-                                    Cancel
+                                    {t('common:cancel')}
                                 </button>
                                 <button
                                     type="submit"
@@ -865,12 +867,12 @@ export default function AdminOurProducts() {
                                     {isSubmitting ? (
                                         <>
                                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                            Processing...
+                                            {t('product:processing')}
                                         </>
                                     ) : (
                                         <>
                                             <CheckCircle size={18} />
-                                            {isAddModalOpen ? "Add Product" : "Update Changes"}
+                                            {isAddModalOpen ? t('product:add_product_btn') : t('product:update_changes')}
                                         </>
                                     )}
                                 </button>
@@ -886,9 +888,9 @@ export default function AdminOurProducts() {
                     setProductToDelete(null);
                 }}
                 onConfirm={confirmDeleteProduct}
-                title="Delete Company Product?"
-                message="This action cannot be undone. This will permanently delete the product and its images from the database."
-                confirmText="DELETE OUR PRODUCT"
+                title={t('product:delete_company_product_q')}
+                message={t('product:delete_company_product_msg')}
+                confirmText={t('product:delete_our_product_confirm')}
                 itemName={productToDelete?.name}
                 isGlobalLoading={isDeleting}
             />

@@ -1,0 +1,20 @@
+{
+  "overview_desc": "नर्सरी सबस्क्रिप्शन, ब्रोकर रेव्हेन्यू आणि प्लॅटफॉर्म क्रियाकलापांचे विहंगावलोकन.",
+  "total_franchises": "एकूण फ्रँचायझी",
+  "total_users": "एकूण वापरकर्ते",
+  "total_products": "एकूण उत्पादने",
+  "total_revenue": "एकूण महसूल",
+  "growth_overview": "फ्रँचायझी वाढीचे विहंगावलोकन",
+  "subscription_plans": "सबस्क्रिप्शन प्लॅन्स",
+  "recent_franchises": "अलीकडे जोडलेल्या फ्रँचायझी",
+  "most_products": "सर्वात जास्त उत्पादने असलेली फ्रँचायझी",
+  "no_franchises": "कोणतीही फ्रँचायझी आढळली नाही",
+  "new_franchise_reg": "नवीन फ्रँचायझी '{{name}}' नोंदणीकृत",
+  "approved_products": "{{name}}' कडून {{count}}+ मंजूर उत्पादने जोडली गेली",
+  "top_franchise": "टॉप {{index}} फ्रँचायझी",
+  "active": "सक्रिय",
+  "gold_plan": "गोल्ड प्लॅन",
+  "silver_plan": "सिल्व्हर प्लॅन",
+  "platinum": "प्लॅटिनम",
+  "basic": "बेसिक"
+}

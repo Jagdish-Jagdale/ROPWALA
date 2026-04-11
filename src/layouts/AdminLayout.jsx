@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import {
   LayoutGrid,
@@ -17,53 +18,9 @@ import {
   Package,
   Store,
   LayoutPanelTop,
+  Languages,
+  Globe,
 } from "lucide-react";
-
-const MENU = [
-  {
-    to: "/admin/dashboard",
-    label: "Dashboard",
-    icon: LayoutGrid,
-    end: true,
-  },
-  {
-    to: "/admin/products",
-    label: "Products",
-    icon: Package,
-  },
-  {
-    to: "/admin/ourproducts",
-    label: "Our Product",
-    icon: Package,
-  },
-  {
-    to: "/admin/manageusers",
-    label: "Users",
-    icon: Users,
-  },
-
-  {
-    to: "/admin/franchise",
-    label: "Franchise",
-    icon: Store,
-  },
-  {
-    to: "/admin/banners",
-    label: "Banner",
-    icon: LayoutPanelTop,
-  },
-  { to: "/admin/reports", label: "Reports", icon: FileText },
-  {
-    label: "Settings",
-    icon: Settings,
-    hasDropdown: true,
-    submenu: [
-      { to: "/admin/categories", label: "Categories" },
-      { to: "/admin/owner-hamipatra", label: "Owner Hamipatra" },
-      { to: "/admin/user-hamipatra", label: "User Hamipatra" },
-    ],
-  },
-];
 
 /* ---------- Nav Item ---------- */
 const NavItem = ({
@@ -84,48 +41,71 @@ const NavItem = ({
   const isAnyChildActive = hasDropdown && submenu?.some(item =>
     location.pathname === item.to || location.pathname.startsWith(item.to + '/')
   );
-  if (hasDropdown && !collapsed) {
-    return (
-      <div className={isDropdownOpen ? "" : "mb-2"}>
-        <div
-          onClick={onToggleDropdown}
-          className={`flex items-center rounded-lg px-4 py-2 gap-3 cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02] ${isDropdownOpen || isAnyChildActive
-            ? "bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 shadow-sm"
-            : "text-black hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700 hover:shadow-sm"
-            }`}
-        >
-          <Icon
-            size={20}
-            strokeWidth={2}
-            className={isDropdownOpen || isAnyChildActive ? "text-green-700" : "text-black"}
-          />
-          <span className="flex-grow text-[16px] font-medium whitespace-nowrap">{label}</span>
-          {isDropdownOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-        </div>
+  if (hasDropdown) {
+    // Shared active check for both collapsed and expanded states
+    const isActive = isAnyChildActive;
 
-        <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${isDropdownOpen ? "max-h-40 opacity-100 mt-1 mb-1" : "max-h-0 opacity-0"
-            }`}
-        >
-          <div className="flex flex-col gap-1.5">
-            {submenu.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={onItemClick}
-                className={({ isActive }) =>
-                  `flex items-center px-5 py-2 ml-4 rounded-md text-[16px] font-medium transition-all duration-300 ease-in-out transform hover:scale-[1.02] no-underline ${isActive
-                    ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md"
-                    : "text-black hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700 hover:shadow-sm"
-                  }`
-                }
-                style={{ textDecoration: 'none' }}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+    if (!collapsed) {
+      return (
+        <div className={isDropdownOpen ? "" : "mb-2"}>
+          <div
+            onClick={onToggleDropdown}
+            className={`flex items-center rounded-lg px-4 py-2 gap-3 cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02] ${isDropdownOpen || isActive
+              ? "bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 shadow-sm"
+              : "text-black hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700 hover:shadow-sm"
+              }`}
+          >
+            <Icon
+              size={20}
+              strokeWidth={2}
+              className={isDropdownOpen || isActive ? "text-green-700" : "text-black"}
+            />
+            <span className="flex-grow text-[16px] font-medium whitespace-nowrap">{label}</span>
+            {isDropdownOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </div>
+
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${isDropdownOpen ? "max-h-40 opacity-100 mt-1 mb-1" : "max-h-0 opacity-0"
+              }`}
+          >
+            <div className="flex flex-col gap-1.5">
+              {submenu.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={onItemClick}
+                  className={({ isActive: isSubActive }) =>
+                    `flex items-center px-5 py-2 ml-4 rounded-md text-[16px] font-medium transition-all duration-300 ease-in-out transform hover:scale-[1.02] no-underline ${isSubActive
+                      ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md"
+                      : "text-black hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700 hover:shadow-sm"
+                    }`
+                  }
+                  style={{ textDecoration: 'none' }}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
           </div>
         </div>
+      );
+    }
+
+    // Collapsed Dropdown State
+    return (
+      <div
+        onClick={onToggleDropdown}
+        title={label}
+        className={`flex items-center justify-center rounded-md transition-all duration-300 ease-in-out transform hover:scale-[1.02] mb-1 cursor-pointer px-2 py-2 ${isActive
+          ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md"
+          : "text-black hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700 hover:shadow-sm"
+          }`}
+      >
+        <Icon
+          size={20}
+          strokeWidth={isActive ? 2.5 : 2}
+          className={isActive ? "text-white" : "text-black"}
+        />
       </div>
     );
   }
@@ -168,6 +148,54 @@ export default function AdminLayout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, i18n } = useTranslation('common');
+
+  const language = i18n.language.toUpperCase();
+
+  const menuItems = [
+    {
+      to: "/admin/dashboard",
+      label: t('dashboard'),
+      icon: LayoutGrid,
+      end: true,
+    },
+    {
+      to: "/admin/products",
+      label: t('products'),
+      icon: Package,
+    },
+    {
+      to: "/admin/ourproducts",
+      label: t('our_product'),
+      icon: Package,
+    },
+    {
+      to: "/admin/manageusers",
+      label: t('users'),
+      icon: Users,
+    },
+    {
+      to: "/admin/franchise",
+      label: t('franchise'),
+      icon: Store,
+    },
+    {
+      to: "/admin/banners",
+      label: t('banner'),
+      icon: LayoutPanelTop,
+    },
+    { to: "/admin/reports", label: t('reports'), icon: FileText },
+    {
+      label: t('settings'),
+      icon: Settings,
+      hasDropdown: true,
+      submenu: [
+        { to: "/admin/categories", label: t('categories') },
+        { to: "/admin/owner-hamipatra", label: t('owner_hamipatra') },
+        { to: "/admin/user-hamipatra", label: t('user_hamipatra') },
+      ],
+    },
+  ];
 
   // State for desktop sidebar collapse
   const [collapsed, setCollapsed] = useState(false);
@@ -189,7 +217,12 @@ export default function AdminLayout() {
   };
 
   const handleToggleDropdown = (key) => {
-    setOpenDropdownKey(openDropdownKey === key ? null : key);
+    if (collapsed) {
+      setCollapsed(false);
+      setOpenDropdownKey(key);
+    } else {
+      setOpenDropdownKey(openDropdownKey === key ? null : key);
+    }
   };
 
   const handleItemClick = () => {
@@ -246,7 +279,7 @@ export default function AdminLayout() {
               <div className="flex flex-col items-center">
 
                 <span className="mt-1 px-3 py-0.5 text-[10px] font-bold bg-green-600 text-white rounded-full uppercase tracking-wider shadow-sm">
-                  Admin
+                  {t('admin')}
                 </span>
               </div>
             </div>
@@ -278,22 +311,22 @@ export default function AdminLayout() {
                 ROPWALA
               </span>
               <span className="mt-1 px-2.5 py-0.5 text-xs font-bold bg-green-600 text-white rounded uppercase tracking-wide">
-                Admin
+                {t('admin')}
               </span>
             </div>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-4 px-2 custom-scrollbar">
+        <nav className="flex-1 overflow-y-auto py-4 px-2 no-scrollbar">
           <div className="flex flex-col gap-2">
-            {MENU.map((item) => (
+            {menuItems.map((item) => (
               <NavItem
                 key={item.to || item.label}
                 {...item}
                 collapsed={window.innerWidth >= 1024 ? collapsed : false}
-                isDropdownOpen={openDropdownKey === item.to}
-                onToggleDropdown={() => handleToggleDropdown(item.to)}
+                isDropdownOpen={openDropdownKey === (item.to || item.label)}
+                onToggleDropdown={() => handleToggleDropdown(item.to || item.label)}
                 onItemClick={handleItemClick}
               />
             ))}
@@ -301,15 +334,28 @@ export default function AdminLayout() {
         </nav>
 
         {/* Footer / Logout */}
-        <div className="border-t border-gray-100 p-2">
+        <div className="border-t border-gray-100 p-2 flex flex-col gap-1">
+          <button
+            onClick={() => i18n.changeLanguage(i18n.language === "en" ? "mr" : "en")}
+            className={`w-full flex items-center rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors ${collapsed ? "justify-center p-2" : "px-3 py-2 gap-2"
+              }`}
+            title={i18n.language === "en" ? t('marathi') : t('english')}
+          >
+            <Languages size={20} className="font-bold shrink-0" />
+            {(!collapsed || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
+              <span className="text-sm font-bold truncate">{t('language')} ({language})</span>
+            )}
+          </button>
+
           <button
             onClick={handleLogout}
             className={`w-full flex items-center rounded-lg text-red-500 hover:bg-red-50 transition-colors ${collapsed ? "justify-center p-2" : "px-3 py-2 gap-2"
               }`}
+            title={t('logout')}
           >
-            <LogOut size={20} className="font-bold" />
-            {(!collapsed || window.innerWidth < 1024) && (
-              <span className="text-sm font-bold">Log Out</span>
+            <LogOut size={20} className="font-bold shrink-0" />
+            {(!collapsed || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
+              <span className="text-sm font-bold truncate">{t('logout')}</span>
             )}
           </button>
         </div>
@@ -317,7 +363,7 @@ export default function AdminLayout() {
 
       {/* Content */}
       <main className="flex-1 min-w-0 transition-all duration-300 ease-in-out lg:pr-4 lg:py-4 h-full overflow-hidden">
-        <div className="h-full w-full overflow-y-auto custom-scrollbar rounded-2xl">
+        <div className="h-full w-full overflow-y-auto no-scrollbar rounded-2xl">
           <Outlet />
         </div>
       </main>

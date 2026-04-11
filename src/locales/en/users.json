@@ -1,0 +1,79 @@
+{
+  "title": "Manage Users",
+  "subtitle": "User Administration",
+  "stats": {
+    "total": "Total Users",
+    "active": "Active Users",
+    "inactive": "Inactive Users",
+    "staff": "Staff / Admins"
+  },
+  "filters": {
+    "title": "Search & Filters",
+    "records_count": "Total {{count}} records",
+    "search_label": "Search by name or email",
+    "search_placeholder": "e.g. John Doe or john@company.com",
+    "status": "Status",
+    "sort_by": "Sort By",
+    "rows": "Rows"
+  },
+  "table": {
+    "sr_no": "Sr No",
+    "image": "Image",
+    "name": "Name",
+    "email": "Email",
+    "reg_date": "Registered Date",
+    "status": "Status",
+    "action": "Action",
+    "loading": "Loading user data...",
+    "no_results": "No users found matching your search.",
+    "pagination": "Page {{current}} of {{total}}"
+  },
+  "modals": {
+    "add_title": "Add New User",
+    "edit_title": "Edit User",
+    "view_title": "User Details",
+    "fields": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "address": "Residential Address",
+      "password": "Password",
+      "status": "Account Status",
+      "reg_date": "Joined Since",
+      "last_updated": "Last Activity",
+      "profile_image": "Profile Image"
+    },
+    "placeholders": {
+      "name": "Enter full name",
+      "email": "e.g. mail@example.com",
+      "phone": "10-digit mobile number",
+      "address": "Full permanent address",
+      "password": "Minimum 8 characters"
+    },
+    "validation": {
+      "required": "Please fill in all required fields",
+      "pass_required": "Password is required for new users",
+      "pass_format": "Password must be at least 8 chars with 1 uppercase, 1 lowercase & 1 number/symbol",
+      "phone_format": "Phone number must be exactly 10 digits",
+      "email_format": "Please enter a valid email address",
+      "duplicate_email": "Email already in use",
+      "sync_error": "Failed to sync users",
+      "delete_confirm": "Process aborted to protect synchronization"
+    },
+    "status_active": "Active",
+    "status_inactive": "Inactive"
+  },
+  "tooltips": {
+    "edit": "Edit User",
+    "delete": "Delete User",
+    "view": "View Details"
+  },
+  "toast": {
+    "add_success": "User added successfully!",
+    "edit_success": "User updated successfully!",
+    "delete_success": "User deleted successfully",
+    "auth_cleanup": "Removing Authentication credentials...",
+    "auth_success": "Authentication credentials removed",
+    "firestore_success": "Firestore record deleted successfully"
+  }
+}

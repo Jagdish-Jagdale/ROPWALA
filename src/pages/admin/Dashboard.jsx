@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import {
@@ -64,15 +65,17 @@ function StatCard({ title, value, icon, color, iconBg, to }) {
 }
 
 export default function Dashboard() {
+  const { t } = useTranslation(["dashboard", "common"]);
+
   // Subscription Plan Distribution
   const subscriptionPlans = useMemo(
     () => [
-      { name: "Gold Plan", value: 45, color: "#f59e0b" },
-      { name: "Silver Plan", value: 85, color: "#94a3b8" },
-      { name: "Platinum", value: 20, color: "#4f46e5" },
-      { name: "Basic", value: 150, color: "#10b981" },
+      { name: t("dashboard:gold_plan"), value: 45, color: "#f59e0b" },
+      { name: t("dashboard:silver_plan"), value: 85, color: "#94a3b8" },
+      { name: t("dashboard:platinum"), value: 20, color: "#4f46e5" },
+      { name: t("dashboard:basic"), value: 150, color: "#10b981" },
     ],
-    []
+    [t]
   );
 
   // Dashboard Lists
@@ -295,9 +298,9 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-xl mb-2 text-gray-900 font-extrabold">Dashboard</h3>
+          <h3 className="text-xl mb-2 text-gray-900 font-extrabold">{t('common:dashboard')}</h3>
           <p className="text-m text-gray-600 font-normal mb-0">
-            Overview of nursery subscriptions, broker revenue, and platform activity.
+            {t('dashboard:overview_desc')}
           </p>
         </div>
       </div>
@@ -306,7 +309,7 @@ export default function Dashboard() {
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         <StatCard
-          title="Total Franchises"
+          title={t('dashboard:total_franchises')}
           value={loadingStats ? "..." : stats.nurseries.toLocaleString()}
           icon={<Store size={20} />}
           color="text-green-600"
@@ -314,7 +317,7 @@ export default function Dashboard() {
           to="/admin/franchise"
         />
         <StatCard
-          title="Total Users"
+          title={t('dashboard:total_users')}
           value={loadingStats ? "..." : stats.users.toLocaleString()}
           icon={<Users size={20} />}
           color="text-emerald-600"
@@ -322,7 +325,7 @@ export default function Dashboard() {
           to="/admin/manageusers"
         />
         <StatCard
-          title="Total Products"
+          title={t('dashboard:total_products')}
           value={loadingStats ? "..." : stats.listings.toLocaleString()}
           icon={<Sprout size={20} />}
           color="text-emerald-600"
@@ -330,7 +333,7 @@ export default function Dashboard() {
           to="/admin/products"
         />
         <StatCard
-          title="Total Revenue"
+          title={t('dashboard:total_revenue')}
           value={loadingStats ? "..." : `₹${stats.totalRevenue.toLocaleString()}`}
           icon={<span className="font-bold text-xl">₹</span>}
           color="text-green-600"
@@ -345,7 +348,7 @@ export default function Dashboard() {
           <div className="h-full shadow-sm rounded-2xl bg-white border border-gray-200 p-5">
             <div className="flex justify-between items-center mb-6">
               <h5 className="mb-0 font-bold text-gray-900 text-base">
-                Franchise Growth Overview
+                {t('dashboard:growth_overview')}
               </h5>
               <div className="flex gap-2">
                 <select
@@ -396,7 +399,7 @@ export default function Dashboard() {
                       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                       borderRadius: '8px',
                     }}
-                    formatter={(value) => [value, "New Franchises"]}
+                    formatter={(value) => [value, t('dashboard:growth_overview')]}
                   />
                   <Area
                     type="monotone"
@@ -417,7 +420,7 @@ export default function Dashboard() {
         <div className="xl:col-span-4">
           <div className="h-full shadow-sm rounded-2xl bg-white border border-gray-200 p-5">
             <h5 className="mb-4 font-bold text-gray-900 text-base">
-              Subscription Plans
+              {t('dashboard:subscription_plans')}
             </h5>
             <div style={{ width: '100%', height: '250px' }} className="mb-4">
               <ResponsiveContainer width="100%" height={250}>
@@ -459,7 +462,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <span className="font-bold text-gray-900 text-sm">
-                    {item.value} Active
+                    {item.value} {t('dashboard:active')}
                   </span>
                 </div>
               ))}
@@ -473,7 +476,7 @@ export default function Dashboard() {
         <div className="h-full shadow-sm rounded-2xl bg-white border border-gray-200 p-5">
           <div className="flex justify-between items-center mb-6">
             <h5 className="mb-0 font-bold text-gray-900 text-base">
-              Recent Franchises Added
+              {t('dashboard:recent_franchises')}
             </h5>
           </div>
           <div className="flex flex-col gap-1">
@@ -488,7 +491,7 @@ export default function Dashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h6 className="text-[15px] font-semibold text-gray-900 mb-0.5 leading-snug">
-                        New Franchise '{franchise.nurseryName || franchise.name || franchise.userName || "Unknown"}' Registered
+                        {t('dashboard:new_franchise_reg', { name: franchise.nurseryName || franchise.name || franchise.userName || "Unknown" })}
                       </h6>
                       <p className="text-sm text-gray-500 font-medium lowercase first-letter:uppercase">
                         {franchise.time}
@@ -501,7 +504,7 @@ export default function Dashboard() {
                 </div>
               ))
             ) : (
-              <div className="py-8 text-center text-gray-400 text-sm">No franchises found</div>
+              <div className="py-8 text-center text-gray-400 text-sm">{t('dashboard:no_franchises')}</div>
             )}
           </div>
         </div>
@@ -510,7 +513,7 @@ export default function Dashboard() {
         <div className="h-full shadow-sm rounded-2xl bg-white border border-gray-200 p-5">
           <div className="flex justify-between items-center mb-6">
             <h5 className="mb-0 font-bold text-gray-900 text-base">
-              Most Products Franchise
+              {t('dashboard:most_products')}
             </h5>
           </div>
           <div className="flex flex-col gap-1">
@@ -525,10 +528,10 @@ export default function Dashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h6 className="text-[15px] font-semibold text-gray-900 mb-0.5 leading-snug">
-                        {franchise.count}+ Approved products added by '{franchise.name}'
+                        {t('dashboard:approved_products', { count: franchise.count, name: franchise.name })}
                       </h6>
                       <p className="text-sm text-gray-500 font-medium">
-                        Top {index + 1} Franchise
+                        {t('dashboard:top_franchise', { index: idx + 1 })}
                       </p>
                     </div>
                   </div>

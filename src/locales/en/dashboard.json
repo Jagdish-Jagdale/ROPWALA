@@ -1,0 +1,20 @@
+{
+  "overview_desc": "Overview of nursery subscriptions, broker revenue, and platform activity.",
+  "total_franchises": "Total Franchises",
+  "total_users": "Total Users",
+  "total_products": "Total Products",
+  "total_revenue": "Total Revenue",
+  "growth_overview": "Franchise Growth Overview",
+  "subscription_plans": "Subscription Plans",
+  "recent_franchises": "Recent Franchises Added",
+  "most_products": "Most Products Franchise",
+  "no_franchises": "No franchises found",
+  "new_franchise_reg": "New Franchise '{{name}}' Registered",
+  "approved_products": "{{count}}+ Approved products added by '{{name}}'",
+  "top_franchise": "Top {{index}} Franchise",
+  "active": "Active",
+  "gold_plan": "Gold Plan",
+  "silver_plan": "Silver Plan",
+  "platinum": "Platinum",
+  "basic": "Basic"
+}

@@ -1,0 +1,59 @@
+{
+  "title": "Reports & Analytics",
+  "subtitle": "Comprehensive insights into nursery performance",
+  "actions": {
+    "print": "Print",
+    "export": "Export"
+  },
+  "filters": {
+    "search_placeholder": "Search analytics...",
+    "date": {
+      "today": "Today",
+      "week": "This Week",
+      "month": "This Month",
+      "last_3_months": "Last 3 Months"
+    },
+    "regions": {
+      "all": "All Regions",
+      "maharashtra": "Maharashtra",
+      "karnataka": "Karnataka",
+      "gujarat": "Gujarat"
+    }
+  },
+  "stats": {
+    "total_nurseries": "Total Nurseries",
+    "total_revenue": "Total Revenue",
+    "total_revenue_est": "Total Revenue (Est)",
+    "active_plans": "Active Plans",
+    "satisfaction": "Satisfaction Score",
+    "vs_last_month": "vs last month"
+  },
+  "charts": {
+    "growth": {
+      "title": "Nursery Growth Trend",
+      "subtitle": "New registrations over time"
+    },
+    "regional": {
+      "title": "Regional Revenue",
+      "subtitle": "Top performing locations"
+    }
+  },
+  "table": {
+    "title": "Top Performing Nurseries",
+    "subtitle": "Highest revenue & order volume",
+    "view_all": "View All",
+    "headers": {
+      "name": "Nursery Name",
+      "location": "Location",
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "status": "Status",
+      "rating": "Rating"
+    },
+    "status": {
+      "active": "Active",
+      "review": "Review",
+      "inactive": "Inactive"
+    }
+  }
+}

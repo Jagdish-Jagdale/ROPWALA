@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     collection,
     getDocs,
@@ -41,6 +42,7 @@ import StatCard from "../../components/common/StatCard";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 export default function AdminFranchise() {
+    const { t } = useTranslation(['franchise', 'common']);
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -102,10 +104,10 @@ export default function AdminFranchise() {
                 prev.map(app => app.id === id ? { ...app, status: statusToSave } : app)
             );
 
-            toast.success(`Application marked as ${newStatus}`);
+            toast.success(t('franchise:status_updated', { status: newStatus }));
         } catch (e) {
             console.error("Error updating status:", e);
-            toast.error("Failed to update status");
+            toast.error(t('franchise:status_update_failed'));
         }
     };
 
@@ -136,13 +138,13 @@ export default function AdminFranchise() {
                         return result.data;
                     })(),
                     {
-                        loading: "Removing franchise credentials...",
-                        success: (data) => data.message || "Credentials removed",
+                        loading: t('franchise:removing_creds'),
+                        success: (data) => data.message || t('common:save_success'),
                         error: (err) => `Auth cleanup failed: ${err.message}`,
                     }
                 );
             } else {
-                toast.error("Notice: This application has no associated Auth UID. It will be removed from Firestore only.", { duration: 5000 });
+                toast.error(t('franchise:no_auth_notice'), { duration: 5000 });
             }
 
             // 2. Cascading Cleanup: Delete all products belonging to this franchise
@@ -177,13 +179,13 @@ export default function AdminFranchise() {
 
             // 3. Delete from Firestore (Proceed even if no UID)
             await deleteDoc(doc(db, "franchise", franchiseToDelete.id));
-            toast.success("Franchise and all associated products deleted successfully");
+            toast.success(t('franchise:delete_success'));
             setShowDeleteModal(false);
             setFranchiseToDelete(null);
         } catch (error) {
             console.error("Error deleting franchise:", error);
             // We only abort if there was a UID to delete and it failed.
-            toast.error("Process aborted to protect synchronization");
+            toast.error(t('franchise:delete_aborted'));
         } finally {
             setIsDeleting(false);
         }
@@ -242,11 +244,11 @@ export default function AdminFranchise() {
     };
 
     const formatDate = (date) => {
-        if (!date) return "N/A";
+        if (!date) return t('franchise:n_a');
         // Handle both number timestamps and Firestore timestamps
         if (typeof date === 'number') return new Date(date).toLocaleDateString();
         if (date.seconds) return new Date(date.seconds * 1000).toLocaleDateString();
-        return "N/A";
+        return t('franchise:n_a');
     };
 
     return (
@@ -256,10 +258,10 @@ export default function AdminFranchise() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
                         <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-                            Manage Franchise Applications
+                            {t('franchise:manage_franchise_apps')}
                         </h3>
                         <p className="text-base text-gray-600 font-normal mb-0">
-                            Review and manage franchise partnership requests
+                            {t('franchise:manage_franchise_desc')}
                         </p>
                     </div>
                 </div>
@@ -268,25 +270,25 @@ export default function AdminFranchise() {
                 {/* Stats Summary */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <StatCard
-                        title="Total Applications"
+                        title={t('franchise:total_apps')}
                         value={applications.length}
                         icon={ClipboardList}
                         variant="gray"
                     />
                     <StatCard
-                        title="Approved"
+                        title={t('franchise:approved')}
                         value={applications.filter(a => a.status?.toUpperCase() === 'APPROVED' || a.status?.toUpperCase() === 'ACCEPTED').length}
                         icon={CheckCircle}
                         variant="green"
                     />
                     <StatCard
-                        title="Pending"
+                        title={t('franchise:pending')}
                         value={applications.filter(a => a.status?.toUpperCase() === 'PENDING' || !a.status).length}
                         icon={Clock}
                         variant="blue"
                     />
                     <StatCard
-                        title="On Hold"
+                        title={t('franchise:on_hold')}
                         value={applications.filter(a => a.status?.toUpperCase() === 'HOLD').length}
                         icon={PauseCircle}
                         variant="amber"
@@ -296,23 +298,23 @@ export default function AdminFranchise() {
                 {/* Search & Filters */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+                        <h5 className="text-lg font-bold text-gray-900">{t('common:search_filters')}</h5>
                         <div className="text-sm font-medium text-gray-500">
-                            Total {filteredApps.length} records
+                            {t('common:total_records', { count: filteredApps.length })}
                         </div>
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
                     <div className="flex flex-row items-end gap-3 w-full">
                         {/* Search Bar - Flex Grow to take space */}
                         <div className="flex-grow flex flex-col gap-1.5">
-                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Search Applications</label>
+                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:search_apps')}</label>
                             <div className="relative">
                                 <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
                                 <input
                                     type="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="e.g. Nursery name or applicant email"
+                                    placeholder={t('franchise:search_placeholder')}
                                     className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
                                 />
                             </div>
@@ -322,7 +324,7 @@ export default function AdminFranchise() {
                         <div className="flex flex-row items-end gap-3 flex-none">
                             {/* Status Filter */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Status</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:status_label')}</label>
                                 <div className="relative w-[130px]">
                                     <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                                     <select
@@ -330,17 +332,17 @@ export default function AdminFranchise() {
                                         onChange={(e) => setStatusFilter(e.target.value)}
                                         className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
                                     >
-                                        <option value="all">All</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="hold">Hold</option>
+                                        <option value="all">{t('common:all')}</option>
+                                        <option value="pending">{t('franchise:pending')}</option>
+                                        <option value="approved">{t('franchise:approved')}</option>
+                                        <option value="hold">{t('franchise:on_hold')}</option>
                                     </select>
                                 </div>
                             </div>
 
                             {/* Franchise (Nursery) Filter */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Franchise</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:franchise_label')}</label>
                                 <div className="relative w-[140px]">
                                     <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                                     <select
@@ -348,7 +350,7 @@ export default function AdminFranchise() {
                                         onChange={(e) => setNurseryFilter(e.target.value)}
                                         className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
                                     >
-                                        <option value="all">All</option>
+                                        <option value="all">{t('common:all')}</option>
                                         {uniqueNurseries.map(name => (
                                             <option key={name} value={name}>{name}</option>
                                         ))}
@@ -358,7 +360,7 @@ export default function AdminFranchise() {
 
                             {/* Date sort Filter */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Sort By</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('franchise:sort_by')}</label>
                                 <div className="relative w-[130px]">
                                     <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                                     <select
@@ -366,17 +368,17 @@ export default function AdminFranchise() {
                                         onChange={(e) => setDateSort(e.target.value)}
                                         className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
                                     >
-                                        <option value="newest">Newest</option>
-                                        <option value="oldest">Oldest</option>
-                                        <option value="name-asc">A-Z</option>
-                                        <option value="name-desc">Z-A</option>
+                                        <option value="newest">{t('franchise:newest')}</option>
+                                        <option value="oldest">{t('franchise:oldest')}</option>
+                                        <option value="name-asc">{t('franchise:a_z')}</option>
+                                        <option value="name-desc">{t('franchise:z_a')}</option>
                                     </select>
                                 </div>
                             </div>
 
                             {/* Rows Selector */}
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Rows</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('common:rows')}</label>
                                 <div className="flex items-center gap-1.5">
                                     <select
                                         value={rowsPerPage}
@@ -403,26 +405,26 @@ export default function AdminFranchise() {
                             {/* ... table content ... */}
                             <thead>
                                 <tr className="border-b border-gray-200 bg-gray-100">
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Sr No
+                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                        {t('common:sr_no')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Image
+                                        {t('common:image')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Applicant / Nursery
+                                        {t('franchise:applicant_nursery')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Contact
+                                        {t('franchise:contact')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Applied On
+                                        {t('franchise:applied_on')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Status
+                                        {t('franchise:status_label')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Action
+                                        {t('common:action')}
                                     </th>
                                 </tr>
                             </thead>
@@ -433,7 +435,7 @@ export default function AdminFranchise() {
                                             <div className="flex flex-col items-center justify-center gap-3">
                                                 <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                                 <span className="text-sm text-gray-500 font-medium">
-                                                    Loading applications...
+                                                    {t('franchise:loading_apps')}
                                                 </span>
                                             </div>
                                         </td>
@@ -469,10 +471,10 @@ export default function AdminFranchise() {
                                             <td className="px-6 py-2.5 whitespace-nowrap">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-medium text-gray-900">
-                                                        {app.ownerName || "Unknown Applicant"}
+                                                        {app.ownerName || t('franchise:unknown_applicant')}
                                                     </span>
                                                     <span className="text-xs text-green-600 font-semibold">
-                                                        {app.nurseryName || "N/A"}
+                                                        {app.nurseryName || t('franchise:n_a')}
                                                     </span>
                                                 </div>
                                             </td>
@@ -480,10 +482,10 @@ export default function AdminFranchise() {
                                             <td className="px-6 py-2.5 whitespace-nowrap">
                                                 <div className="flex flex-col gap-1">
                                                     <span className="text-sm text-gray-900">
-                                                        {app.ownerEmail || app.nurseryEmail || "N/A"}
+                                                        {app.ownerEmail || app.nurseryEmail || t('franchise:n_a')}
                                                     </span>
                                                     <span className="text-xs text-gray-500 font-mono">
-                                                        {app.ownerPhone || app.nurseryPhone || "N/A"}
+                                                        {app.ownerPhone || app.nurseryPhone || t('franchise:n_a')}
                                                     </span>
                                                 </div>
                                             </td>
@@ -494,7 +496,7 @@ export default function AdminFranchise() {
 
                                             <td className="px-6 py-2.5 whitespace-nowrap">
                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border uppercase tracking-wider ${getStatusColor(app.status)}`}>
-                                                    {app.status || "pending"}
+                                                    {app.status || t('franchise:pending')}
                                                 </span>
                                             </td>
 
@@ -503,28 +505,28 @@ export default function AdminFranchise() {
                                                     <button
                                                         onClick={() => updateStatus(app.id, "approved")}
                                                         className="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-full transition-colors"
-                                                        title="Approve"
+                                                        title={t('common:approve')}
                                                     >
                                                         <CheckCircle size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => updateStatus(app.id, "hold")}
                                                         className="p-1.5 text-amber-600 hover:text-amber-800 hover:bg-amber-50 rounded-full transition-colors"
-                                                        title="Hold"
+                                                        title={t('franchise:on_hold')}
                                                     >
                                                         <PauseCircle size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => updateStatus(app.id, "pending")}
                                                         className="p-1.5 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-full transition-colors"
-                                                        title="Set to Pending"
+                                                        title={t('franchise:set_to_pending')}
                                                     >
                                                         <Clock size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteFranchise(app.id)}
                                                         className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors"
-                                                        title="Delete"
+                                                        title={t('common:delete')}
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -540,7 +542,7 @@ export default function AdminFranchise() {
                                                     <User size={32} className="opacity-50" />
                                                 </div>
                                                 <p className="text-sm font-medium">
-                                                    No applications found matching your search.
+                                                    {t('franchise:no_apps_found')}
                                                 </p>
                                             </div>
                                         </td>
@@ -561,7 +563,7 @@ export default function AdminFranchise() {
                                 <ChevronLeft size={22} />
                             </button>
                             <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                                Page {currentPage} of {Math.max(1, totalPages)}
+                                {t('common:page_x_of_y', { current: currentPage, total: Math.max(1, totalPages) })}
                             </span>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -587,7 +589,7 @@ export default function AdminFranchise() {
                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
                             <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                                 <Building className="text-green-600" size={24} />
-                                Application Details
+                                {t('franchise:app_details')}
                             </h3>
                             <button
                                 onClick={() => setSelectedApp(null)}
@@ -614,9 +616,9 @@ export default function AdminFranchise() {
                                 <h4 className="text-lg font-bold text-gray-900">{selectedApp.ownerName}</h4>
                                 <div className="flex items-center gap-2 mt-1">
                                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider ${getStatusColor(selectedApp.status)}`}>
-                                        {selectedApp.status || "PENDING"}
+                                        {selectedApp.status || t('franchise:pending')}
                                     </span>
-                                    <span className="text-xs text-gray-500">Applied on {formatDate(selectedApp.applicationDate)}</span>
+                                    <span className="text-xs text-gray-500">{t('franchise:applied_on')} {formatDate(selectedApp.applicationDate)}</span>
                                 </div>
                             </div>
 
@@ -624,25 +626,25 @@ export default function AdminFranchise() {
                                 {/* Personal Information */}
                                 <section>
                                     <h4 className="text-xs font-bold text-green-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <User size={14} /> Personal Information
+                                        <User size={14} /> {t('franchise:personal_info')}
                                     </h4>
                                     <div className="space-y-4">
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</label>
+                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('franchise:email')}</label>
                                             <p className="text-base font-medium text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-100 break-all">
-                                                {selectedApp.ownerEmail || "N/A"}
+                                                {selectedApp.ownerEmail || t('franchise:n_a')}
                                             </p>
                                         </div>
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone</label>
+                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('franchise:phone')}</label>
                                             <p className="text-base font-medium text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                                {selectedApp.ownerPhone || "N/A"}
+                                                {selectedApp.ownerPhone || t('franchise:n_a')}
                                             </p>
                                         </div>
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Residential Address</label>
+                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('franchise:res_address')}</label>
                                             <p className="text-base font-medium text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-100 min-h-[50px]">
-                                                {selectedApp.ownerAddress || "N/A"}
+                                                {selectedApp.ownerAddress || t('franchise:n_a')}
                                             </p>
                                         </div>
                                     </div>
@@ -651,33 +653,33 @@ export default function AdminFranchise() {
                                 {/* Nursery Information */}
                                 <section>
                                     <h4 className="text-xs font-bold text-green-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <Trees size={14} /> Nursery Details
+                                        <Trees size={14} /> {t('franchise:nursery_details')}
                                     </h4>
                                     <div className="space-y-4">
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Nursery Name</label>
+                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('franchise:franchise_label')}</label>
                                             <p className="text-base font-bold text-green-700 p-3 bg-green-50 rounded-lg border border-green-100">
-                                                {selectedApp.nurseryName || "N/A"}
+                                                {selectedApp.nurseryName || t('franchise:n_a')}
                                             </p>
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-1">
-                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">City</label>
+                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('franchise:city')}</label>
                                                 <p className="text-sm font-medium text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                                    {selectedApp.nurseryCity || "N/A"}
+                                                    {selectedApp.nurseryCity || t('franchise:n_a')}
                                                 </p>
                                             </div>
                                             <div className="space-y-1">
-                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">State</label>
+                                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('franchise:state')}</label>
                                                 <p className="text-sm font-medium text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                                    {selectedApp.nurseryState || "N/A"}
+                                                    {selectedApp.nurseryState || t('franchise:n_a')}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Education / Background</label>
+                                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('franchise:edu_background')}</label>
                                             <p className="text-sm font-medium text-gray-900 p-3 bg-gray-50 rounded-lg border border-gray-100 leading-relaxed">
-                                                {selectedApp.experienceYears || "0"} years experience in nursery management.
+                                                {t('franchise:exp_years', { count: selectedApp.experienceYears || "0" })}
                                             </p>
                                         </div>
                                     </div>
@@ -686,38 +688,38 @@ export default function AdminFranchise() {
                                 {/* Documentation */}
                                 <section className="md:col-span-2">
                                     <h4 className="text-xs font-bold text-green-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <FileText size={14} /> Documentation & Identity
+                                        <FileText size={14} /> {t('franchise:doc_identity')}
                                     </h4>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div className="space-y-1">
                                             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">PAN / GST</label>
                                             <div className="p-3 bg-gray-50 rounded-lg border border-gray-100 space-y-1">
                                                 <p className="text-sm font-medium text-gray-900 flex justify-between">
-                                                    <span className="text-gray-400">PAN:</span> {selectedApp.panNumber || "N/A"}
+                                                    <span className="text-gray-400">{t('franchise:pan')}</span> {selectedApp.panNumber || t('franchise:n_a')}
                                                 </p>
                                                 <p className="text-sm font-medium text-gray-900 flex justify-between">
-                                                    <span className="text-gray-400">GST:</span> {selectedApp.gstNumber || "N/A"}
+                                                    <span className="text-gray-400">{t('franchise:gst')}</span> {selectedApp.gstNumber || t('franchise:n_a')}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="md:col-span-2 grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <p className="text-[10px] text-gray-500 font-bold uppercase">Aadhar Front</p>
+                                                <p className="text-[10px] text-gray-500 font-bold uppercase">{t('franchise:aadhar_front')}</p>
                                                 <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-200 shadow-inner group relative">
                                                     {selectedApp.aadharFrontUrl ? (
                                                         <img src={selectedApp.aadharFrontUrl} className="w-full h-full object-cover transition-transform group-hover:scale-110" alt="Aadhar Front" />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-gray-300 text-[10px]">No image</div>
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-300 text-[10px]">{t('common:no_image')}</div>
                                                     )}
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <p className="text-[10px] text-gray-500 font-bold uppercase">Aadhar Back</p>
+                                                <p className="text-[10px] text-gray-500 font-bold uppercase">{t('franchise:aadhar_back')}</p>
                                                 <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-200 shadow-inner group relative">
                                                     {selectedApp.aadharBackUrl ? (
                                                         <img src={selectedApp.aadharBackUrl} className="w-full h-full object-cover transition-transform group-hover:scale-110" alt="Aadhar Back" />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-gray-300 text-[10px]">No image</div>
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-300 text-[10px]">{t('common:no_image')}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -731,7 +733,7 @@ export default function AdminFranchise() {
                                                 rel="noopener noreferrer"
                                                 className="inline-flex items-center gap-2 text-green-600 font-bold text-sm hover:underline p-3 bg-green-50 rounded-xl border border-green-100 w-full md:w-auto"
                                             >
-                                                <MapPin size={16} /> View Nursery Location on Google Maps
+                                                <MapPin size={16} /> {t('franchise:view_on_maps')}
                                             </a>
                                         </div>
                                     )}
@@ -746,19 +748,19 @@ export default function AdminFranchise() {
                                     onClick={() => updateStatus(selectedApp.id, "approved")}
                                     className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-green-700 transition-all active:scale-95"
                                 >
-                                    <CheckCircle size={18} /> Approve
+                                    <CheckCircle size={18} /> {t('common:approve')}
                                 </button>
                                 <button
                                     onClick={() => updateStatus(selectedApp.id, "hold")}
                                     className="flex items-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-amber-600 transition-all active:scale-95"
                                 >
-                                    <PauseCircle size={18} /> Hold
+                                    <PauseCircle size={18} /> {t('franchise:on_hold')}
                                 </button>
                                 <button
                                     onClick={() => updateStatus(selectedApp.id, "pending")}
                                     className="flex items-center gap-2 bg-white text-emerald-600 border border-emerald-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-emerald-50 transition-all active:scale-95"
                                 >
-                                    <Clock size={18} /> Pending
+                                    <Clock size={18} /> {t('franchise:pending')}
                                 </button>
                                 <button
                                     onClick={() => {
@@ -767,14 +769,14 @@ export default function AdminFranchise() {
                                     }}
                                     className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-red-700 transition-all active:scale-95"
                                 >
-                                    <Trash2 size={18} /> Delete
+                                    <Trash2 size={18} /> {t('common:delete')}
                                 </button>
                             </div>
                             <button
                                 onClick={() => setSelectedApp(null)}
                                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-all shadow-sm"
                             >
-                                Close
+                                {t('common:close')}
                             </button>
                         </div>
                     </div>
@@ -788,9 +790,9 @@ export default function AdminFranchise() {
                     setFranchiseToDelete(null);
                 }}
                 onConfirm={confirmDeleteFranchise}
-                title="Delete Franchise?"
-                message="This action cannot be undone. This will permanently delete the franchise application and all associated data."
-                confirmText="DELETE FRANCHISE"
+                title={t('franchise:delete_franchise_q')}
+                message={t('franchise:delete_franchise_msg')}
+                confirmText={t('franchise:delete_franchise_confirm')}
                 itemName={franchiseToDelete?.nurseryName || franchiseToDelete?.ownerName}
                 isGlobalLoading={isDeleting}
             />

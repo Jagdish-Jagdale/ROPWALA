@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 
 export default function Login() {
+  const { t, i18n } = useTranslation(['auth', 'validation', 'common']);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -52,7 +54,7 @@ export default function Login() {
     }
 
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setError(t('validation:fill_all_fields'));
       return;
     }
 
@@ -62,14 +64,14 @@ export default function Login() {
       setLoading(true);
 
       await login(email, password);
-      toast.success("Login successful!");
+      toast.success(t('auth:login_success'));
       navigate(from, { replace: true });
     } catch (e) {
       console.error(e);
       // Only show the error message if it's our custom inactive error
       const message = e.message.includes("Account Inactive")
-        ? e.message
-        : "Incorrect email or password. Please verify your credentials and try again.";
+        ? t('validation:account_inactive')
+        : t('validation:invalid_credentials');
 
       setError(message);
       setShowErrorBorder(true);
@@ -120,11 +122,10 @@ export default function Login() {
 
             <div className="max-w-xs text-white">
               <h1 className="text-5xl font-bold leading-tight font-playfair">
-                ROPWALA, Simplified
+                {t('auth:hero.title')}
               </h1>
               <p className="mt-3 text-lg leading-relaxed text-white/90">
-                Manage your ROPWALA inventory, track purchases, and grow your
-                business with our all-in-one platform
+                {t('auth:hero.subtitle')}
               </p>
             </div>
           </div>
@@ -149,23 +150,23 @@ export default function Login() {
                 <div className="h-20 w-20 overflow-hidden rounded-full bg-white shadow-lg ring-2 ring-green-500/20">
                   <img
                     src="/RopWala.png"
-                    alt="ROPWALA Logo"
+                    alt={t('common:logo_alt')}
                     className="h-full w-full object-cover"
                   />
                 </div>
               </div>
 
               <h2 className="mb-2 text-center text-3xl font-bold text-slate-800 font-playfair">
-                Welcome!
+                {t('auth:welcome')}
               </h2>
               <p className="mb-7 text-center text-base text-green-700">
-                Sign in to continue to ROPWALA
+                {t('auth:sign_in_desc')}
               </p>
 
               <form onSubmit={onSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">
-                    Email
+                    {t('auth:email')}
                   </label>
                   <div className="relative">
                     <Mail
@@ -186,14 +187,14 @@ export default function Login() {
                         ? "border-red-500 animate-blinkBorder"
                         : "border-slate-300 bg-white"
                         }`}
-                      placeholder="Enter your email address"
+                      placeholder={t('auth:email_placeholder')}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">
-                    Password
+                    {t('auth:password')}
                   </label>
                   <div className="relative">
                     <Lock
@@ -215,7 +216,7 @@ export default function Login() {
                         ? "border-red-500 animate-blinkBorder"
                         : "border-slate-300 bg-white"
                         }`}
-                      placeholder="Enter your password"
+                      placeholder={t('auth:password_placeholder')}
                     />
                     <button
                       type="button"
@@ -227,21 +228,13 @@ export default function Login() {
                   </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline"
-                  >
-                    Forgot password?
-                  </button>
-                </div>
 
                 <button
                   disabled={loading}
                   style={{ marginTop: "12px", borderRadius: "12px" }}
                   className="h-12 w-full bg-green-600 px-4 font-semibold text-base text-white shadow-md shadow-green-600/30 transition hover:bg-green-700 hover:shadow-lg hover:shadow-green-600/40 disabled:opacity-60"
                 >
-                  {loading ? "Logging in..." : "Login"}
+                  {loading ? t('auth:logging_in') : t('auth:login')}
                 </button>
 
 

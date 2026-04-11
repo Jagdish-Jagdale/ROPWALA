@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
     FileText,
     Pen,
@@ -38,6 +39,7 @@ const ICON_MAP = {
 };
 
 export default function AdminUserHamipatra() {
+    const { t } = useTranslation(['hamipatra', 'common']);
     const [content, setContent] = useState(DEFAULT_CONTENT);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -63,7 +65,7 @@ export default function AdminUserHamipatra() {
             }
         } catch (error) {
             console.error("Error fetching user hamipatra:", error);
-            toast.error("Failed to load User Hamipatra content");
+            toast.error(t('hamipatra:user.toast.load_error'));
             setContent(DEFAULT_CONTENT);
         } finally {
             setLoading(false);
@@ -88,10 +90,10 @@ export default function AdminUserHamipatra() {
             });
             setContent(editedContent);
             setIsEditing(false);
-            toast.success("User Hamipatra updated successfully");
+            toast.success(t('hamipatra:user.toast.update_success'));
         } catch (error) {
             console.error("Error saving user hamipatra:", error);
-            toast.error("Failed to save changes");
+            toast.error(t('hamipatra:user.toast.save_error'));
         } finally {
             setSaveLoading(false);
         }
@@ -139,10 +141,10 @@ export default function AdminUserHamipatra() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
                         <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-                            User Hamipatra
+                            {t('hamipatra:user.title')}
                         </h3>
                         <p className="text-base text-gray-600 font-normal mb-0">
-                            Manage and view the official nursery user agreement template
+                            {t('hamipatra:user.subtitle')}
                         </p>
                     </div>
                     <div className="flex gap-2">
@@ -153,7 +155,7 @@ export default function AdminUserHamipatra() {
                                 style={{ borderRadius: "12px" }}
                             >
                                 <Edit2 size={18} />
-                                Edit Page
+                                {t('hamipatra:user.edit_page')}
                             </button>
                         ) : (
                             <>
@@ -163,7 +165,7 @@ export default function AdminUserHamipatra() {
                                     style={{ borderRadius: "12px" }}
                                 >
                                     <X size={18} />
-                                    Cancel
+                                    {t('common:cancel')}
                                 </button>
                                 <button
                                     onClick={handleSave}
@@ -176,7 +178,7 @@ export default function AdminUserHamipatra() {
                                     ) : (
                                         <Save size={18} />
                                     )}
-                                    Save Changes
+                                    {t('common:save_changes')}
                                 </button>
                             </>
                         )}
@@ -188,7 +190,7 @@ export default function AdminUserHamipatra() {
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 size={48} className="text-green-600 animate-spin mb-4" />
-                    <p className="text-gray-500 font-medium">Loading agreement content...</p>
+                    <p className="text-gray-500 font-medium">{t('hamipatra:user.loading')}</p>
                 </div>
             ) : (
                 <div className="max-w-4xl mx-auto bg-white shadow-2xl shadow-gray-200/50 rounded-2xl border border-gray-100 overflow-hidden relative overflow-x-auto hamipatra-document">
@@ -210,7 +212,7 @@ export default function AdminUserHamipatra() {
                                             type="text"
                                             value={editedContent.logoUrl}
                                             onChange={(e) => setEditedContent({ ...editedContent, logoUrl: e.target.value })}
-                                            placeholder="Logo path"
+                                            placeholder={t('hamipatra:user.placeholders.logo')}
                                             className="text-[10px] w-24 p-1 border border-gray-100 rounded bg-gray-50 focus:outline-none"
                                         />
                                     </div>
@@ -250,7 +252,7 @@ export default function AdminUserHamipatra() {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">दिनांक</p>
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">{t('hamipatra:user.labels.date')}</p>
                                 <span className="inline-block border-b-2 border-dashed border-gray-300 w-32 min-h-[30px]"></span>
                             </div>
                         </div>
@@ -303,15 +305,15 @@ export default function AdminUserHamipatra() {
 
                         <div className="mt-20 grid grid-cols-2 gap-x-8 items-end hamipatra-marathi">
                             <div className="col-span-1">
-                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">शेतकऱ्याची सही</p>
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">{t('hamipatra:user.labels.farmer_name')}</p>
                                 <span className="inline-block border-b-2 border-dashed border-gray-300 w-full min-h-[40px]"></span>
                             </div>
 
                             <div className="col-span-1 text-center group">
-                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 transition-colors group-hover:text-green-600">नर्सरी धारकाची सही व शिक्का</p>
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 transition-colors group-hover:text-green-600">{t('hamipatra:user.labels.nursery_signature')}</p>
                                 <div className="inline-block border-2 border-dashed border-gray-100 bg-gray-50/50 rounded-2xl w-full max-w-[200px] h-24 flex flex-col items-center justify-center p-4 group-hover:bg-green-50 transition-colors mx-auto">
                                     <Pen className="text-gray-200 group-hover:text-green-200 transition-colors" size={32} />
-                                    <span className="text-[10px] text-gray-300 font-bold uppercase tracking-tighter mt-2">Sign Here</span>
+                                    <span className="text-[10px] text-gray-300 font-bold uppercase tracking-tighter mt-2">{t('hamipatra:user.labels.sign_here')}</span>
                                 </div>
                             </div>
                         </div>

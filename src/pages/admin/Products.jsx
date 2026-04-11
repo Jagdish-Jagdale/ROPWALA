@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     collection,
     getDocs,
@@ -75,6 +76,7 @@ const ProductImage = ({ src, alt, className = "", priority = false }) => {
 };
 
 export default function AdminProducts() {
+    const { t } = useTranslation(['product', 'common']);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -341,10 +343,10 @@ export default function AdminProducts() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
                         <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-                            Manage Inventory
+                            {t('product:manage_inventory')}
                         </h3>
                         <p className="text-base text-gray-600 font-normal mb-0">
-                            View and manage your product catalog
+                            {t('product:manage_desc')}
                         </p>
                     </div>
                     <button
@@ -356,7 +358,7 @@ export default function AdminProducts() {
                         style={{ borderRadius: "12px" }}
                     >
                         <Plus size={18} />
-                        Add Product
+                        {t('product:add_product')}
                     </button>
                 </div>
                 <hr className="mt-4 mb-5 border-gray-100" />
@@ -364,13 +366,13 @@ export default function AdminProducts() {
                 {/* Stats Summary (Mini) */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <StatCard
-                        title="Total products"
+                        title={t('product:total_products')}
                         value={products.length}
                         icon={Box}
                         variant="gray"
                     />
                     <StatCard
-                        title="Approved"
+                        title={t('product:approved')}
                         value={products.filter(p => {
                             const s = String(p.status || "").toUpperCase();
                             return s === 'APPROVE' || s === 'APPROVED' || s === 'ACTIVE' || s === 'AVAILABLE';
@@ -379,13 +381,13 @@ export default function AdminProducts() {
                         variant="green"
                     />
                     <StatCard
-                        title="Pending"
+                        title={t('product:pending')}
                         value={products.filter(p => p.status === 'pending').length}
                         icon={Clock}
                         variant="blue"
                     />
                     <StatCard
-                        title="Rejected"
+                        title={t('product:rejected')}
                         value={products.filter(p => {
                             const s = String(p.status || "").toUpperCase();
                             return s === 'REJECT' || s === 'REJECTED';
@@ -398,23 +400,23 @@ export default function AdminProducts() {
                 {/* Search & Filters */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+                        <h5 className="text-lg font-bold text-gray-900">{t('common:search_filters')}</h5>
                         <div className="text-sm font-medium text-gray-500">
-                            Total {filteredProducts.length} records
+                            {t('common:total_records', { count: filteredProducts.length })}
                         </div>
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
                     <div className="flex flex-row items-end gap-3 w-full">
                         {/* Search Bar */}
                         <div className="flex-grow flex flex-col gap-1.5">
-                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Search Products</label>
+                            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:search_products')}</label>
                             <div className="relative">
                                 <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
                                 <input
                                     type="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="e.g. Arabian Jasmine or Plants"
+                                    placeholder={t('product:search_placeholder')}
                                     className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
                                 />
                             </div>
@@ -423,7 +425,7 @@ export default function AdminProducts() {
                         {/* Filters Wrapper */}
                         <div className="flex flex-row items-end gap-3 flex-none">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Nursery</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:nursery')}</label>
                                 <div className="relative group">
                                     <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                                     <select
@@ -431,7 +433,7 @@ export default function AdminProducts() {
                                         onChange={(e) => setNurseryFilter(e.target.value)}
                                         className="w-full pl-8 pr-6 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-white font-normal text-gray-700 min-w-[120px] uppercase tracking-tight"
                                     >
-                                        <option value="all">All</option>
+                                        <option value="all">{t('product:all')}</option>
                                         {[...new Set(nurseries.map(n => n.nurseryName))].filter(Boolean).map((name) => (
                                             <option key={name} value={name.toLowerCase()}>
                                                 {name}
@@ -442,7 +444,7 @@ export default function AdminProducts() {
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Status</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:status')}</label>
                                 <div className="relative group">
                                     <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                                     <select
@@ -450,15 +452,15 @@ export default function AdminProducts() {
                                         onChange={(e) => setStatusFilter(e.target.value)}
                                         className="w-full pl-8 pr-6 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-white font-normal text-gray-700 min-w-[120px] uppercase tracking-tight"
                                     >
-                                        <option value="all">All</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="rejected">Rejected</option>
+                                        <option value="all">{t('product:all')}</option>
+                                        <option value="approved">{t('product:approved')}</option>
+                                        <option value="rejected">{t('product:rejected')}</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Category</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:category')}</label>
                                 <div className="relative group">
                                     <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                                     <select
@@ -466,7 +468,7 @@ export default function AdminProducts() {
                                         onChange={(e) => setCategoryFilter(e.target.value)}
                                         className="w-full pl-8 pr-6 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/10 focus:border-green-500 cursor-pointer appearance-none bg-white font-normal text-gray-700 min-w-[120px] uppercase tracking-tight"
                                     >
-                                        <option value="all">All</option>
+                                        <option value="all">{t('product:all')}</option>
                                         {[...new Set(products.map(p => p.category))].filter(Boolean).map((cat) => (
                                             <option key={cat} value={cat.toLowerCase()}>
                                                 {cat}
@@ -477,7 +479,7 @@ export default function AdminProducts() {
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Rows</label>
+                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('product:rows')}</label>
                                 <select
                                     value={rowsPerPage}
                                     onChange={(e) => {
@@ -504,31 +506,31 @@ export default function AdminProducts() {
                             <thead>
                                 <tr className="border-b border-gray-200 bg-gray-100">
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider w-16">
-                                        Sr No
+                                        {t('product:sr_no')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider w-20">
-                                        Image
+                                        {t('product:image')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Product Name
+                                        {t('product:product_name')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Category
+                                        {t('product:category')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Owner Name
+                                        {t('product:owner_name')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Franchise
+                                        {t('product:franchise')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Price
+                                        {t('product:price')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Status
+                                        {t('product:status')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                        Action
+                                        {t('product:action')}
                                     </th>
                                 </tr>
                             </thead>
@@ -539,7 +541,7 @@ export default function AdminProducts() {
                                             <div className="flex flex-col items-center justify-center gap-3">
                                                 <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                                 <span className="text-sm text-gray-500 font-medium">
-                                                    Loading inventory...
+                                                    {t('product:loading_inventory')}
                                                 </span>
                                             </div>
                                         </td>
@@ -633,7 +635,7 @@ export default function AdminProducts() {
                                                     <button
                                                         onClick={() => handleUpdateStatus(product.id, "APPROVE")}
                                                         className={`p-1.5 rounded-full transition-colors border ${String(product.status || "").toUpperCase() === 'APPROVE' ? 'bg-green-100 text-green-700 border-green-200' : 'text-green-600 hover:text-green-800 hover:bg-green-50 border-green-100'}`}
-                                                        title="Approve"
+                                                        title={t('product:approve')}
                                                     >
                                                         <CheckCircle size={18} />
                                                     </button>
@@ -642,7 +644,7 @@ export default function AdminProducts() {
                                                     <button
                                                         onClick={() => handleUpdateStatus(product.id, "REJECT")}
                                                         className={`p-1.5 rounded-full transition-colors border ${String(product.status || "").toUpperCase() === 'REJECT' ? 'bg-red-100 text-red-700 border-red-200' : 'text-red-600 hover:text-red-800 hover:bg-red-50 border-red-100'}`}
-                                                        title="Reject"
+                                                        title={t('product:reject')}
                                                     >
                                                         <X size={18} />
                                                     </button>
@@ -651,7 +653,7 @@ export default function AdminProducts() {
                                                     <button
                                                         onClick={() => handleDeleteProduct(product.id)}
                                                         className="p-1.5 rounded-full transition-colors border text-red-600 hover:text-red-800 hover:bg-red-50 border-red-100"
-                                                        title="Delete"
+                                                        title={t('product:delete')}
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -667,7 +669,7 @@ export default function AdminProducts() {
                                                     <Package size={32} className="opacity-50" />
                                                 </div>
                                                 <p className="text-sm font-medium">
-                                                    No products found in your inventory.
+                                                    {t('product:no_products')}
                                                 </p>
                                             </div>
                                         </td>
@@ -688,7 +690,7 @@ export default function AdminProducts() {
                                 <ChevronLeft size={22} />
                             </button>
                             <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                                Page {currentPage} of {Math.max(1, totalPages)}
+                                {t('product:page_x_of_y', { current: currentPage, total: Math.max(1, totalPages) })}
                             </span>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -718,8 +720,8 @@ export default function AdminProducts() {
                     setProductToDelete(null);
                 }}
                 onConfirm={confirmDeleteProduct}
-                title="Delete Product?"
-                message="This action cannot be undone. This will permanently delete the product from your inventory."
+                title={t('product:delete_product_q')}
+                message={t('product:delete_msg')}
                 itemName={productToDelete?.name}
                 isGlobalLoading={isDeleting}
             />
@@ -740,7 +742,7 @@ export default function AdminProducts() {
                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
                             <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                 <Package className="text-green-600" size={24} />
-                                {isAddModalOpen ? "Add New Product" : "Edit Product"}
+                                {isAddModalOpen ? t('product:add_new_product') : t('product:edit_product')}
                             </h3>
                             <button
                                 onClick={() => {
@@ -759,19 +761,19 @@ export default function AdminProducts() {
                             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="col-span-2 space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Product Name</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:product_name_label')}</label>
                                         <input
                                             required
                                             type="text"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            placeholder="e.g., Arabian Jasmine Plant"
+                                            placeholder={t('product:name_placeholder')}
                                             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
                                         />
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Category</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:category')}</label>
                                         <select
                                             value={formData.category}
                                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -786,20 +788,20 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Status</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:status_label')}</label>
                                         <select
                                             value={formData.status}
                                             onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                                             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all appearance-none"
                                         >
-                                            <option value="pending">Pending</option>
-                                            <option value="available">Available</option>
-                                            <option value="rejected">Rejected</option>
+                                            <option value="pending">{t('product:pending')}</option>
+                                            <option value="available">{t('product:available')}</option>
+                                            <option value="rejected">{t('product:rejected')}</option>
                                         </select>
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Select Franchise</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:select_franchise')}</label>
                                         <select
                                             value={formData.nurseryName}
                                             onChange={(e) => {
@@ -812,7 +814,7 @@ export default function AdminProducts() {
                                             }}
                                             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all appearance-none"
                                         >
-                                            <option value="">Admin / No Franchise</option>
+                                            <option value="">{t('product:admin_no_franchise')}</option>
                                             {nurseries.map((n) => (
                                                 <option key={n.id} value={n.nurseryName}>
                                                     {n.nurseryName} ({n.ownerName})
@@ -822,7 +824,7 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Owner Name</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:owner_name')}</label>
                                         <input
                                             readOnly
                                             type="text"
@@ -832,7 +834,7 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Price (₹)</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:price_label')}</label>
                                         <input
                                             required
                                             type="number"
@@ -844,7 +846,7 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Stock Available</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:stock_label')}</label>
                                         <input
                                             required
                                             type="number"
@@ -856,7 +858,7 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="col-span-2 space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Image URL</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:image_url_label')}</label>
                                         <input
                                             type="url"
                                             value={formData.imageUrl}
@@ -867,12 +869,12 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="col-span-2 space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Description</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:description_label')}</label>
                                         <textarea
                                             rows={3}
                                             value={formData.description}
                                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                            placeholder="Enter product description..."
+                                            placeholder={t('product:desc_placeholder')}
                                             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all resize-none"
                                         ></textarea>
                                     </div>
@@ -891,7 +893,7 @@ export default function AdminProducts() {
                                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all font-sans"
                                     style={{ borderRadius: "12px" }}
                                 >
-                                    Cancel
+                                    {t('common:cancel')}
                                 </button>
                                 <button
                                     type="submit"
@@ -899,7 +901,7 @@ export default function AdminProducts() {
                                     style={{ borderRadius: "12px" }}
                                 >
                                     <CheckCircle size={18} />
-                                    {isAddModalOpen ? "Save Product" : "Update Product"}
+                                    {isAddModalOpen ? t('product:save_product') : t('product:update_product')}
                                 </button>
                             </div>
                         </form>
@@ -913,9 +915,9 @@ export default function AdminProducts() {
                     setProductToDelete(null);
                 }}
                 onConfirm={confirmDeleteProduct}
-                title="Delete Product?"
-                message="This action cannot be undone. This will permanently delete the product from the inventory and remove it from all connected stores."
-                confirmText="DELETE PRODUCT"
+                title={t('product:delete_product_q')}
+                message={t('product:delete_msg')}
+                confirmText={t('product:delete_confirm')}
                 itemName={productToDelete?.name}
                 isGlobalLoading={isDeleting}
             />

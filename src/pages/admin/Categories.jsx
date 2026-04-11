@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   collection,
   getDocs,
@@ -27,6 +28,7 @@ import StatCard from "../../components/common/StatCard";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 export default function AdminCategories() {
+  const { t } = useTranslation(['category', 'common']);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -243,10 +245,10 @@ export default function AdminCategories() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
           <div>
             <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-              Manage Categories
+              {t('category:manage_categories')}
             </h3>
             <p className="text-base text-gray-600 font-normal mb-0">
-              Add and manage product categories
+              {t('category:manage_desc')}
             </p>
           </div>
         </div>
@@ -255,25 +257,25 @@ export default function AdminCategories() {
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <StatCard
-            title="Total Categories"
+            title={t('category:total_categories')}
             value={categories.length}
             icon={Grid}
             variant="gray"
           />
           <StatCard
-            title="Active"
+            title={t('category:active')}
             value={categories.filter((c) => c.status === "active").length}
             icon={CheckCircle}
             variant="green"
           />
           <StatCard
-            title="Inactive"
+            title={t('category:inactive')}
             value={categories.filter((c) => c.status === "inactive").length}
             icon={X}
             variant="red"
           />
           <StatCard
-            title="Popular"
+            title={t('common:popular')}
             value={categories.length > 0 ? "Top 5" : 0}
             icon={Plus}
             variant="blue"
@@ -284,9 +286,9 @@ export default function AdminCategories() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-4">
-              <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+              <h5 className="text-lg font-bold text-gray-900">{t('common:search_filters')}</h5>
               <div className="text-sm font-medium text-gray-500">
-                Total {filteredCategories.length} records
+                {t('common:total_records', { count: filteredCategories.length })}
               </div>
             </div>
             <button
@@ -295,7 +297,7 @@ export default function AdminCategories() {
               style={{ borderRadius: "12px" }}
             >
               <Plus size={18} />
-              <span>Add Category</span>
+              <span>{t('category:add_category')}</span>
             </button>
           </div>
           <hr className="mt-0 mb-4 border-gray-200" />
@@ -309,7 +311,7 @@ export default function AdminCategories() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by category name..."
+                placeholder={t('category:search_placeholder')}
                 className="w-full pl-10 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
               />
             </div>
@@ -324,9 +326,9 @@ export default function AdminCategories() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white"
               >
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="name">Name (A-Z)</option>
+                <option value="newest">{t('common:newest_first')}</option>
+                <option value="oldest">{t('common:oldest_first')}</option>
+                <option value="name">{t('common:name_az')}</option>
               </select>
             </div>
           </div>
@@ -339,19 +341,19 @@ export default function AdminCategories() {
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-100 font-sans">
                   <th className="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider w-20">
-                    Sr No
+                    {t('category:sr_no')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Category
+                    {t('category:category_name')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Sub-categories
+                    {t('category:subcategories')}
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider whitespace-nowrap min-w-[160px]">
-                    Add Sub-categories
+                    {t('category:add_subcategory')}
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Actions
+                    {t('category:actions')}
                   </th>
                 </tr>
               </thead>
@@ -435,8 +437,8 @@ export default function AdminCategories() {
                       className="px-6 py-12 text-center text-gray-500 font-medium whitespace-nowrap"
                     >
                       {loading
-                        ? "Loading categories..."
-                        : "No categories found."}
+                        ? t('common:loading')
+                        : t('category:no_categories')}
                     </td>
                   </tr>
                 )}
@@ -451,7 +453,7 @@ export default function AdminCategories() {
             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden scale-in-center">
               <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                 <h2 className="text-xl font-bold text-gray-900">
-                  {selectedCategory ? "Edit Category" : "Add New Category"}
+                  {selectedCategory ? t('category:edit_category') : t('category:add_new_category')}
                 </h2>
                 <button
                   onClick={() => setIsModalOpen(false)}
@@ -463,7 +465,7 @@ export default function AdminCategories() {
               <form onSubmit={handleSubmit} className="p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">
-                    Category Name
+                    {t('category:form_name')}
                   </label>
                   <input
                     type="text"
@@ -494,7 +496,7 @@ export default function AdminCategories() {
                     className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors font-sans"
                     style={{ borderRadius: "12px" }}
                   >
-                    Cancel
+                    {t('common:cancel')}
                   </button>
                   <button
                     type="submit"
@@ -502,7 +504,7 @@ export default function AdminCategories() {
                     className="flex-1 px-4 py-2.5 bg-green-600 text-white font-medium hover:bg-green-700 transition-all shadow-md disabled:bg-green-400 font-sans"
                     style={{ borderRadius: "12px" }}
                   >
-                    {submitting ? "Saving..." : "Save Category"}
+                    {submitting ? t('category:adding') : t('category:add_category')}
                   </button>
                 </div>
               </form>
@@ -517,7 +519,7 @@ export default function AdminCategories() {
               <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                 <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                   <Grid className="text-green-600" size={24} />
-                  Category Details
+                  {t('category:category_details')}
                 </h2>
                 <button
                   onClick={() => setIsViewModalOpen(false)}
@@ -529,7 +531,7 @@ export default function AdminCategories() {
               <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    Category Name
+                    {t('category:category_name')}
                   </label>
                   <p className="text-lg font-bold text-gray-900 bg-gray-50 p-3 rounded-xl border border-gray-100">
                     {selectedCategory.name}
@@ -539,10 +541,10 @@ export default function AdminCategories() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                      Sub-Categories
+                      {t('category:subcategories')}
                     </label>
                     <span className="text-[11px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full uppercase">
-                      {selectedCategory.subcategories?.length || 0} Total
+                      {t('category:total_items', { count: selectedCategory.subcategories?.length || 0 })}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-2">
@@ -591,7 +593,7 @@ export default function AdminCategories() {
                     ) : (
                       <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                         <p className="text-sm text-gray-500 italic">
-                          No subcategories found.
+                          {t('category:no_subcategories')}
                         </p>
                       </div>
                     )}
@@ -604,7 +606,7 @@ export default function AdminCategories() {
                   className="px-6 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm text-sm"
                   style={{ borderRadius: "12px" }}
                 >
-                  Close
+                  {t('category:close')}
                 </button>
               </div>
             </div>
@@ -622,10 +624,10 @@ export default function AdminCategories() {
                   </div>
                   <div>
                     <h4 className="text-base font-bold text-gray-900 leading-tight">
-                      Add Sub-category
+                      {t('category:add_subcategory')}
                     </h4>
                     <p className="text-[11px] text-gray-500 font-medium">
-                      Create a nested items list
+                      {t('category:create_nested_list')}
                     </p>
                   </div>
                 </div>
@@ -671,7 +673,7 @@ export default function AdminCategories() {
                     </div>
                     <div className="overflow-hidden">
                       <p className="text-[10px] uppercase tracking-wider text-green-600 font-bold mb-0.5">
-                        Adding to category
+                        {t('category:adding_to_category')}
                       </p>
                       <p
                         className="text-sm font-bold text-gray-900 truncate"
@@ -686,7 +688,7 @@ export default function AdminCategories() {
 
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide my-3">
-                      Sub-category Name
+                      {t('category:subcategory_name')}
                     </label>
                     <div className="relative">
                       <input
@@ -712,7 +714,7 @@ export default function AdminCategories() {
                     className="flex-1 px-2 py-2 bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors shadow-sm text-sm"
                     style={{ borderRadius: "12px" }}
                   >
-                    Cancel
+                    {t('common:cancel')}
                   </button>
                   <button
                     type="submit"
@@ -723,12 +725,12 @@ export default function AdminCategories() {
                     {submittingSub ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Adding...</span>
+                        <span>{t('category:adding')}</span>
                       </>
                     ) : (
                       <>
                         <Plus size={18} />
-                        <span>Add Sub-category</span>
+                        <span>{t('category:add_subcategory')}</span>
                       </>
                     )}
                   </button>
@@ -749,10 +751,10 @@ export default function AdminCategories() {
                   </div>
                   <div>
                     <h4 className="text-base font-bold text-gray-900 leading-tight">
-                      Edit Sub-category
+                      {t('category:edit_subcategory')}
                     </h4>
                     <p className="text-[11px] text-gray-500 font-medium">
-                      Update nested item name
+                      {t('category:update_nested_name')}
                     </p>
                   </div>
                 </div>
@@ -771,7 +773,7 @@ export default function AdminCategories() {
                     </div>
                     <div className="overflow-hidden">
                       <p className="text-[10px] uppercase tracking-wider text-green-600 font-bold mb-0.5">
-                        Category Context
+                        {t('category:category_context')}
                       </p>
                       <p
                         className="text-sm font-bold text-gray-900 truncate"
@@ -810,7 +812,7 @@ export default function AdminCategories() {
                     className="flex-1 px-2 py-2 bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors shadow-sm text-sm"
                     style={{ borderRadius: "12px" }}
                   >
-                    Cancel
+                    {t('common:cancel')}
                   </button>
                   <button
                     type="submit"
@@ -821,12 +823,12 @@ export default function AdminCategories() {
                     {submittingEditSub ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Updating...</span>
+                        <span>{t('category:updating')}</span>
                       </>
                     ) : (
                       <>
                         <Edit2 size={18} />
-                        <span>Update</span>
+                        <span>{t('common:update')}</span>
                       </>
                     )}
                   </button>
@@ -840,9 +842,9 @@ export default function AdminCategories() {
           isOpen={showSubDeleteModal}
           onClose={() => setShowSubDeleteModal(false)}
           onConfirm={handleDeleteSubCategory}
-          title="Delete Sub-category?"
+          title={t('category:delete_subcategory_q')}
           itemName={subToDelete?.name}
-          confirmText="DELETE SUB CATEGORY"
+          confirmText={t('category:delete')}
           isGlobalLoading={isDeleting}
         />
 
@@ -850,9 +852,9 @@ export default function AdminCategories() {
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
           onConfirm={() => handleDelete(categoryToDelete?.id)}
-          title="Delete Product Category?"
+          title={t('category:delete_category_q')}
           itemName={categoryToDelete?.name}
-          confirmText="DELETE CATEGORY"
+          confirmText={t('category:delete')}
           isGlobalLoading={isDeleting}
         />
       </div>

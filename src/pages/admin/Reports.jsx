@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import {
@@ -153,6 +154,7 @@ const KPI_STATS = [
 ];
 
 export default function Reports() {
+  const { t } = useTranslation(['reports', 'common']);
   const [dateRange, setDateRange] = useState("This Month");
   const [onboardingData, setOnboardingData] = useState(ONBOARDING_DATA);
   const [revenueData, setRevenueData] = useState(REVENUE_DATA);
@@ -178,25 +180,25 @@ export default function Reports() {
 
         setKpiStatsData([
           {
-            label: "Total Nurseries",
+            label: t('reports:stats.total_nurseries'),
             value: totalNurseries.toLocaleString(),
             change: "+12%", trend: "up", icon: Store,
             color: "text-green-600", bgColor: "bg-green-50", trendColor: "text-green-600 bg-green-50",
           },
           {
-            label: "Total Revenue (Est)",
+            label: t('reports:stats.total_revenue_est'),
             value: `₹${(totalRevenue / 100000).toFixed(1)}L`,
             change: "+8.5%", trend: "up", icon: IndianRupee,
             color: "text-emerald-600", bgColor: "bg-emerald-50", trendColor: "text-green-600 bg-green-50",
           },
           {
-            label: "Active Plans",
+            label: t('reports:stats.active_plans'),
             value: totalNurseries.toLocaleString(), // Using total nurseries as proxy for active plans
             change: "+24%", trend: "up", icon: Briefcase,
             color: "text-green-600", bgColor: "bg-green-50", trendColor: "text-green-600 bg-green-50",
           },
           {
-            label: "Satisfaction Score",
+            label: t('reports:stats.satisfaction'),
             value: `${avgRating}/5`,
             change: "+0.2", trend: "up", icon: Star,
             color: "text-yellow-600", bgColor: "bg-yellow-50", trendColor: "text-green-600 bg-green-50",
@@ -279,10 +281,10 @@ export default function Reports() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
           <div>
             <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-              Reports & Analytics
+              {t('reports:title')}
             </h3>
             <p className="text-base text-gray-600 font-normal mb-0">
-              Comprehensive insights into nursery performance
+              {t('reports:subtitle')}
             </p>
           </div>
           <div className="flex gap-2">
@@ -291,14 +293,14 @@ export default function Reports() {
               style={{ borderRadius: "12px" }}
             >
               <Printer size={16} />
-              <span>Print</span>
+              <span>{t('reports:actions.print')}</span>
             </button>
             <button
               className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors shadow-sm"
               style={{ borderRadius: "12px" }}
             >
               <Download size={16} />
-              <span>Export</span>
+              <span>{t('reports:actions.export')}</span>
             </button>
           </div>
         </div>
@@ -314,7 +316,7 @@ export default function Reports() {
               />
               <input
                 type="text"
-                placeholder="Search analytics..."
+                placeholder={t('reports:filters.search_placeholder')}
                 className="w-full pl-9 pr-4 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
               />
             </div>
@@ -324,19 +326,19 @@ export default function Reports() {
                 onChange={(e) => setDateRange(e.target.value)}
                 className="w-full px-3 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 cursor-pointer"
               >
-                <option>Today</option>
-                <option>This Week</option>
-                <option>This Month</option>
-                <option>Last 3 Months</option>
+                <option value="Today">{t('reports:filters.date.today')}</option>
+                <option value="This Week">{t('reports:filters.date.week')}</option>
+                <option value="This Month">{t('reports:filters.date.month')}</option>
+                <option value="Last 3 Months">{t('reports:filters.date.last_3_months')}</option>
               </select>
             </div>
             {/* Report Type Filter Removed */}
             <div className="lg:col-span-2">
               <select className="w-full px-3 py-2 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 cursor-pointer">
-                <option>All Regions</option>
-                <option>Maharashtra</option>
-                <option>Karnataka</option>
-                <option>Gujarat</option>
+                <option value="All Regions">{t('reports:filters.regions.all')}</option>
+                <option value="Maharashtra">{t('reports:filters.regions.maharashtra')}</option>
+                <option value="Karnataka">{t('reports:filters.regions.karnataka')}</option>
+                <option value="Gujarat">{t('reports:filters.regions.gujarat')}</option>
               </select>
             </div>
 
@@ -361,7 +363,7 @@ export default function Reports() {
                   <div className={`inline-flex items-center gap-1 text-xs font-medium ${stat.trend === "up" ? "text-green-600" : "text-red-600"}`}>
                     {stat.trend === "up" ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {stat.change}
-                    <span className="text-gray-400 font-normal ml-1">vs last month</span>
+                    <span className="text-gray-400 font-normal ml-1">{t('reports:stats.vs_last_month')}</span>
                   </div>
                 </div>
                 <div className={`p-2 rounded-lg ${stat.bgColor} ${stat.color}`}>
@@ -380,10 +382,10 @@ export default function Reports() {
               <div>
                 <h6 className="font-semibold text-gray-900 flex items-center gap-2">
                   <TrendingUp className="text-green-600" size={18} />
-                  Nursery Growth Trend
+                  {t('reports:charts.growth.title')}
                 </h6>
                 <p className="text-sm text-gray-500 mt-1">
-                  New registrations over time
+                  {t('reports:charts.growth.subtitle')}
                 </p>
               </div>
               <button className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors">
@@ -441,10 +443,10 @@ export default function Reports() {
               <div>
                 <h6 className="font-semibold text-gray-900 flex items-center gap-2">
                   <BarChart2 className="text-green-600" size={18} />
-                  Regional Revenue
+                  {t('reports:charts.regional.title')}
                 </h6>
                 <p className="text-sm text-gray-500 mt-1">
-                  Top performing locations
+                  {t('reports:charts.regional.subtitle')}
                 </p>
               </div>
               <button className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors">
@@ -490,14 +492,14 @@ export default function Reports() {
             <div>
               <h6 className="font-semibold text-gray-900 flex items-center gap-2">
                 <Store className="text-purple-600" size={18} />
-                Top Performing Nurseries
+                {t('reports:table.title')}
               </h6>
               <p className="text-sm text-gray-500 mt-1">
-                Highest revenue & order volume
+                {t('reports:table.subtitle')}
               </p>
             </div>
             <button className="flex items-center gap-1 text-base font-medium text-green-600 hover:text-green-700 transition-colors">
-              View All <ArrowRight size={16} />
+              {t('reports:table.view_all')} <ArrowRight size={16} />
             </button>
           </div>
           <div className="overflow-x-auto">
@@ -505,22 +507,22 @@ export default function Reports() {
               <thead className="bg-gray-50/50 border-b border-gray-100">
                 <tr>
                   <th className="py-3 px-5 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Nursery Name
+                    {t('reports:table.headers.name')}
                   </th>
                   <th className="py-3 px-5 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Location
+                    {t('reports:table.headers.location')}
                   </th>
                   <th className="py-3 px-5 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Revenue
+                    {t('reports:table.headers.revenue')}
                   </th>
                   <th className="py-3 px-5 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Orders
+                    {t('reports:table.headers.orders')}
                   </th>
                   <th className="py-3 px-5 text-sm font-bold text-gray-500 uppercase tracking-wider">
-                    Status
+                    {t('reports:table.headers.status')}
                   </th>
                   <th className="py-3 px-5 text-sm font-bold text-gray-500 uppercase tracking-wider text-right">
-                    Rating
+                    {t('reports:table.headers.rating')}
                   </th>
                 </tr>
               </thead>
@@ -559,7 +561,7 @@ export default function Reports() {
                           : "bg-red-50 text-red-700 border-red-100"
                         }`}>
                         {nursery.status === "Active" ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
-                        {nursery.status}
+                        {nursery.status === "Active" ? t('reports:table.status.active') : nursery.status === "Review" ? t('reports:table.status.review') : t('reports:table.status.inactive')}
                       </div>
                     </td>
                     <td className="px-5 py-3 text-right">

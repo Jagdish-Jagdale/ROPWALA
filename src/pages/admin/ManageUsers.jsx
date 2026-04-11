@@ -13,6 +13,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth, signOut } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 import { initializeApp, deleteApp } from "firebase/app";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { httpsCallable } from "firebase/functions";
@@ -54,6 +55,7 @@ import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 
 export default function UsersManage() {
+  const { t } = useTranslation(['users', 'common']);
   const [users, setUsers] = useState([]);
   const [nurseries, setNurseries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -118,7 +120,7 @@ export default function UsersManage() {
       },
       (error) => {
         console.error("Error listening to users:", error);
-        toast.error("Failed to sync users");
+        toast.error(t('users:modals.validation.sync_error'));
         setLoading(false);
       }
     );
@@ -215,8 +217,8 @@ export default function UsersManage() {
           return result.data;
         })(),
         {
-          loading: "Removing Authentication credentials...",
-          success: (data) => data.message || "Authentication credentials removed",
+          loading: t('users:toast.auth_cleanup'),
+          success: (data) => data.message || t('users:toast.auth_success'),
           error: (err) => `Auth cleanup failed: ${err.message}`,
         }
       );
@@ -237,7 +239,7 @@ export default function UsersManage() {
       await deleteDoc(doc(db, "users", userToDelete.id));
       
       setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
-      toast.success("Firestore record deleted successfully");
+      toast.success(t('users:toast.firestore_success'));
       setShowDeleteModal(false);
       setUserToDelete(null);
     } catch (error) {
@@ -245,7 +247,7 @@ export default function UsersManage() {
       // We don't automatically delete Firestore doc if auth fails because the user
       // would see the "record deleted" success but the credentials would remain.
       // This way it's safer.
-      toast.error("Process aborted to protect synchronization");
+      toast.error(t('users:modals.validation.delete_confirm'));
     } finally {
       setIsDeleting(false);
     }
@@ -277,28 +279,28 @@ export default function UsersManage() {
       !formData.userName ||
       !formData.email
     ) {
-      toast.error("Please fill in all required fields");
+      toast.error(t('users:modals.validation.required'));
       return;
     }
 
     if (!isEditing && !formData.password) {
-      toast.error("Password is required for new users");
+      toast.error(t('users:modals.validation.pass_required'));
       return;
     }
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d\W]).{8,}$/;
     if (formData.password && !passwordRegex.test(formData.password)) {
-      toast.error("Password must be at least 8 chars with 1 uppercase, 1 lowercase & 1 number/symbol");
+      toast.error(t('users:modals.validation.pass_format'));
       return;
     }
 
     if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
-      toast.error("Phone number must be exactly 10 digits");
+      toast.error(t('users:modals.validation.phone_format'));
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      toast.error("Please enter a valid email address");
+      toast.error(t('users:modals.validation.email_format'));
       return;
     }
 
@@ -328,7 +330,7 @@ export default function UsersManage() {
           status: formData.status,
         });
 
-        toast.success("User updated successfully!");
+        toast.success(t('users:toast.edit_success'));
         // Update local state is tricky because 'users' might need refresh, but we can optimistically update
         setUsers(prev => prev.map(u => u.id === editId ? {
           ...u,
@@ -374,7 +376,7 @@ export default function UsersManage() {
           status: formData.status || "active",
         });
 
-        toast.success("User added successfully!");
+        toast.success(t('users:toast.add_success'));
       }
 
       handleCloseModal();
@@ -384,7 +386,7 @@ export default function UsersManage() {
       if (error.code === "auth/email-already-in-use") {
         toast.error("Email already in use");
       } else {
-        toast.error("Failed to add user");
+        toast.error(t('users:toast.add_error') || "Failed to add user");
       }
     } finally {
       setSubmitting(false);
@@ -430,10 +432,10 @@ export default function UsersManage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
           <div>
             <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-              Manage Users
+              {t('users:title')}
             </h3>
             <p className="text-base text-gray-600 font-normal mb-0">
-              User Administration
+              {t('users:subtitle')}
             </p>
           </div>
         </div>
@@ -442,25 +444,25 @@ export default function UsersManage() {
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <StatCard
-            title="Total Users"
+            title={t('users:stats.total')}
             value={users.length}
             icon={UsersIcon}
             variant="gray"
           />
           <StatCard
-            title="Active Users"
+            title={t('users:stats.active')}
             value={users.filter(u => u.status === 'active').length}
             icon={UserCheck}
             variant="green"
           />
           <StatCard
-            title="Inactive Users"
+            title={t('users:stats.inactive')}
             value={users.filter(u => u.status === 'inactive').length}
             icon={UserX}
             variant="red"
           />
           <StatCard
-            title="Staff / Admins"
+            title={t('users:stats.staff')}
             value={users.filter(u => u.role === ROLES.ADMIN || u.role === ROLES.STAFF).length}
             icon={ShieldCheck}
             variant="blue"
@@ -470,9 +472,9 @@ export default function UsersManage() {
         {/* Search & Filters */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h5 className="text-lg font-bold text-gray-900">Search & Filters</h5>
+            <h5 className="text-lg font-bold text-gray-900">{t('users:filters.title')}</h5>
             <div className="text-sm font-medium text-gray-500">
-              Total {filteredUsers.length} records
+              {t('users:filters.records_count', { count: filteredUsers.length })}
             </div>
           </div>
           <hr className="mt-0 mb-4 border-gray-200" />
@@ -480,14 +482,14 @@ export default function UsersManage() {
           <div className="flex flex-row items-center gap-3 w-full">
             {/* Search Bar - Flex Grow to take space */}
             <div className="flex-grow flex flex-col gap-1.5">
-              <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Search by name or email</label>
+              <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.search_label')}</label>
               <div className="relative">
                 <Search className="absolute text-gray-400 left-3 top-1/2 -translate-y-1/2" size={18} />
                 <input
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="e.g. John Doe or john@company.com"
+                  placeholder={t('users:filters.search_placeholder')}
                   className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-normal text-gray-700"
                 />
               </div>
@@ -497,7 +499,7 @@ export default function UsersManage() {
             <div className="flex flex-row items-end gap-3 flex-none">
               {/* Status Filter First */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Status</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.status')}</label>
                 <div className="relative w-[130px]">
                   <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                   <select
@@ -505,16 +507,16 @@ export default function UsersManage() {
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
                   >
-                    <option value="all">All</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="all">{t('common:all')}</option>
+                    <option value="active">{t('users:modals.status_active')}</option>
+                    <option value="inactive">{t('users:modals.status_inactive')}</option>
                   </select>
                 </div>
               </div>
 
               {/* Sort Filter Second */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Sort By</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.sort_by')}</label>
                 <div className="relative w-[130px]">
                   <Filter className="absolute text-gray-400 left-2.5 top-1/2 -translate-y-1/2" size={14} />
                   <select
@@ -522,16 +524,16 @@ export default function UsersManage() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all appearance-none cursor-pointer bg-white font-normal text-gray-700 uppercase tracking-tight"
                   >
-                    <option value="newest">Newest</option>
-                    <option value="name-asc">A-Z</option>
-                    <option value="name-desc">Z-A</option>
+                    <option value="newest">{t('common:newest')}</option>
+                    <option value="name-asc">{t('common:name_asc')}</option>
+                    <option value="name-desc">{t('common:name_desc')}</option>
                   </select>
                 </div>
               </div>
 
               {/* Rows Selector */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">Rows</label>
+                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider ml-1">{t('users:filters.rows')}</label>
                 <div className="flex items-center gap-1.5">
                   <select
                     value={rowsPerPage}
@@ -561,27 +563,27 @@ export default function UsersManage() {
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-100">
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Sr No
+                    {t('users:table.sr_no')}
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Image
+                    {t('users:table.image')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Name
+                    {t('users:table.name')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Email
+                    {t('users:table.email')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Registered Date
+                    {t('users:table.reg_date')}
                   </th>
 
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Status
+                    {t('users:table.status')}
                   </th>
 
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    Action
+                    {t('users:table.action')}
                   </th>
                 </tr>
               </thead>
@@ -592,15 +594,15 @@ export default function UsersManage() {
                       <div className="flex flex-col items-center justify-center gap-3">
                         <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                         <span className="text-sm text-gray-500 font-medium">
-                          Loading user data...
+                          {t('users:table.loading')}
                         </span>
                       </div>
                     </td>
                   </tr>
                 ) : paginatedUsers.length ? (
                   paginatedUsers.map((u, index) => {
-                    const displayName = u.name || u.displayName || u.fullName || u.userName || "Unknown User";
-                    const displayEmail = u.email || "No Email";
+                    const displayName = u.name || u.displayName || u.fullName || u.userName || t('common:unknown_user');
+                    const displayEmail = u.email || t('common:no_email');
 
                     return (
                       <tr
@@ -656,13 +658,13 @@ export default function UsersManage() {
                               ? new Date(u.createdAt.seconds * 1000).toLocaleDateString('en-GB')
                               : u.createdAt
                                 ? new Date(u.createdAt).toLocaleDateString('en-GB')
-                                : "N/A"}
+                                : t('common:n_a')}
                           </span>
                         </td>
 
                         <td className="px-6 py-2.5 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${(u.status || "active") === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
-                            {(u.status || "active") === "active" ? "Active" : "Inactive"}
+                            {(u.status || "active") === "active" ? t('users:modals.status_active') : t('users:modals.status_inactive')}
                           </span>
                         </td>
 
@@ -671,14 +673,14 @@ export default function UsersManage() {
                             <button
                               onClick={(e) => handleEdit(u, e)}
                               className="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-full transition-colors"
-                              title="Edit User"
+                              title={t('users:tooltips.edit')}
                             >
                               <Edit2 size={16} />
                             </button>
                             <button
                               onClick={(e) => handleDelete(u, e)}
                               className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors"
-                              title="Delete User"
+                              title={t('users:tooltips.delete')}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -695,7 +697,7 @@ export default function UsersManage() {
                           <User size={32} className="opacity-50" />
                         </div>
                         <p className="text-sm font-medium">
-                          No users found matching your search.
+                          {t('users:table.no_results')}
                         </p>
                       </div>
                     </td>
@@ -716,7 +718,7 @@ export default function UsersManage() {
                 <ChevronLeft size={22} />
               </button>
               <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                Page {currentPage} of {Math.max(1, totalPages)}
+                {t('users:table.pagination', { current: currentPage, total: Math.max(1, totalPages) })}
               </span>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
@@ -745,7 +747,7 @@ export default function UsersManage() {
                 <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
                   <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                     <User className="text-green-600" size={24} />
-                    {isEditing ? "Edit User" : "Add New User"}
+                    {isEditing ? t('users:modals.edit_title') : t('users:modals.add_title')}
                   </h3>
                   <button
                     onClick={handleCloseModal}
@@ -769,7 +771,7 @@ export default function UsersManage() {
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
                     </label>
                     <span className={`text-xs font-semibold ${formData.status === "active" ? "text-green-600" : "text-gray-400"}`}>
-                      {formData.status === "active" ? "Active" : "Inactive"}
+                      {formData.status === "active" ? t('users:modals.status_active') : t('users:modals.status_inactive')}
                     </span>
                   </div>
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -811,10 +813,10 @@ export default function UsersManage() {
                           }}
                           className="text-xs text-red-500 mt-2 hover:text-red-700 font-medium"
                         >
-                          Remove Profile
+                          {t('common:remove')}
                         </button>
                       ) : (
-                        <p className="text-xs text-gray-500 mt-2">Upload Profile Picture</p>
+                        <p className="text-xs text-gray-500 mt-2">{t('users:modals.fields.profile_image')}</p>
                       )}
                     </div>
 
@@ -824,7 +826,7 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <User size={16} className="text-green-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Name <span className="text-red-500">*</span>
+                            {t('users:modals.fields.name')} <span className="text-red-500">*</span>
                           </label>
                         </div>
                         <input
@@ -832,7 +834,7 @@ export default function UsersManage() {
                           name="userName"
                           value={formData.userName}
                           onChange={handleInputChange}
-                          placeholder="Enter user name"
+                          placeholder={t('users:modals.placeholders.name')}
                           className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-gray-400"
                           disabled={submitting}
                           required
@@ -844,7 +846,7 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <Phone size={16} className="text-orange-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Phone Number
+                            {t('users:modals.fields.phone')}
                           </label>
                         </div>
                         <input
@@ -852,7 +854,7 @@ export default function UsersManage() {
                           name="phone"
                           value={formData.phone}
                           onChange={handleInputChange}
-                          placeholder="Enter phone number"
+                          placeholder={t('users:modals.placeholders.phone')}
                           className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-gray-400"
                           disabled={submitting}
                         />
@@ -863,14 +865,14 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <MapPin size={16} className="text-red-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Address
+                            {t('users:modals.fields.address')}
                           </label>
                         </div>
                         <textarea
                           name="address"
                           value={formData.address}
                           onChange={handleInputChange}
-                          placeholder="Enter address"
+                          placeholder={t('users:modals.placeholders.address')}
                           rows={3}
                           className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-gray-400 resize-none"
                           disabled={submitting}
@@ -882,7 +884,7 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <Mail size={16} className="text-purple-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Email <span className="text-red-500">*</span>
+                            {t('users:modals.fields.email')} <span className="text-red-500">*</span>
                           </label>
                         </div>
                         <input
@@ -890,7 +892,7 @@ export default function UsersManage() {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          placeholder="Enter email"
+                          placeholder={t('users:modals.placeholders.email')}
                           className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-gray-400"
                           disabled={submitting}
                           required
@@ -902,7 +904,7 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <Lock size={16} className="text-gray-400" />
                           <label className="text-base font-medium text-gray-700">
-                            Password
+                            {t('users:modals.fields.password')}
                           </label>
                         </div>
                         <div className="relative">
@@ -911,7 +913,7 @@ export default function UsersManage() {
                             name="password"
                             value={formData.password}
                             onChange={handleInputChange}
-                            placeholder={isEditing ? "Leave blank to keep current password" : "Enter password"}
+                            placeholder={isEditing ? "(Leave blank to keep current)" : t('users:modals.placeholders.password')}
                             className="w-full pl-3 pr-10 py-2.5 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all placeholder:text-gray-400"
                             disabled={submitting}
                             required={!isEditing}
@@ -943,7 +945,7 @@ export default function UsersManage() {
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all font-sans"
                     style={{ borderRadius: "12px" }}
                   >
-                    Cancel
+                    {t('common:cancel')}
                   </button>
                   <button
                     onClick={handleSubmit}
@@ -954,12 +956,12 @@ export default function UsersManage() {
                     {submitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        <span>{isEditing ? "Updating..." : "Adding..."}</span>
+                        <span>{isEditing ? t('common:saving') : t('common:adding')}</span>
                       </>
                     ) : (
                       <>
 
-                        <span>{isEditing ? "Update User" : "Add User"}</span>
+                        <span>{isEditing ? t('common:update') : t('common:add')}</span>
                       </>
                     )}
                   </button>
@@ -985,7 +987,7 @@ export default function UsersManage() {
                 <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
                   <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                     <User className="text-green-600" size={24} />
-                    User Details
+                    {t('users:modals.view_title')}
                   </h3>
                   <button
                     onClick={() => {
@@ -1025,11 +1027,11 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <User size={16} className="text-green-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Name
+                            {t('users:modals.fields.name')}
                           </label>
                         </div>
                         <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.userName || "N/A"}
+                          {selectedUser.userName || t('common:n_a')}
                         </div>
                       </div>
 
@@ -1042,7 +1044,7 @@ export default function UsersManage() {
                           </label>
                         </div>
                         <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.phone || "N/A"}
+                          {selectedUser.phone || t('common:n_a')}
                         </div>
                       </div>
 
@@ -1050,10 +1052,10 @@ export default function UsersManage() {
                       <div className="space-y-1.5 md:col-span-2">
                         <label className="text-base font-medium text-gray-700 flex items-center gap-2">
                           <MapPin size={16} className="text-red-600" />
-                          Address
+                          {t('users:modals.fields.address')}
                         </label>
                         <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900 min-h-[3rem] whitespace-pre-wrap">
-                          {selectedUser.address || "N/A"}
+                          {selectedUser.address || t('common:n_a')}
                         </div>
                       </div>
 
@@ -1062,11 +1064,11 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <Mail size={16} className="text-purple-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Email
+                            {t('users:modals.fields.email')}
                           </label>
                         </div>
                         <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.email || "N/A"}
+                          {selectedUser.email || t('common:n_a')}
                         </div>
                       </div>
 
@@ -1080,7 +1082,7 @@ export default function UsersManage() {
                         </div>
                         <div className="relative">
                           <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                            {showViewPassword ? (selectedUser.password || "N/A") : "••••••••"}
+                            {showViewPassword ? (selectedUser.password || t('common:n_a')) : "••••••••"}
                           </div>
                           <button
                             onClick={() => setShowViewPassword(!showViewPassword)}
@@ -1096,7 +1098,7 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <Calendar size={16} className="text-teal-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Created
+                            {t('users:modals.fields.reg_date')}
                           </label>
                         </div>
                         <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
@@ -1113,7 +1115,7 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <Clock size={16} className="text-teal-600" />
                           <label className="text-base font-medium text-gray-700">
-                            Updated
+                            {t('users:modals.fields.last_updated')}
                           </label>
                         </div>
                         <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
@@ -1140,7 +1142,7 @@ export default function UsersManage() {
                       }}
                       className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-red-700 transition-all active:scale-95"
                     >
-                      <Trash2 size={18} /> Delete
+                      <Trash2 size={18} /> {t('common:delete')}
                     </button>
                   </div>
                   <button
@@ -1150,7 +1152,7 @@ export default function UsersManage() {
                     }}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl transition-all shadow-sm"
                   >
-                    Close
+                    {t('common:close')}
                   </button>
                 </div>
               </div>
@@ -1165,9 +1167,9 @@ export default function UsersManage() {
             setUserToDelete(null);
           }}
           onConfirm={confirmDelete}
-          title="Delete User Account?"
-          message="This action cannot be undone. This will permanently delete the user's profile and remove their access to the system."
-          confirmText="DELETE USER"
+          title={t('users:modals.validation.delete_title') || "Delete User Account?"}
+          message={t('users:modals.validation.delete_msg') || "This action cannot be undone. This will permanently delete the user's profile and remove their access to the system."}
+          confirmText={t('common:delete_confirm') || "DELETE USER"}
           itemName={userToDelete?.userName || userToDelete?.email}
           isGlobalLoading={isDeleting}
         />

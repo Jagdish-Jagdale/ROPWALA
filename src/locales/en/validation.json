@@ -1,0 +1,9 @@
+{
+  "required": "This field is required",
+  "fill_all_fields": "Please fill in all fields",
+  "invalid_email": "Invalid email address",
+  "invalid_credentials": "Incorrect email or password. Please verify your credentials and try again.",
+  "account_inactive": "Account Inactive",
+  "password_mismatch": "Passwords do not match",
+  "min_length": "Must be at least {{count}} characters"
+}

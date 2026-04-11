@@ -1,0 +1,57 @@
+{
+  "owner": {
+    "title": "Owner Hamipatra",
+    "subtitle": "Manage and view the official nursery franchise agreement template for Owners",
+    "edit_page": "Edit Page",
+    "loading": "Loading agreement content...",
+    "placeholders": {
+      "logo": "Logo path"
+    },
+    "labels": {
+      "date": "Date",
+      "owner_name": "Franchisee Name",
+      "signature": "Signature (Digital)",
+      "sign_here": "Sign Here"
+    },
+    "default_content": {
+      "headerTitle": "हमीपत्र",
+      "headerSubtitle": "(नर्सरी फ्रँचायझी)",
+      "introText": "मी / आम्ही ________ प्रतिज्ञापूर्वक म्हणतो / म्हणते की, मी / आम्ही ________ (फ्रँचायझी धारकाचे नाव) हा / ही ________ (पत्ता) येथे नर्सरी व्यवस्थापन व्यवसाय चालवत आहे / आहोत.",
+      "bulletins": [
+        "मी / आम्ही याप्रमाणे नमूद करतो की, नर्सरी व्यवस्थापन प्रणालीअंतर्गत फ्रँचायझी घेऊन व्यवसाय करत असताना सर्व नियम व अटींचे पालन करणे माझ्यावर / आमच्यावर बंधनकारक राईल.",
+        "मी / आम्ही रोपवाला (नर्सरी व्यवस्थापन प्रणालीतून) दिलेल्या सर्व सूचना, मार्गदर्शक तत्त्वे व धोरणे यांचे पालन करीन / करू आणि संबंधित प्रशासनाने ठरविलेल्या अटी व शर्ती मान्य करतो / करते.",
+        "मी / आम्ही असेही नमूद करतो की, (रोपवाला) नर्सरी व्यवस्थापन प्रणालीचा वापर करून चालविल्या जाणाऱ्या व्यवसायातील सर्व व्यवहार, नोंदी व माहिती ही सत्य व अचूक राईल.",
+        "मी / आम्ही खात्री देतो की, व्यवसायाशी संबंधित कोणतीही चुकीची माहिती देणार नाही तसेच कोणताही बेकायदेशीर व्यवहार करणार नाही.",
+        "मी / आम्ही नर्सरी व्यवस्थापन प्रणालीद्वारे दिलेल्या डिजिटल नोंदी, दस्तऐवज व व्यवहार यांना वैध व अधिकृत मान्य करतो / करते.",
+        "मी / आम्ही याप्रमाणे खात्री देतो की, या फ्रँचायझी अंतर्गत चालणारा व्यवसाय संबंधित कायदे, नियम व शासनाच्या मार्गदर्शक सूचनांनुसारच चालविला जाईल.",
+        "मी / आम्ही या हमीपत्राद्वारे असे नमूद करतो की, नर्सरी व्यवस्थापन प्रणाली अंतर्गत व्यवसाय करताना सर्व माहिती अचूक देणे व नियमांचे पालन करणे ही माझी / आमची जबाबदारी आहे.",
+        "जर या हमीपत्रातील माहिती खोटी आढळली किंवा नियमांचे उल्लंघन झाले तर संबंधित प्रशासनाला आवश्यक ती कारवाई करण्याचा पूर्ण अधिकार राईल."
+      ]
+    },
+    "toast": {
+      "load_error": "Failed to load Owner Hamipatra content",
+      "update_success": "Hamipatra updated successfully",
+      "save_error": "Failed to save changes"
+    }
+  },
+  "user": {
+    "title": "User Hamipatra",
+    "subtitle": "Manage and view the official nursery user agreement template",
+    "edit_page": "Edit Page",
+    "loading": "Loading agreement content...",
+    "placeholders": {
+      "logo": "Logo path"
+    },
+    "labels": {
+      "date": "Date",
+      "farmer_name": "Farmer Name",
+      "nursery_signature": "Nursery Signature & Stamp",
+      "sign_here": "Sign Here"
+    },
+    "toast": {
+      "load_error": "Failed to load User Hamipatra content",
+      "update_success": "User Hamipatra updated successfully",
+      "save_error": "Failed to save changes"
+    }
+  }
+}

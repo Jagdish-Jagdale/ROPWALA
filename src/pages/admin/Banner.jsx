@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     collection,
     getDocs,
@@ -62,6 +63,7 @@ const BannerImage = ({ src, alt, className = "" }) => {
 };
 
 export default function AdminBanners() {
+    const { t } = useTranslation(['banner', 'common']);
     const [banners, setBanners] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -98,7 +100,7 @@ export default function AdminBanners() {
             setBanners(data);
         } catch (error) {
             console.error("Error fetching banners:", error);
-            toast.error("Failed to load banners");
+            toast.error(t('banner:toast.load_error'));
         } finally {
             setLoading(false);
         }
@@ -107,7 +109,7 @@ export default function AdminBanners() {
     const handleAddBanner = async (e) => {
         e.preventDefault();
         if (!imageFile) {
-            toast.error("Please select a banner image");
+            toast.error(t('banner:modals.validation.image_required'));
             return;
         }
 
@@ -127,13 +129,13 @@ export default function AdminBanners() {
             };
 
             await addDoc(collection(db, "banners"), bannerData);
-            toast.success("Banner added successfully");
+            toast.success(t('banner:toast.add_success'));
             setIsAddModalOpen(false);
             resetForm();
             fetchBanners();
         } catch (error) {
             console.error("Error adding banner:", error);
-            toast.error("Failed to add banner");
+            toast.error(t('banner:toast.add_error'));
         } finally {
             setIsSubmitting(false);
         }
@@ -170,14 +172,14 @@ export default function AdminBanners() {
                 updatedAt: serverTimestamp(),
             });
 
-            toast.success("Banner updated successfully");
+            toast.success(t('banner:toast.update_success'));
             setIsEditModalOpen(false);
             setSelectedBanner(null);
             resetForm();
             fetchBanners();
         } catch (error) {
             console.error("Error updating banner:", error);
-            toast.error("Failed to update banner");
+            toast.error(t('banner:toast.update_error'));
         } finally {
             setIsSubmitting(false);
         }
@@ -200,13 +202,13 @@ export default function AdminBanners() {
                 }
             }
             await deleteDoc(doc(db, "banners", id));
-            toast.success("Banner deleted successfully");
+            toast.success(t('banner:toast.delete_success'));
             setIsDeleteModalOpen(false);
             setBannerToDelete(null);
             fetchBanners();
         } catch (error) {
             console.error("Error deleting banner:", error);
-            toast.error("Failed to delete banner");
+            toast.error(t('banner:toast.delete_error'));
         } finally {
             setIsDeleting(false);
         }
@@ -246,10 +248,10 @@ export default function AdminBanners() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
                         <h3 className="text-xl mb-2 text-gray-900 font-extrabold">
-                            Banner Section
+                            {t('banner:title')}
                         </h3>
                         <p className="text-base text-gray-600 font-normal mb-0">
-                            Manage your application marketing banners
+                            {t('banner:subtitle')}
                         </p>
                     </div>
                     <button
@@ -261,7 +263,7 @@ export default function AdminBanners() {
                         style={{ borderRadius: "12px" }}
                     >
                         <Plus size={18} />
-                        Add Banner
+                        {t('banner:add_banner')}
                     </button>
                 </div>
                 <hr className="mt-4 mb-5 border-gray-100" />
@@ -271,7 +273,7 @@ export default function AdminBanners() {
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-20 text-center">
                         <div className="flex flex-col items-center justify-center gap-3">
                             <div className="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-                            <span className="text-base text-gray-500 font-bold tracking-tight">Loading banners...</span>
+                            <span className="text-base text-gray-500 font-bold tracking-tight">{t('banner:loading')}</span>
                         </div>
                     </div>
                 ) : paginatedBanners.length ? (
@@ -302,7 +304,7 @@ export default function AdminBanners() {
                                             ? "bg-green-100 text-green-700 border border-green-200" 
                                             : "bg-red-100 text-red-700 border border-red-200"
                                         }`}>
-                                            {p.isActive ? "Active" : "Inactive"}
+                                            {p.isActive ? t('banner:card.status_active') : t('banner:card.status_inactive')}
                                         </span>
                                     </div>
 
@@ -310,7 +312,7 @@ export default function AdminBanners() {
                                         <button
                                             onClick={() => openEditModal(p)}
                                             className="p-2 text-green-600 hover:text-white hover:bg-green-600 rounded-xl transition-all shadow-sm border border-green-100"
-                                            title="Edit Banner"
+                                            title={t('banner:card.edit_tooltip')}
                                         >
                                             <Edit2 size={16} />
                                         </button>
@@ -320,7 +322,7 @@ export default function AdminBanners() {
                                                 setIsDeleteModalOpen(true);
                                             }}
                                             className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-xl transition-all shadow-sm border border-red-100"
-                                            title="Delete Banner"
+                                            title={t('banner:card.delete_tooltip')}
                                         >
                                             <Trash2 size={16} />
                                         </button>
@@ -334,7 +336,7 @@ export default function AdminBanners() {
                         <div className="p-4 bg-gray-50 rounded-full">
                             <ImageIcon size={40} className="text-gray-300" />
                         </div>
-                        <p className="text-gray-500 font-bold">No banners added yet.</p>
+                        <p className="text-gray-500 font-bold">{t('banner:empty.title')}</p>
                         <button
                             onClick={() => {
                                 resetForm();
@@ -342,7 +344,7 @@ export default function AdminBanners() {
                             }}
                             className="text-green-600 font-bold text-sm hover:underline"
                         >
-                            Add your first banner
+                            {t('banner:empty.action')}
                         </button>
                     </div>
                 )}
@@ -359,7 +361,7 @@ export default function AdminBanners() {
                                 <ChevronLeft size={22} />
                             </button>
                             <span className="text-sm font-bold text-gray-500 min-w-[100px] text-center">
-                                Page {currentPage} of {Math.max(1, totalPages)}
+                                {t('common:pagination', { current: currentPage, total: Math.max(1, totalPages) })}
                             </span>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -384,7 +386,7 @@ export default function AdminBanners() {
                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                             <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                 <LayoutPanelTop className="text-green-600" size={24} />
-                                {isAddModalOpen ? "Add New Banner" : "Edit Banner"}
+                                {isAddModalOpen ? t('banner:modals.add_title') : t('banner:modals.edit_title')}
                             </h3>
                             <button onClick={() => !isSubmitting && (setIsAddModalOpen(false) || setIsEditModalOpen(false))} className="text-gray-400 p-1 rounded-full hover:bg-gray-100">
                                 <X size={20} />
@@ -394,7 +396,7 @@ export default function AdminBanners() {
                         <form onSubmit={isAddModalOpen ? handleAddBanner : handleUpdateBanner} className="p-6 space-y-6 text-center lg:text-left">
                             {/* Image Upload */}
                             <div className="space-y-1.5 ">
-                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Banner Image</label>
+                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">{t('banner:modals.fields.image')}</label>
                                 <div className="p-4 bg-gray-50 border border-gray-200 border-dashed rounded-2xl hover:border-green-400 transition-colors">
                                     <div className="w-full h-32 bg-white border border-gray-100 rounded-xl flex items-center justify-center overflow-hidden mb-4 shadow-inner">
                                         {imagePreview ? (
@@ -421,7 +423,7 @@ export default function AdminBanners() {
                                         className="w-full py-2.5 px-4 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 cursor-pointer transition-all flex items-center justify-center gap-2 shadow-sm"
                                     >
                                         <Upload size={18} />
-                                        {imagePreview ? "Change Image" : "Upload Banner Image"}
+                                        {imagePreview ? t('banner:modals.placeholders.change') : t('banner:modals.placeholders.upload')}
                                     </label>
                                 </div>
                             </div>
@@ -436,7 +438,7 @@ export default function AdminBanners() {
                                     className="w-5 h-5 accent-green-600 rounded cursor-pointer"
                                 />
                                 <label htmlFor="status-checkbox" className="text-sm font-bold text-gray-700 cursor-pointer">
-                                    Show this banner to users (Active)
+                                    {t('banner:modals.fields.status')}
                                 </label>
                             </div>
 
@@ -447,7 +449,7 @@ export default function AdminBanners() {
                                     className="px-4 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all ml-1"
                                     style={{ borderRadius: "12px" }}
                                 >
-                                    Cancel
+                                {t('common:cancel')}
                                 </button>
                                 <button
                                     type="submit"
@@ -455,7 +457,7 @@ export default function AdminBanners() {
                                     className="px-6 py-2.5 bg-green-600 text-white font-bold flex items-center gap-2 hover:bg-green-700 disabled:opacity-50 transition-all shadow-md shadow-green-100"
                                     style={{ borderRadius: "12px" }}
                                 >
-                                    {isSubmitting ? "Processing..." : (isAddModalOpen ? "Add Banner" : "Update Banner")}
+                                    {isSubmitting ? t('common:processing') : (isAddModalOpen ? t('banner:add_banner') : t('common:update'))}
                                 </button>
                             </div>
                         </form>
@@ -471,10 +473,10 @@ export default function AdminBanners() {
                     }
                 }}
                 onConfirm={handleDeleteBanner}
-                title="Delete Marketing Banner?"
-                message="This action cannot be undone. This banner will no longer be visible to your customers."
-                confirmText="DELETE BANNER"
-                itemName="this banner"
+                title={t('banner:modals.validation.delete_title')}
+                message={t('banner:modals.validation.delete_msg')}
+                confirmText={t('banner:modals.validation.delete_confirm')}
+                itemName={t('banner:modals.validation.item_name')}
                 isGlobalLoading={isDeleting}
             />
         </div>

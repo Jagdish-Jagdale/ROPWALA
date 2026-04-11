@@ -1,0 +1,44 @@
+{
+  "title": "Banner Section",
+  "subtitle": "Manage your application marketing banners",
+  "add_banner": "Add Banner",
+  "loading": "Loading banners...",
+  "empty": {
+    "title": "No banners added yet.",
+    "action": "Add your first banner"
+  },
+  "card": {
+    "status_active": "Active",
+    "status_inactive": "Inactive",
+    "edit_tooltip": "Edit Banner",
+    "delete_tooltip": "Delete Banner"
+  },
+  "modals": {
+    "add_title": "Add New Banner",
+    "edit_title": "Edit Banner",
+    "fields": {
+      "image": "Banner Image",
+      "status": "Show this banner to users (Active)"
+    },
+    "placeholders": {
+      "upload": "Upload Banner Image",
+      "change": "Change Image"
+    },
+    "validation": {
+      "image_required": "Please select a banner image",
+      "delete_title": "Delete Marketing Banner?",
+      "delete_msg": "This action cannot be undone. This banner will no longer be visible to your customers.",
+      "delete_confirm": "DELETE BANNER",
+      "item_name": "this banner"
+    }
+  },
+  "toast": {
+    "load_error": "Failed to load banners",
+    "add_success": "Banner added successfully",
+    "add_error": "Failed to add banner",
+    "update_success": "Banner updated successfully",
+    "update_error": "Failed to update banner",
+    "delete_success": "Banner deleted successfully",
+    "delete_error": "Failed to delete banner"
+  }
+}
