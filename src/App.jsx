@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import Protected from "./components/Protected";
 import AdminLayout from "./layouts/AdminLayout";
 import Login from "./pages/auth/Login";
@@ -23,6 +25,16 @@ import NoInternet from "./components/NoInternet";
 
 function App() {
   const isOnline = useNetworkStatus();
+  const { i18n } = useTranslation();
+
+  // Add lang-mr class for Marathi font
+  useEffect(() => {
+    if (i18n.language === 'mr') {
+      document.body.classList.add('lang-mr');
+    } else {
+      document.body.classList.remove('lang-mr');
+    }
+  }, [i18n.language]);
 
   if (!isOnline) {
     return <NoInternet />;

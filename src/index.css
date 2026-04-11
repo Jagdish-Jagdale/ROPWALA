@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap');
 
 @import "tailwindcss";
 
@@ -163,6 +164,24 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "cv11", "ss01";
+  }
+
+  body.lang-mr {
+    font-family: "Mukta", "Poppins", var(--font-sans) !important;
+  }
+
+  body.lang-mr h1,
+  body.lang-mr h2,
+  body.lang-mr h3,
+  body.lang-mr h4,
+  body.lang-mr h5,
+  body.lang-mr h6,
+  body.lang-mr .font-standard,
+  body.lang-mr .font-heading,
+  body.lang-mr nav span,
+  body.lang-mr nav a {
+    font-family: "Mukta", "Poppins", var(--font-heading) !important;
+    font-weight: 700 !important;
   }
 
   h1,
