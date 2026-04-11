@@ -24,5 +24,6 @@
   "name_az": "नाव (A-Z)",
   "cancel": "रद्द करा",
   "save": "जतन करा",
-  "update": "अद्यतनित करा"
+  "update": "अद्यतनित करा",
+  "pagination": "पान {{current}} पैकी {{total}}"
 }

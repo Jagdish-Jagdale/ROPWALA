@@ -11,7 +11,7 @@
     "title": "Search & Filters",
     "records_count": "Total {{count}} records",
     "search_label": "Search by name or email",
-    "search_placeholder": "e.g. John Doe or john@company.com",
+    "search_placeholder": "Search by name or email",
     "status": "Status",
     "sort_by": "Sort By",
     "rows": "Rows"
@@ -45,7 +45,7 @@
     },
     "placeholders": {
       "name": "Enter full name",
-      "email": "e.g. mail@example.com",
+      "email": "Enter email address",
       "phone": "10-digit mobile number",
       "address": "Full permanent address",
       "password": "Minimum 8 characters"

@@ -690,7 +690,7 @@ export default function AdminProducts() {
                                 <ChevronLeft size={22} />
                             </button>
                             <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                                {t('product:page_x_of_y', { current: currentPage, total: Math.max(1, totalPages) })}
+                                {t('common:pagination', { current: currentPage, total: Math.max(1, totalPages) })}
                             </span>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -761,7 +761,9 @@ export default function AdminProducts() {
                             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="col-span-2 space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:product_name_label')}</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                            {t('product:product_name_label')} <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             required
                                             type="text"
@@ -773,7 +775,9 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:category')}</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                            {t('product:category')} <span className="text-red-500">*</span>
+                                        </label>
                                         <select
                                             value={formData.category}
                                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -788,7 +792,9 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:status_label')}</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                            {t('product:status_label')} <span className="text-red-500">*</span>
+                                        </label>
                                         <select
                                             value={formData.status}
                                             onChange={(e) => setFormData({ ...formData, status: e.target.value })}
@@ -834,7 +840,9 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:price_label')}</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                            {t('product:price_label')} <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             required
                                             type="number"
@@ -846,7 +854,9 @@ export default function AdminProducts() {
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('product:stock_label')}</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                            {t('product:stock_label')} <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             required
                                             type="number"

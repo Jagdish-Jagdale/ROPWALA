@@ -621,7 +621,7 @@ export default function AdminOurProducts() {
                                 <ChevronLeft size={22} />
                             </button>
                             <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                                {t('product:page_x_of_y', { current: currentPage, total: Math.max(1, totalPages) })}
+                                {t('common:pagination', { current: currentPage, total: Math.max(1, totalPages) })}
                             </span>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -714,7 +714,9 @@ export default function AdminOurProducts() {
 
                                 {/* Product Name */}
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Product Name</label>
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
+                                        Product Name <span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         required
                                         type="text"
@@ -729,7 +731,7 @@ export default function AdminOurProducts() {
                                 <div className="space-y-1.5">
                                     <div className="flex items-center justify-between ml-1">
                                         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                            {t('product:product_images')}
+                                            {t('product:product_images')} <span className="text-red-500">*</span>
                                         </label>
                                         {imagePreviews.length > 0 && (
                                             <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-lg">
@@ -751,32 +753,31 @@ export default function AdminOurProducts() {
                                                             <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                                                         </div>
 
-                                                        {/* Main badge */}
+                                                        {/* Main Image Checkbox (Top Right) */}
+                                                        <div className="absolute top-1.5 right-1.5 z-10">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={mainImageIndex === idx}
+                                                                onChange={() => setMainImageIndex(idx)}
+                                                                className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer shadow-sm"
+                                                                title="Set as main display image"
+                                                            />
+                                                        </div>
+
+                                                        {/* Main badge (Bottom Left) */}
                                                         {mainImageIndex === idx && (
-                                                            <span className="absolute bottom-1.5 left-1.5 bg-green-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider">
+                                                            <span className="absolute bottom-1.5 left-1.5 bg-green-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider shadow-sm z-10">
                                                                 {t('product:main')}
                                                             </span>
                                                         )}
 
-                                                        {/* Set-as-main tick button (shows on hover for non-main) */}
-                                                        {mainImageIndex !== idx && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setMainImageIndex(idx)}
-                                                                title="Set as main image"
-                                                                className="absolute bottom-1.5 left-1.5 w-6 h-6 bg-white/90 backdrop-blur-sm text-green-700 border border-green-300 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover/img:opacity-100 transition-all hover:bg-green-600 hover:text-white hover:border-green-600"
-                                                            >
-                                                                <CheckCircle size={14} />
-                                                            </button>
-                                                        )}
-
-                                                        {/* Remove button */}
+                                                        {/* Remove button (Top Left) */}
                                                         <button
                                                             type="button"
                                                             onClick={() => removeImage(idx)}
-                                                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover/img:opacity-100 transition-all hover:bg-red-600 hover:scale-110"
+                                                            className="absolute top-1.5 left-1.5 w-5 h-5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover/img:opacity-100 transition-all hover:bg-red-500 hover:text-white border border-gray-100 z-10"
                                                         >
-                                                            <X size={12} />
+                                                            <X size={10} />
                                                         </button>
                                                     </div>
                                                 ))}
@@ -805,7 +806,7 @@ export default function AdminOurProducts() {
 
                                         {imagePreviews.length > 0 && (
                                             <p className="text-center text-[10px] text-gray-400 mt-2 font-medium">
-                                                Hover an image and click ✓ to set it as the main display image
+                                                Use the checkbox to select the main display image
                                             </p>
                                         )}
                                     </div>
@@ -813,7 +814,9 @@ export default function AdminOurProducts() {
 
                                 {/* Price */}
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{t('product:price_label')}</label>
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
+                                        {t('product:price_label')} <span className="text-red-500">*</span>
+                                    </label>
                                     <div className="relative">
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
                                         <input

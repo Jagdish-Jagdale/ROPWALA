@@ -24,5 +24,6 @@
   "name_az": "Name (A-Z)",
   "cancel": "Cancel",
   "save": "Save",
-  "update": "Update"
+  "update": "Update",
+  "pagination": "Page {{current}} of {{total}}"
 }

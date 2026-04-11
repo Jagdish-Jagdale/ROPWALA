@@ -563,7 +563,7 @@ export default function AdminFranchise() {
                                 <ChevronLeft size={22} />
                             </button>
                             <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                                {t('common:page_x_of_y', { current: currentPage, total: Math.max(1, totalPages) })}
+                                {t('common:pagination', { current: currentPage, total: Math.max(1, totalPages) })}
                             </span>
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}

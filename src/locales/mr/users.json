@@ -11,7 +11,7 @@
     "title": "शोध आणि फिल्टर",
     "records_count": "एकूण {{count}} नोंदी",
     "search_label": "नाव किंवा ईमेलने शोधा",
-    "search_placeholder": "उदा. जॉन डो किंवा john@company.com",
+    "search_placeholder": "नाव किंवा ईमेलने शोधा",
     "status": "स्थिती",
     "sort_by": "यानुसार क्रमवारी लावा",
     "rows": "ओळी"
@@ -45,7 +45,7 @@
     },
     "placeholders": {
       "name": "पूर्ण नाव प्रविष्ट करा",
-      "email": "उदा. mail@example.com",
+      "email": "ईमेल पत्ता प्रविष्ट करा",
       "phone": "१०-अंकी मोबाईल नंबर",
       "address": "पूर्ण कायमचा पत्ता",
       "password": "किमान ८ अक्षरे"

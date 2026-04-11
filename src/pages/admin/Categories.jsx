@@ -465,7 +465,7 @@ export default function AdminCategories() {
               <form onSubmit={handleSubmit} className="p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">
-                    {t('category:form_name')}
+                    {t('category:form_name')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -486,7 +486,7 @@ export default function AdminCategories() {
                     }}
                     className="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/20 focus:border-green-500"
                     style={{ borderRadius: "8px" }}
-                    placeholder="e.g. Indoor Plants"
+                    placeholder={t('category:name_placeholder')}
                   />
                 </div>
                 <div className="pt-4 flex gap-3">
@@ -688,7 +688,7 @@ export default function AdminCategories() {
 
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide my-3">
-                      {t('category:subcategory_name')}
+                      {t('category:subcategory_name')} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -698,7 +698,7 @@ export default function AdminCategories() {
                         value={subName}
                         onChange={(e) => setSubName(e.target.value)}
                         className="w-full pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all outline-none bg-gray-50/30 placeholder:text-gray-400"
-                        placeholder="e.g. Exotic Ferns"
+                        placeholder={t('category:sub_name_placeholder')}
                       />
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300">
                         <Edit2 size={14} />
@@ -786,7 +786,7 @@ export default function AdminCategories() {
 
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide my-3">
-                      Sub-category Name
+                      Sub-category Name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -796,7 +796,7 @@ export default function AdminCategories() {
                         value={editSubName}
                         onChange={(e) => setEditSubName(e.target.value)}
                         className="w-full pl-4 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all outline-none bg-gray-50/30 placeholder:text-gray-400"
-                        placeholder="e.g. Exotic Ferns"
+                        placeholder={t('category:sub_name_placeholder')}
                       />
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300">
                         <Edit2 size={14} />

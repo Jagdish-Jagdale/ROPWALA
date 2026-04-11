@@ -396,7 +396,9 @@ export default function AdminBanners() {
                         <form onSubmit={isAddModalOpen ? handleAddBanner : handleUpdateBanner} className="p-6 space-y-6 text-center lg:text-left">
                             {/* Image Upload */}
                             <div className="space-y-1.5 ">
-                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">{t('banner:modals.fields.image')}</label>
+                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
+                                    {t('banner:modals.fields.image')} <span className="text-red-500">*</span>
+                                </label>
                                 <div className="p-4 bg-gray-50 border border-gray-200 border-dashed rounded-2xl hover:border-green-400 transition-colors">
                                     <div className="w-full h-32 bg-white border border-gray-100 rounded-xl flex items-center justify-center overflow-hidden mb-4 shadow-inner">
                                         {imagePreview ? (

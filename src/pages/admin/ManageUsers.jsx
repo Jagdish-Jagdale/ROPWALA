@@ -718,7 +718,7 @@ export default function UsersManage() {
                 <ChevronLeft size={22} />
               </button>
               <span className="text-base font-medium text-gray-500 whitespace-nowrap">
-                {t('users:table.pagination', { current: currentPage, total: Math.max(1, totalPages) })}
+                {t('common:pagination', { current: currentPage, total: Math.max(1, totalPages) })}
               </span>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
@@ -904,7 +904,7 @@ export default function UsersManage() {
                         <div className="flex items-center gap-2">
                           <Lock size={16} className="text-gray-400" />
                           <label className="text-base font-medium text-gray-700">
-                            {t('users:modals.fields.password')}
+                            {t('users:modals.fields.password')} <span className="text-red-500">*</span>
                           </label>
                         </div>
                         <div className="relative">
