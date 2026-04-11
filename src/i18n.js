@@ -66,7 +66,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en',
+    lng: localStorage.getItem('language') || 'en',
     fallbackLng: 'en',
     ns: ['common', 'dashboard', 'category', 'product', 'order', 'auth', 'validation', 'franchise', 'users', 'banner', 'reports', 'settings', 'hamipatra'],
     defaultNS: 'common',
@@ -74,5 +74,9 @@ i18n
       escapeValue: false,
     },
   });
+
+i18n.on('languageChanged', (lng) => {
+  localStorage.setItem('language', lng);
+});
 
 export default i18n;
