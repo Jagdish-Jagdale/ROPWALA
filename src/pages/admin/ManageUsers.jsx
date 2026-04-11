@@ -616,16 +616,14 @@ export default function UsersManage() {
                         </td>
 
                         <td className="px-6 py-2.5 whitespace-nowrap">
-                          <div className="flex items-center justify-center">
-                            <img
-                              src={u.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random`}
-                              alt={displayName}
-                              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 shadow-sm"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random`;
-                              }}
-                            />
+                          <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center shadow-sm">
+                            {u.profileImage ? (
+                              <img src={u.profileImage} className="w-full h-full object-cover" alt="" />
+                            ) : (
+                              <div className="flex items-center justify-center w-full h-full bg-slate-100">
+                                <User size={18} className="text-slate-400" />
+                              </div>
+                            )}
                           </div>
                         </td>
 
@@ -972,7 +970,7 @@ export default function UsersManage() {
         {/* View User Modal */}
         {
           selectedUser && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 py-24 md:py-32">
               <div
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
                 onClick={() => {
@@ -999,160 +997,177 @@ export default function UsersManage() {
                   </button>
                 </div>
 
-                {/* Modal Body */}
-                <div className="p-6 overflow-y-auto max-h-[80vh]">
-                  <div className="space-y-6">
-                    {/* Image Display */}
-                    <div className="flex flex-col items-center mb-4">
-                      <div className="relative group">
-                        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-green-100 bg-gray-50 flex items-center justify-center">
-                          {selectedUser.profileImage ? (
-                            <img
-                              src={selectedUser.profileImage}
-                              alt={selectedUser.userName}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <User size={32} className="text-gray-400" />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Name */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <User size={16} className="text-green-600" />
-                          <label className="text-base font-medium text-gray-700">
-                            {t('users:modals.fields.name')}
-                          </label>
-                        </div>
-                        <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.userName || t('common:n_a')}
-                        </div>
+                {selectedUser && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 py-28 md:py-32">
+                    <div
+                      className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+                      onClick={() => setSelectedUser(null)}
+                    ></div>
+                    <div className="relative bg-white !rounded-sm shadow-2xl w-full max-w-4xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-200">
+                      {/* Modal Header */}
+                      <div className="px-6 py-4 flex items-center justify-between border-b border-gray-100 bg-white z-10">
+                        <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                          <UserCheck className="text-green-600" size={24} />
+                          {t('users:modals.details_title', 'User Details')}
+                        </h3>
+                        <button
+                          onClick={() => setSelectedUser(null)}
+                          className="text-gray-400 hover:text-gray-900 p-2 rounded-full hover:bg-gray-100 transition-all"
+                        >
+                          <X size={20} />
+                        </button>
                       </div>
 
-                      {/* Phone */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <Phone size={16} className="text-orange-600" />
-                          <label className="text-base font-medium text-gray-700">
-                            Phone Number
-                          </label>
-                        </div>
-                        <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.phone || t('common:n_a')}
-                        </div>
-                      </div>
+                      {/* Modal Body with Hero */}
+                      <div className="overflow-y-auto max-h-[75vh] bg-gray-50/50">
+                        {/* Hero Header Section */}
+                        <div className="h-64 relative overflow-hidden group">
+                          <div className="absolute inset-0 z-0">
+                            <img src="/loginbg.jpg" className="w-full h-full object-cover scale-105 transition-transform duration-700 group-hover:scale-100" alt="" />
+                            <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]"></div>
 
-                      {/* Address */}
-                      <div className="space-y-1.5 md:col-span-2">
-                        <div className="flex items-center gap-2">
-                          <MapPin size={16} className="text-red-600" />
-                          <label className="text-base font-medium text-gray-700">
-                            {t('users:modals.fields.address')}
-                          </label>
-                        </div>
-                        <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900 min-h-[3rem] whitespace-pre-wrap">
-                          {selectedUser.address || t('common:n_a')}
-                        </div>
-                      </div>
-
-                      {/* Email */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <Mail size={16} className="text-purple-600" />
-                          <label className="text-base font-medium text-gray-700">
-                            {t('users:modals.fields.email')}
-                          </label>
-                        </div>
-                        <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.email || t('common:n_a')}
-                        </div>
-                      </div>
-
-                      {/* Password (View Mode) */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <Lock size={16} className="text-gray-400" />
-                          <label className="text-base font-medium text-gray-700">
-                            Password
-                          </label>
-                        </div>
-                        <div className="relative">
-                          <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                            {showViewPassword ? (selectedUser.password || t('common:n_a')) : "••••••••"}
+                            {/* Decorative Elements */}
+                            <div className="absolute top-6 left-8 opacity-20 pointer-events-none">
+                              <div className="grid grid-cols-5 gap-2">
+                                {[...Array(15)].map((_, i) => (
+                                  <div key={i} className="w-1 h-1 bg-white rounded-full"></div>
+                                ))}
+                              </div>
+                            </div>
                           </div>
-                          <button
-                            onClick={() => setShowViewPassword(!showViewPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                          >
-                            {showViewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                          </button>
+
+                          <div className="relative z-10 h-full flex flex-col items-center justify-center p-8 text-center">
+                            <div className="relative mb-4">
+                              <div className="w-32 h-32 rounded-full border-4 border-white/20 p-1 backdrop-blur-sm overflow-hidden bg-white/10 shadow-2xl flex items-center justify-center">
+                                {selectedUser.profileImage ? (
+                                  <img
+                                    src={selectedUser.profileImage}
+                                    className="w-full h-full rounded-full object-cover"
+                                    alt=""
+                                    onError={(e) => {
+                                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedUser.userName || "")}&background=random`;
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="flex items-center justify-center w-full h-full bg-black/40 rounded-full">
+                                    <User size={56} className="text-white/80" />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            <h4 className="text-2xl font-black text-white mb-2 tracking-tight">
+                              {selectedUser.userName || t('common:unknown_user')}
+                            </h4>
+
+                            <div className="flex items-center gap-3">
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border backdrop-blur-md ${(selectedUser.status || "active") === "active" ? "bg-green-500/20 text-green-400 border-green-500/30" : "bg-gray-500/20 text-gray-400 border-gray-500/30"}`}>
+                                {(selectedUser.status || "active") === "active" ? t('users:modals.status_active') : t('users:modals.status_inactive')}
+                              </span>
+                              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-white/80 text-[10px] font-bold uppercase tracking-widest">
+                                <Calendar size={12} className="text-white/60" />
+                                {t('users:table.joined')} {selectedUser.createdAt?.seconds ? new Date(selectedUser.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Dynamic Header Bottom Bar */}
+                          <div className="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent"></div>
+                        </div>
+
+                        <div className="p-8">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Personal Info Card */}
+                            <div className="p-6 bg-white border border-gray-100 !rounded-sm shadow-sm hover:shadow-md transition-shadow">
+                              <h4 className="text-sm font-bold text-green-600 mb-6 flex items-center gap-2 pb-2 border-b border-gray-50 uppercase ">
+                                <User size={20} /> {t('users:modals.sections.personal', 'Personal Information')}
+                              </h4>
+                              <div className="space-y-4">
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('users:modals.fields.email')}</label>
+                                  <p className="text-sm font-medium text-gray-900 p-3 bg-gray-50 rounded-sm border border-gray-100">
+                                    {selectedUser.email || t('common:n_a')}
+                                  </p>
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('users:modals.fields.phone', 'Phone Number')}</label>
+                                  <p className="text-sm font-medium text-gray-900 p-3 bg-gray-50 rounded-sm border border-gray-100">
+                                    {selectedUser.phone || t('common:n_a')}
+                                  </p>
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('users:modals.fields.password', 'Login Password')}</label>
+                                  <div className="relative">
+                                    <div className="w-full p-3 text-sm font-mono font-medium border border-gray-100 rounded-sm bg-gray-50 text-gray-900">
+                                      {showViewPassword ? (selectedUser.password || t('common:n_a')) : "••••••••••••"}
+                                    </div>
+                                    <button
+                                      onClick={() => setShowViewPassword(!showViewPassword)}
+                                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors"
+                                    >
+                                      {showViewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Location & Activity Card */}
+                            <div className="p-6 bg-white border border-gray-100 !rounded-sm shadow-sm hover:shadow-md transition-shadow">
+                              <h4 className="text-sm font-bold text-orange-600 mb-6 flex items-center gap-2 pb-2 border-b border-gray-50 uppercase">
+                                <MapPin size={20} /> {t('users:modals.sections.location', 'Location & Activity')}
+                              </h4>
+                              <div className="space-y-4">
+                                <div className="space-y-1">
+                                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('users:modals.fields.address')}</label>
+                                  <p className="text-sm font-medium text-gray-900 p-3 bg-gray-50 rounded-sm border border-gray-100 min-h-[5.5rem] whitespace-pre-wrap">
+                                    {selectedUser.address || t('common:n_a')}
+                                  </p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('users:table.joined')}</label>
+                                    <p className="text-[11px] font-bold text-gray-900 p-3 bg-gray-50 rounded-sm border border-gray-100">
+                                      {selectedUser.createdAt?.seconds ? new Date(selectedUser.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
+                                    </p>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('users:table.last_updated', 'Last Update')}</label>
+                                    <p className="text-[11px] font-bold text-gray-900 p-3 bg-gray-50 rounded-sm border border-gray-100">
+                                      {selectedUser.updatedAt?.seconds ? new Date(selectedUser.updatedAt.seconds * 1000).toLocaleDateString() : 'N/A'}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Created */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <Calendar size={16} className="text-teal-600" />
-                          <label className="text-base font-medium text-gray-700">
-                            {t('users:modals.fields.reg_date')}
-                          </label>
-                        </div>
-                        <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.createdAt?.seconds
-                            ? new Date(selectedUser.createdAt.seconds * 1000).toLocaleString('en-GB', { hour12: true })
-                            : selectedUser.createdAt
-                              ? new Date(selectedUser.createdAt).toLocaleString('en-GB', { hour12: true })
-                              : "N/A"}
-                        </div>
-                      </div>
-
-                      {/* Updated */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <Clock size={16} className="text-teal-600" />
-                          <label className="text-base font-medium text-gray-700">
-                            {t('users:modals.fields.last_updated')}
-                          </label>
-                        </div>
-                        <div className="w-full px-3 py-2.5 text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900">
-                          {selectedUser.updatedAt?.seconds
-                            ? new Date(selectedUser.updatedAt.seconds * 1000).toLocaleString('en-GB', { hour12: true })
-                            : selectedUser.createdAt?.seconds
-                              ? new Date(selectedUser.createdAt.seconds * 1000).toLocaleString('en-GB', { hour12: true })
-                              : selectedUser.createdAt
-                                ? new Date(selectedUser.createdAt).toLocaleString('en-GB', { hour12: true })
-                                : "N/A"}
-                        </div>
+                      {/* Modal Footer */}
+                      <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end items-center gap-3">
+                        <button
+                          onClick={() => {
+                            setSelectedUser(null);
+                            setShowViewPassword(false);
+                          }}
+                          className="px-6 py-2 text-sm font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 !rounded-sm transition-all shadow-sm active:scale-95"
+                        >
+                          {t('common:close')}
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleDelete(selectedUser, { stopPropagation: () => { } });
+                            setSelectedUser(null);
+                          }}
+                          className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 !rounded-sm text-sm font-black shadow-lg hover:bg-red-700 transition-all active:scale-95"
+                        >
+                          <Trash2 size={18} /> {t('common:delete')}
+                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
-
-                {/* Modal Footer */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end items-center gap-3">
-                  <button
-                    onClick={() => {
-                      setSelectedUser(null);
-                      setShowViewPassword(false);
-                    }}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 !rounded-sm transition-all shadow-sm"
-                  >
-                    {t('common:close', 'Close')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleDelete(selectedUser, { stopPropagation: () => { } });
-                      setSelectedUser(null);
-                    }}
-                    className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 !rounded-sm text-sm font-bold shadow-sm hover:bg-red-700 transition-all active:scale-95"
-                  >
-                    <Trash2 size={18} /> {t('common:delete')}
-                  </button>
-                </div>
+                )}
               </div>
             </div>
           )

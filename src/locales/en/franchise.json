@@ -23,7 +23,7 @@
   "set_to_pending": "Set to Pending",
   "reject": "Reject",
   "no_apps_found": "No applications found matching your search.",
-  "app_details": "Application Details",
+  "app_details": "Applicant Detail",
   "personal_info": "Personal Information",
   "email": "Email",
   "phone": "Phone",
@@ -49,5 +49,10 @@
   "no_auth_notice": "Notice: This application has no associated Auth UID. It will be removed from Firestore only.",
   "delete_success": "Franchise and all associated products deleted successfully",
   "delete_aborted": "Process aborted to protect synchronization",
+  "verification_status": "Verification Status",
+  "pending_review": "Pending Admin Review",
+  "verified_on": "Verified on {{date}}",
+  "nursery_photos": "Nursery Photos",
+  "admin_remarks": "Admin Remarks",
   "n_a": "N/A"
 }
