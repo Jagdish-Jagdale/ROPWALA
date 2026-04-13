@@ -349,17 +349,7 @@ export default function AdminProducts() {
                             {t('product:manage_desc')}
                         </p>
                     </div>
-                    <button
-                        onClick={() => {
-                            resetForm();
-                            setIsAddModalOpen(true);
-                        }}
-                        className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white hover:bg-green-700 transition-all shadow-sm font-medium text-sm border border-transparent font-sans"
-                        style={{ borderRadius: "12px" }}
-                    >
-                        <Plus size={18} />
-                        {t('product:add_product')}
-                    </button>
+
                 </div>
                 <hr className="mt-4 mb-5 border-gray-100" />
 
