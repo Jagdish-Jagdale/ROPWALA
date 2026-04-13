@@ -411,8 +411,26 @@ export default function AdminOurProducts() {
                     <StatCard
                         title={t('product:total_our_products')}
                         value={products.length}
-                        icon={Package}
+                        icon={Box}
+                        variant="gray"
+                    />
+                    <StatCard
+                        title={t('product:visible')}
+                        value={products.filter(p => p.showInOwnerDashboard !== false).length}
+                        icon={CheckCircle}
                         variant="green"
+                    />
+                    <StatCard
+                        title={t('product:hidden')}
+                        value={products.filter(p => p.showInOwnerDashboard === false).length}
+                        icon={AlertCircle}
+                        variant="red"
+                    />
+                    <StatCard
+                        title={t('product:product_images')}
+                        value={products.reduce((acc, p) => acc + (p.imageUrls?.length || 0), 0)}
+                        icon={ImageIcon}
+                        variant="blue"
                     />
                 </div>
 
