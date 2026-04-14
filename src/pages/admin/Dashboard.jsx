@@ -38,7 +38,7 @@ import {
   Award
 } from "lucide-react";
 
-/* -------------------- Stat Card -------------------- */
+/* -------------------- Stat Cards -------------------- */
 function StatCard({ title, value, icon, color, iconBg, to }) {
   const navigate = useNavigate();
 
