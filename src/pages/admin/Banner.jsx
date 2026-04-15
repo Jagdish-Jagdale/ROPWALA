@@ -187,7 +187,7 @@ export default function AdminBanners() {
 
     const handleDeleteBanner = async () => {
         if (!bannerToDelete) return;
-        
+
         try {
             setIsDeleting(true);
             const { id, imageUrl } = bannerToDelete;
@@ -279,8 +279,8 @@ export default function AdminBanners() {
                 ) : paginatedBanners.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         {paginatedBanners.map((p, index) => (
-                            <div 
-                                key={p.id} 
+                            <div
+                                key={p.id}
                                 className="group relative bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl hover:shadow-green-900/5 transition-all duration-300 hover:-translate-y-1"
                             >
                                 {/* Banner Image Box */}
@@ -299,11 +299,10 @@ export default function AdminBanners() {
                                 {/* Card Footer/Actions */}
                                 <div className="p-4 flex items-center justify-between bg-white">
                                     <div className="flex items-center gap-2">
-                                        <span className={`px-3 py-1 text-[10px] font-extrabold rounded-full uppercase tracking-widest ${
-                                            p.isActive 
-                                            ? "bg-green-100 text-green-700 border border-green-200" 
-                                            : "bg-red-100 text-red-700 border border-red-200"
-                                        }`}>
+                                        <span className={`px-3 py-1 text-[10px] font-extrabold rounded-full uppercase tracking-widest ${p.isActive
+                                                ? "bg-green-100 text-green-700 border border-green-200"
+                                                : "bg-red-100 text-red-700 border border-red-200"
+                                            }`}>
                                             {p.isActive ? t('banner:card.status_active') : t('banner:card.status_inactive')}
                                         </span>
                                     </div>
@@ -430,7 +429,7 @@ export default function AdminBanners() {
                                 </div>
                             </div>
 
-                            {/* Status Checkbox */}
+                            {/* Status Checkboxs */}
                             <div className="flex items-center gap-3 p-4 bg-green-50/50 border border-green-100 rounded-xl">
                                 <input
                                     type="checkbox"
@@ -451,7 +450,7 @@ export default function AdminBanners() {
                                     className="px-4 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all ml-1"
                                     style={{ borderRadius: "12px" }}
                                 >
-                                {t('common:cancel')}
+                                    {t('common:cancel')}
                                 </button>
                                 <button
                                     type="submit"
