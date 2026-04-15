@@ -300,8 +300,8 @@ export default function AdminBanners() {
                                 <div className="p-4 flex items-center justify-between bg-white">
                                     <div className="flex items-center gap-2">
                                         <span className={`px-3 py-1 text-[10px] font-extrabold rounded-full uppercase tracking-widest ${p.isActive
-                                                ? "bg-green-100 text-green-700 border border-green-200"
-                                                : "bg-red-100 text-red-700 border border-red-200"
+                                            ? "bg-green-100 text-green-700 border border-green-200"
+                                            : "bg-red-100 text-red-700 border border-red-200"
                                             }`}>
                                             {p.isActive ? t('banner:card.status_active') : t('banner:card.status_inactive')}
                                         </span>
@@ -429,7 +429,7 @@ export default function AdminBanners() {
                                 </div>
                             </div>
 
-                            {/* Status Checkboxs */}
+                            {/* Status Checkbox */}
                             <div className="flex items-center gap-3 p-4 bg-green-50/50 border border-green-100 rounded-xl">
                                 <input
                                     type="checkbox"
