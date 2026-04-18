@@ -4,7 +4,7 @@ import { WifiOff, RefreshCw } from "lucide-react";
 const NoInternet = () => {
     return (
         <div className="flex flex-col min-h-screen bg-gray-50 items-center justify-center p-6 text-center relative overflow-hidden">
-            {/* Background Patterns */}
+            {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5 pointer-events-none">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cube-coat.png')]"></div>
             </div>
