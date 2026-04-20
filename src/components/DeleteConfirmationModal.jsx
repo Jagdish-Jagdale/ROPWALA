@@ -33,7 +33,7 @@ export default function DeleteConfirmationModal({
                             </div>
                         </div>
 
-                        {/* Text Contents */}
+                        {/* Text Content */}
                         <div className="flex-grow pt-0.5">
                             <h3 className="text-[20px] font-bold text-[#1a202c]  mb-3">
                                 {title}
