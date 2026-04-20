@@ -168,14 +168,14 @@ export default function OurProductViewModal({ isOpen, onClose, product }) {
                                     <div className="flex justify-between">
                                         <span>Added to Catalog</span>
                                         <span className="font-semibold text-gray-900">
-                                            {product.createdAt ? new Date(product.createdAt.toDate ? product.createdAt.toDate() : product.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : "Recently"}
+                                            {product.createdAt ? new Date(product.createdAt.toDate ? product.createdAt.toDate() : product.createdAt).toLocaleDateString('en-GB') : "Recently"}
                                         </span>
                                     </div>
                                     {product.updatedAt && (
                                         <div className="flex justify-between">
                                             <span>Last Updated</span>
                                             <span className="font-semibold text-gray-900">
-                                                {new Date(product.updatedAt.toDate ? product.updatedAt.toDate() : product.updatedAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                                {new Date(product.updatedAt.toDate ? product.updatedAt.toDate() : product.updatedAt).toLocaleDateString('en-GB')}
                                             </span>
                                         </div>
                                     )}

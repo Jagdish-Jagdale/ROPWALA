@@ -167,7 +167,7 @@ export default function ProductViewModal({ isOpen, onClose, product }) {
                                     <div className="grid grid-cols-[110px_1fr] gap-2">
                                         <span className="text-gray-500">Added Date</span>
                                         <span className="font-semibold text-gray-900 font-standard">
-                                            {product.createdAt ? new Date(product.createdAt.toDate ? product.createdAt.toDate() : product.createdAt).toLocaleDateString('en-IN') : "N/A"}
+                                            {product.createdAt ? new Date(product.createdAt.toDate ? product.createdAt.toDate() : product.createdAt).toLocaleDateString('en-GB') : "N/A"}
                                         </span>
                                     </div>
                                     <div className="grid grid-cols-[110px_1fr] gap-2 pt-1">

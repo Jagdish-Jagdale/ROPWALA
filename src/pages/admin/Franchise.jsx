@@ -265,10 +265,8 @@ export default function AdminFranchise() {
 
     const formatDate = (date) => {
         if (!date) return t('franchise:n_a');
-        // Handle both number timestamps and Firestore timestamps
-        if (typeof date === 'number') return new Date(date).toLocaleDateString();
-        if (date.seconds) return new Date(date.seconds * 1000).toLocaleDateString();
-        return new Date(date).toLocaleDateString();
+        const d = date.seconds ? new Date(date.seconds * 1000) : new Date(date);
+        return d.toLocaleDateString('en-GB');
     };
 
     const getPhotos = (data) => {
