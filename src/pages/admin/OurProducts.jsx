@@ -165,7 +165,7 @@ export default function AdminOurProducts() {
                 uploadedUrls.push(url);
             }
 
-            // Reorder so main image is first
+            // Reorder so main image is firsts
             const orderedUrls = [
                 uploadedUrls[mainImageIndex],
                 ...uploadedUrls.filter((_, i) => i !== mainImageIndex)
@@ -355,7 +355,7 @@ export default function AdminOurProducts() {
         const matchesSearch =
             p.name?.toLowerCase().includes(search.toLowerCase()) ||
             p.description?.toLowerCase().includes(search.toLowerCase());
-            
+
         return matchesSearch;
     });
 
@@ -566,8 +566,8 @@ export default function AdminOurProducts() {
 
                                             <td className="px-6 py-2.5">
                                                 <p className="text-xs text-gray-500 line-clamp-1 max-w-[300px]" title={p.description}>
-                                                    {p.description && p.description.length > 60 
-                                                        ? p.description.substring(0, 60) + "..." 
+                                                    {p.description && p.description.length > 60
+                                                        ? p.description.substring(0, 60) + "..."
                                                         : (p.description || t('common:no_description'))}
                                                 </p>
                                             </td>
@@ -710,9 +710,8 @@ export default function AdminOurProducts() {
                                 <div className="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-gray-50">
                                     <div className="flex flex-col">
                                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Owner Dashboard Visibility</span>
-                                        <span className={`text-sm font-semibold mt-0.5 ${
-                                            formData.showInOwnerDashboard ? 'text-green-700' : 'text-gray-500'
-                                        }`}>
+                                        <span className={`text-sm font-semibold mt-0.5 ${formData.showInOwnerDashboard ? 'text-green-700' : 'text-gray-500'
+                                            }`}>
                                             {formData.showInOwnerDashboard ? 'Visible — shown on owner dashboard' : 'Hidden — not shown on owner dashboard'}
                                         </span>
                                     </div>
@@ -759,11 +758,10 @@ export default function AdminOurProducts() {
                                             <div className="grid grid-cols-4 gap-3 mb-4">
                                                 {imagePreviews.map((preview, idx) => (
                                                     <div key={idx} className="relative group/img">
-                                                        <div className={`w-full aspect-square rounded-xl bg-white overflow-hidden shadow-sm transition-all ${
-                                                            mainImageIndex === idx
+                                                        <div className={`w-full aspect-square rounded-xl bg-white overflow-hidden shadow-sm transition-all ${mainImageIndex === idx
                                                                 ? 'border-2 border-green-500 ring-2 ring-green-200'
                                                                 : 'border border-gray-100'
-                                                        }`}>
+                                                            }`}>
                                                             <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                                                         </div>
 
