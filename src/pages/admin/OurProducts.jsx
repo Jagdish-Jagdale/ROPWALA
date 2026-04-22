@@ -165,7 +165,7 @@ export default function AdminOurProducts() {
                 uploadedUrls.push(url);
             }
 
-            // Reorder so main image is firsts
+            // Reorder so main image is first
             const orderedUrls = [
                 uploadedUrls[mainImageIndex],
                 ...uploadedUrls.filter((_, i) => i !== mainImageIndex)
@@ -759,8 +759,8 @@ export default function AdminOurProducts() {
                                                 {imagePreviews.map((preview, idx) => (
                                                     <div key={idx} className="relative group/img">
                                                         <div className={`w-full aspect-square rounded-xl bg-white overflow-hidden shadow-sm transition-all ${mainImageIndex === idx
-                                                                ? 'border-2 border-green-500 ring-2 ring-green-200'
-                                                                : 'border border-gray-100'
+                                                            ? 'border-2 border-green-500 ring-2 ring-green-200'
+                                                            : 'border border-gray-100'
                                                             }`}>
                                                             <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                                                         </div>
