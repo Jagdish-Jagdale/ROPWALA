@@ -5,7 +5,7 @@ export default function Loader() {
     <div className="min-h-screen w-full grid place-items-center bg-white/50 backdrop-blur-sm fixed inset-0 z-50">
       <div className="flex flex-col items-center gap-6">
         <div className="relative w-28 h-28 grid place-items-center">
-          {/* Outer Ring - Spinning Clockwise */}
+          {/* Outer Ring - Spinning Clockwises */}
           <div className="absolute inset-0 border-[3px] border-transparent border-t-[#2d5a3d] rounded-full animate-[spin_3s_linear_infinite]" />
 
           {/* Middle Ring - Spinning Counter-Clockwise */}
