@@ -110,7 +110,7 @@ export default function AdminProducts() {
 
     useEffect(() => {
         fetchProducts();
-        
+
         // Use onSnapshot for real-time nursery data
         const unsubscribeNurseries = onSnapshot(
             collection(db, "franchise"),
@@ -306,17 +306,17 @@ export default function AdminProducts() {
             p.name?.toLowerCase().includes(search.toLowerCase()) ||
             p.category?.toLowerCase().includes(search.toLowerCase()) ||
             p.description?.toLowerCase().includes(search.toLowerCase());
-            
-        const matchesStatus = statusFilter === "all" || 
+
+        const matchesStatus = statusFilter === "all" ||
             (statusFilter === "approved" && ['APPROVE', 'APPROVED', 'ACTIVE', 'AVAILABLE'].includes(String(p.status || "").toUpperCase())) ||
             (statusFilter === "rejected" && ['REJECT', 'REJECTED'].includes(String(p.status || "").toUpperCase()));
-            
-        const matchesNursery = nurseryFilter === "all" || 
+
+        const matchesNursery = nurseryFilter === "all" ||
             p.nurseryName?.trim().toLowerCase() === nurseryFilter?.trim().toLowerCase();
-            
-        const matchesCategory = categoryFilter === "all" || 
+
+        const matchesCategory = categoryFilter === "all" ||
             p.category?.trim().toLowerCase() === categoryFilter?.trim().toLowerCase();
-            
+
         return matchesSearch && matchesStatus && matchesNursery && matchesCategory;
     });
 
@@ -579,7 +579,7 @@ export default function AdminProducts() {
                                             <td className="px-6 py-3 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
                                                     {(() => {
-                                                        const matchedNursery = nurseries.find(n => 
+                                                        const matchedNursery = nurseries.find(n =>
                                                             n.nurseryName?.trim().toLowerCase() === product.nurseryName?.trim().toLowerCase()
                                                         );
                                                         const displayName = matchedNursery?.ownerName || product.ownerName || "Admin";
@@ -716,7 +716,7 @@ export default function AdminProducts() {
                 isGlobalLoading={isDeleting}
             />
 
-            {/* Add/Edit Modal */}
+            {/* Add/Edit Modals */}
             {(isAddModalOpen || isEditModalOpen) && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div
@@ -802,8 +802,8 @@ export default function AdminProducts() {
                                             value={formData.nurseryName}
                                             onChange={(e) => {
                                                 const selectedNursery = nurseries.find(n => n.nurseryName === e.target.value);
-                                                setFormData({ 
-                                                    ...formData, 
+                                                setFormData({
+                                                    ...formData,
                                                     nurseryName: e.target.value,
                                                     ownerName: selectedNursery ? selectedNursery.ownerName : "Admin"
                                                 });
