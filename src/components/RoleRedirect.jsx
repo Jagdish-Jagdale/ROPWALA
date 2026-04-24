@@ -19,7 +19,7 @@ export default function RoleRedirect() {
       return
     }
 
-    // Only redirect once we have a valid roles
+    // Only redirect once we have a valid role
     if (role) {
       hasRedirected.current = true
       if (role === ROLES.ADMIN) {
