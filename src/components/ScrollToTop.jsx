@@ -5,7 +5,7 @@ export default function ScrollToTop() {
     const { pathname } = useLocation();
 
     useEffect(() => {
-        // Immediate scroll attempts
+        // Immediate scroll attempt
         window.scrollTo(0, 0);
         document.documentElement.scrollTo(0, 0);
         document.body.scrollTo(0, 0);
