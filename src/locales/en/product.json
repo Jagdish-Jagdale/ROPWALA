@@ -69,5 +69,9 @@
   "processing": "Processing...",
   "delete_company_product_q": "Delete Company Product?",
   "delete_company_product_msg": "This action cannot be undone. This will permanently delete the product and its images from the database.",
-  "delete_our_product_confirm": "DELETE OUR PRODUCT"
+  "delete_our_product_confirm": "DELETE OUR PRODUCT",
+  "feature": "Feature",
+  "popular": "Popular",
+  "trending": "Trending"
 }
+

@@ -11,6 +11,7 @@ import ManageUsers from "./pages/admin/ManageUsers";
 import AdminReports from "./pages/admin/Reports";
 import AdminProducts from "./pages/admin/Products";
 import AdminOurProducts from "./pages/admin/OurProducts";
+import AdminOrders from "./pages/admin/Orders";
 import AdminFranchise from "./pages/admin/Franchise";
 import AdminSettings from "./pages/admin/Settings";
 import AdminCategories from "./pages/admin/Categories";
@@ -63,6 +64,7 @@ function App() {
             />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/ourproducts" element={<AdminOurProducts />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/franchise" element={<AdminFranchise />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route

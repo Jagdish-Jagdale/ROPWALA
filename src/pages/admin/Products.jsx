@@ -34,6 +34,7 @@ import {
     MoreVertical,
     TrendingUp,
     BarChart3,
+    Flame,
     Box,
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
@@ -106,6 +107,8 @@ export default function AdminProducts() {
         imageUrl: "",
         ownerName: "Admin",
         nurseryName: "",
+        ispopular: false,
+        istrending: false,
     });
 
     useEffect(() => {
@@ -260,6 +263,22 @@ export default function AdminProducts() {
         }
     };
 
+    const toggleFeature = async (id, field, currentValue) => {
+        try {
+            if (!id) throw new Error("Product ID is missing");
+            const productRef = doc(db, "products", String(id));
+            await updateDoc(productRef, {
+                [field]: !currentValue,
+                updatedAt: serverTimestamp(),
+            });
+            toast.success(`Feature updated successfully`);
+            fetchProducts();
+        } catch (error) {
+            console.error("Error updating feature:", error);
+            toast.error(`Failed to update feature`);
+        }
+    };
+
     const resetForm = () => {
         setFormData({
             name: "",
@@ -271,6 +290,8 @@ export default function AdminProducts() {
             imageUrl: "",
             ownerName: "Admin",
             nurseryName: "",
+            ispopular: false,
+            istrending: false,
         });
     };
 
@@ -286,6 +307,8 @@ export default function AdminProducts() {
             imageUrl: product.imageUrl || "",
             ownerName: product.ownerName || "Admin",
             nurseryName: product.nurseryName || "",
+            ispopular: product.ispopular || false,
+            istrending: product.istrending || false,
         });
         setIsEditModalOpen(true);
     };
@@ -520,6 +543,9 @@ export default function AdminProducts() {
                                         {t('product:status')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                        {t('product:feature')}
+                                    </th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         {t('product:action')}
                                     </th>
                                 </tr>
@@ -527,7 +553,7 @@ export default function AdminProducts() {
                             <tbody className="bg-white">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={9} className="text-center py-12">
+                                        <td colSpan={10} className="text-center py-12">
                                             <div className="flex flex-col items-center justify-center gap-3">
                                                 <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                                 <span className="text-sm text-gray-500 font-medium">
@@ -617,6 +643,25 @@ export default function AdminProducts() {
                                             </td>
 
                                             <td className="px-6 py-3 whitespace-nowrap text-center">
+                                                <div className="flex items-center justify-center gap-3" onClick={(e) => e.stopPropagation()}>
+                                                    <button
+                                                        onClick={() => toggleFeature(product.id, 'ispopular', product.ispopular)}
+                                                        className={`p-1.5 rounded-full transition-all border ${product.ispopular ? 'bg-orange-100 text-orange-600 border-orange-200' : 'text-gray-300 hover:text-orange-400 hover:bg-orange-50 border-transparent'}`}
+                                                        title={t('product:popular')}
+                                                    >
+                                                        <Flame size={18} fill={product.ispopular ? "currentColor" : "none"} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => toggleFeature(product.id, 'istrending', product.istrending)}
+                                                        className={`p-1.5 rounded-full transition-all border ${product.istrending ? 'bg-blue-100 text-blue-600 border-blue-200' : 'text-gray-300 hover:text-blue-400 hover:bg-blue-50 border-transparent'}`}
+                                                        title={t('product:trending')}
+                                                    >
+                                                        <TrendingUp size={18} />
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td className="px-6 py-3 whitespace-nowrap text-center">
                                                 <div
                                                     className="flex items-center justify-center gap-2"
                                                     onClick={(e) => e.stopPropagation()}
@@ -653,7 +698,7 @@ export default function AdminProducts() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={9} className="py-12 text-center">
+                                        <td colSpan={10} className="py-12 text-center">
                                             <div className="flex flex-col items-center justify-center text-gray-400">
                                                 <div className="bg-gray-50 p-4 rounded-full mb-3">
                                                     <Package size={32} className="opacity-50" />
@@ -855,6 +900,41 @@ export default function AdminProducts() {
                                             placeholder="0"
                                             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all"
                                         />
+                                    </div>
+
+                                    {/* Feature Toggles */}
+                                    <div className="grid grid-cols-2 gap-4 col-span-2">
+                                        <div className="flex items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-2 rounded-lg ${formData.ispopular ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-400'}`}>
+                                                    <Flame size={18} fill={formData.ispopular ? "currentColor" : "none"} />
+                                                </div>
+                                                <span className="text-sm font-semibold text-gray-700">{t('product:popular')}</span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, ispopular: !formData.ispopular })}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${formData.ispopular ? 'bg-orange-500' : 'bg-gray-200'}`}
+                                            >
+                                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.ispopular ? 'translate-x-6' : 'translate-x-1'}`} />
+                                            </button>
+                                        </div>
+
+                                        <div className="flex items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-2 rounded-lg ${formData.istrending ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400'}`}>
+                                                    <TrendingUp size={18} />
+                                                </div>
+                                                <span className="text-sm font-semibold text-gray-700">{t('product:trending')}</span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, istrending: !formData.istrending })}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${formData.istrending ? 'bg-blue-500' : 'bg-gray-200'}`}
+                                            >
+                                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.istrending ? 'translate-x-6' : 'translate-x-1'}`} />
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="col-span-2 space-y-1">

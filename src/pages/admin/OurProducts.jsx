@@ -34,6 +34,7 @@ import {
     MoreVertical,
     TrendingUp,
     BarChart3,
+    Flame,
     Box,
 } from "lucide-react";
 import StatCard from "../../components/common/StatCard";
@@ -98,6 +99,8 @@ export default function AdminOurProducts() {
         description: "",
         imageUrls: [],
         showInOwnerDashboard: true,
+        ispopular: false,
+        istrending: false,
     });
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
@@ -119,8 +122,6 @@ export default function AdminOurProducts() {
             }));
 
             // Inject <link rel="preload"> into <head> for first 10 images.
-            // This gives them the HIGHEST browser network priority — same as
-            // stylesheets — and starts downloading before any JS Image() objects.
             const existingPreloads = document.querySelectorAll('link[data-product-preload]');
             existingPreloads.forEach(el => el.remove());
 
@@ -178,6 +179,8 @@ export default function AdminOurProducts() {
                 imageUrls: orderedUrls,
                 imageUrl: orderedUrls[0], // backward compat: main image
                 showInOwnerDashboard: formData.showInOwnerDashboard,
+                ispopular: formData.ispopular,
+                istrending: formData.istrending,
                 createdAt: serverTimestamp(),
             };
 
@@ -199,7 +202,7 @@ export default function AdminOurProducts() {
         try {
             setIsSubmitting(true);
 
-            // Start with existing URLs that user kept (from previews that are URLs, not blobs)
+            // Start with existing URLs that user kept
             const keptUrls = imagePreviews.filter(p => !p.startsWith('blob:'));
 
             // Upload new files
@@ -236,6 +239,8 @@ export default function AdminOurProducts() {
                 imageUrls: orderedUrls,
                 imageUrl: orderedUrls[0] || "",
                 showInOwnerDashboard: formData.showInOwnerDashboard,
+                ispopular: formData.ispopular,
+                istrending: formData.istrending,
                 updatedAt: serverTimestamp(),
             });
 
@@ -262,7 +267,6 @@ export default function AdminOurProducts() {
 
         try {
             setIsDeleting(true);
-            // Delete all images from storage
             const urls = productToDelete.imageUrls || (productToDelete.imageUrl ? [productToDelete.imageUrl] : []);
             for (const url of urls) {
                 if (url && url.includes('firebasestorage')) {
@@ -282,6 +286,21 @@ export default function AdminOurProducts() {
         }
     };
 
+    const toggleFeature = async (id, field, currentValue) => {
+        try {
+            if (!id) throw new Error("Product ID is missing");
+            const productRef = doc(db, "ourproduct", String(id));
+            await updateDoc(productRef, {
+                [field]: !currentValue,
+                updatedAt: serverTimestamp(),
+            });
+            toast.success(`Feature updated successfully`);
+            fetchProducts();
+        } catch (error) {
+            console.error("Error updating feature:", error);
+            toast.error(`Failed to update feature`);
+        }
+    };
 
     const resetForm = () => {
         setFormData({
@@ -290,6 +309,9 @@ export default function AdminOurProducts() {
             description: "",
             imageUrls: [],
             showInOwnerDashboard: true,
+            ispopular: false,
+            istrending: false,
+            stock: 0,
         });
         setImageFiles([]);
         setImagePreviews([]);
@@ -304,11 +326,14 @@ export default function AdminOurProducts() {
             price: product.price?.toString() || "",
             description: product.description || "",
             imageUrls: existingUrls,
-            showInOwnerDashboard: product.showInOwnerDashboard !== false, // default true if missing
+            showInOwnerDashboard: product.showInOwnerDashboard !== false,
+            ispopular: product.ispopular || false,
+            istrending: product.istrending || false,
+            stock: product.stock || 0,
         });
         setImageFiles([]);
         setImagePreviews([...existingUrls]);
-        setMainImageIndex(0); // first existing image is main by default
+        setMainImageIndex(0);
         setIsEditModalOpen(true);
     };
 
@@ -327,7 +352,6 @@ export default function AdminOurProducts() {
 
         setImagePreviews(prev => prev.filter((_, i) => i !== index));
 
-        // Adjust main index
         if (mainImageIndex === index) {
             setMainImageIndex(0);
         } else if (mainImageIndex > index) {
@@ -344,13 +368,6 @@ export default function AdminOurProducts() {
         }
     };
 
-    const formatDate = (timestamp) => {
-        if (!timestamp) return "N/A";
-        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-        return date.toLocaleDateString("en-GB");
-    };
-
-    // Filter and Pagination logic
     const filteredProducts = products.filter((p) => {
         const matchesSearch =
             p.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -362,18 +379,6 @@ export default function AdminOurProducts() {
     const totalPages = Math.ceil(filteredProducts.length / rowsPerPage);
     const startIndex = (currentPage - 1) * rowsPerPage;
     const paginatedProducts = filteredProducts.slice(startIndex, startIndex + rowsPerPage);
-
-    // Lazy preload for subsequent pages
-    useEffect(() => {
-        // Only preload images beyond the first 10 (already handled in fetch)
-        const beyond10 = paginatedProducts.slice(10);
-        beyond10.forEach(product => {
-            if (product.imageUrl) {
-                const img = new Image();
-                img.src = product.imageUrl;
-            }
-        });
-    }, [paginatedProducts]);
 
     return (
         <div className="font-sans min-h-screen p-0 pt-3">
@@ -402,7 +407,7 @@ export default function AdminOurProducts() {
                 </div>
                 <hr className="mt-4 mb-5 border-gray-100" />
 
-                {/* Stats Summary (Mini) */}
+                {/* Stats Summary */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <StatCard
                         title={t('product:total_our_products')}
@@ -440,7 +445,6 @@ export default function AdminOurProducts() {
                     </div>
                     <hr className="mt-0 mb-4 border-gray-200" />
                     <div className="flex flex-col xl:flex-row xl:items-end gap-4 w-full">
-                        {/* Row 1: Search Bar */}
                         <div className="w-full flex flex-col gap-1.5 xl:flex-1">
                             <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('product:search_products')}</label>
                             <div className="relative group">
@@ -455,9 +459,8 @@ export default function AdminOurProducts() {
                             </div>
                         </div>
 
-                        {/* Row 2: Filters Grid */}
                         <div className="grid grid-cols-2 lg:flex lg:flex-row items-end gap-3 w-full xl:w-auto">
-                            <div className="flex flex-col gap-1.5 col-span-2 lg:flex-none lg:w-[100px]">
+                            <div className="flex flex-col gap-1.5 lg:flex-none lg:w-[100px]">
                                 <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('product:rows')}</label>
                                 <select
                                     value={rowsPerPage}
@@ -497,6 +500,9 @@ export default function AdminOurProducts() {
                                         {t('product:price')}
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                        Stock
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                                         {t('product:description_label')}
                                     </th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -510,7 +516,7 @@ export default function AdminOurProducts() {
                             <tbody className="bg-white">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={7} className="text-center py-12">
+                                        <td colSpan={8} className="text-center py-12">
                                             <div className="flex flex-col items-center justify-center gap-3">
                                                 <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                                 <span className="text-sm text-gray-500 font-medium">
@@ -564,6 +570,12 @@ export default function AdminOurProducts() {
                                                 </span>
                                             </td>
 
+                                            <td className="px-6 py-2.5 whitespace-nowrap">
+                                                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${p.stock > 0 ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                                                    {p.stock || 0}
+                                                </span>
+                                            </td>
+
                                             <td className="px-6 py-2.5">
                                                 <p className="text-xs text-gray-500 line-clamp-1 max-w-[300px]" title={p.description}>
                                                     {p.description && p.description.length > 60
@@ -608,7 +620,7 @@ export default function AdminOurProducts() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={7} className="py-12 text-center">
+                                        <td colSpan={8} className="py-12 text-center">
                                             <div className="flex flex-col items-center justify-center text-gray-400">
                                                 <div className="bg-gray-50 p-4 rounded-full mb-3">
                                                     <Package size={32} className="opacity-50" />
@@ -624,7 +636,6 @@ export default function AdminOurProducts() {
                         </table>
                     </div>
 
-                    {/* Table Footer - Pagination */}
                     <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-end">
                         <div className="flex items-center gap-4">
                             <button
@@ -653,7 +664,7 @@ export default function AdminOurProducts() {
                 isOpen={isViewModalOpen}
                 onClose={() => {
                     setIsViewModalOpen(false);
-                    if (!isEditModalOpen) setSelectedProduct(null); // Keep if edit is open
+                    if (!isEditModalOpen) setSelectedProduct(null);
                 }}
                 product={selectedProduct}
             />
@@ -671,7 +682,6 @@ export default function AdminOurProducts() {
                 isGlobalLoading={isDeleting}
             />
 
-            {/* Add/Edit Modal */}
             {(isAddModalOpen || isEditModalOpen) && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div
@@ -684,7 +694,6 @@ export default function AdminOurProducts() {
                         }}
                     ></div>
                     <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden transform transition-all">
-                        {/* Modal Header */}
                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
                             <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                 <Package className="text-green-600" size={24} />
@@ -703,29 +712,10 @@ export default function AdminOurProducts() {
                             </button>
                         </div>
 
-                        {/* Modal Body */}
                         <form onSubmit={isAddModalOpen ? handleAddProduct : handleUpdateProduct}>
                             <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                                {/* Show in Owner Dashboard — Toggle (top) */}
-                                <div className="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-gray-50">
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Owner Dashboard Visibility</span>
-                                        <span className={`text-sm font-semibold mt-0.5 ${formData.showInOwnerDashboard ? 'text-green-700' : 'text-gray-500'
-                                            }`}>
-                                            {formData.showInOwnerDashboard ? 'Visible — shown on owner dashboard' : 'Hidden — not shown on owner dashboard'}
-                                        </span>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, showInOwnerDashboard: !formData.showInOwnerDashboard })}
-                                        title={formData.showInOwnerDashboard ? 'Click to hide from owner dashboard' : 'Click to show on owner dashboard'}
-                                        style={{ width: '52px', height: '28px', borderRadius: '999px', padding: '3px', transition: 'background-color 0.25s', backgroundColor: formData.showInOwnerDashboard ? '#22c55e' : '#d1d5db', flexShrink: 0, display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer', outline: 'none', boxShadow: formData.showInOwnerDashboard ? '0 0 0 3px rgba(34,197,94,0.18)' : '0 0 0 3px rgba(0,0,0,0.06)' }}
-                                    >
-                                        <span style={{ width: '22px', height: '22px', borderRadius: '50%', backgroundColor: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.18)', display: 'block', transform: formData.showInOwnerDashboard ? 'translateX(24px)' : 'translateX(0px)', transition: 'transform 0.25s cubic-bezier(.4,0,.2,1)' }} />
-                                    </button>
-                                </div>
 
-                                {/* Product Name */}
+
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
                                         Product Name <span className="text-red-500">*</span>
@@ -740,125 +730,81 @@ export default function AdminOurProducts() {
                                     />
                                 </div>
 
-                                {/* Image Upload - Multiple */}
                                 <div className="space-y-1.5">
                                     <div className="flex items-center justify-between ml-1">
                                         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
                                             {t('product:product_images')} <span className="text-red-500">*</span>
                                         </label>
-                                        {imagePreviews.length > 0 && (
-                                            <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-lg">
-                                                {imagePreviews.length === 1 ? t('product:images_count', { count: 1 }) : t('product:images_count_plural', { count: imagePreviews.length })}
-                                            </span>
-                                        )}
                                     </div>
-                                    <div className="p-4 bg-gray-50 border border-gray-200 border-dashed rounded-xl hover:border-green-400 transition-colors">
-                                        {/* Image previews grid */}
+                                    <div className="p-4 bg-gray-50 border border-gray-200 border-dashed rounded-xl">
                                         {imagePreviews.length > 0 && (
                                             <div className="grid grid-cols-4 gap-3 mb-4">
                                                 {imagePreviews.map((preview, idx) => (
                                                     <div key={idx} className="relative group/img">
-                                                        <div className={`w-full aspect-square rounded-xl bg-white overflow-hidden shadow-sm transition-all ${mainImageIndex === idx
-                                                            ? 'border-2 border-green-500 ring-2 ring-green-200'
-                                                            : 'border border-gray-100'
-                                                            }`}>
-                                                            <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                                        <div className={`w-full aspect-square rounded-xl bg-white overflow-hidden border ${mainImageIndex === idx ? 'border-green-500 border-2' : 'border-gray-100'}`}>
+                                                            <img src={preview} alt="" className="w-full h-full object-cover" />
                                                         </div>
-
-                                                        {/* Main Image Checkbox (Top Right) */}
-                                                        <div className="absolute top-1.5 right-1.5 z-10">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={mainImageIndex === idx}
-                                                                onChange={() => setMainImageIndex(idx)}
-                                                                className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer shadow-sm"
-                                                                title="Set as main display image"
-                                                            />
+                                                        <div className="absolute top-1.5 right-1.5">
+                                                            <input type="checkbox" checked={mainImageIndex === idx} onChange={() => setMainImageIndex(idx)} className="w-4 h-4 rounded text-green-600" />
                                                         </div>
-
-                                                        {/* Main badge (Bottom Left) */}
-                                                        {mainImageIndex === idx && (
-                                                            <span className="absolute bottom-1.5 left-1.5 bg-green-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider shadow-sm z-10">
-                                                                {t('product:main')}
-                                                            </span>
-                                                        )}
-
-                                                        {/* Remove button (Top Left) */}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => removeImage(idx)}
-                                                            className="absolute top-1.5 left-1.5 w-5 h-5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover/img:opacity-100 transition-all hover:bg-red-500 hover:text-white border border-gray-100 z-10"
-                                                        >
+                                                        <button type="button" onClick={() => removeImage(idx)} className="absolute top-1.5 left-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all">
                                                             <X size={10} />
                                                         </button>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
-
-                                        {/* Upload button - always visible */}
-                                        <>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                id="product-image"
-                                                className="hidden"
-                                                multiple
-                                                onChange={handleImageSelect}
-                                            />
-                                            <label
-                                                htmlFor="product-image"
-                                                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-all shadow-sm w-full"
-                                                style={{ borderRadius: "12px" }}
-                                            >
-                                                <Upload size={16} />
-                                                {imagePreviews.length === 0 ? t('product:upload_images') : t('product:add_more_images')}
-                                            </label>
-                                        </>
-
-                                        {imagePreviews.length > 0 && (
-                                            <p className="text-center text-[10px] text-gray-400 mt-2 font-medium">
-                                                Use the checkbox to select the main display image
-                                            </p>
-                                        )}
+                                        <input type="file" accept="image/*" id="product-image" className="hidden" multiple onChange={handleImageSelect} />
+                                        <label htmlFor="product-image" className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-700 cursor-pointer w-full">
+                                            <Upload size={16} />
+                                            {imagePreviews.length === 0 ? t('product:upload_images') : t('product:add_more_images')}
+                                        </label>
                                     </div>
                                 </div>
 
-                                {/* Price */}
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
-                                        {t('product:price_label')} <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
+                                            {t('product:price_label')} <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
+                                            <input
+                                                required
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.price}
+                                                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                                className="w-full pl-8 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-semibold text-gray-700"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
+                                            Stock <span className="text-red-500">*</span>
+                                        </label>
                                         <input
                                             required
                                             type="number"
-                                            step="0.01"
-                                            value={formData.price}
-                                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                            placeholder="0.00"
-                                            className="w-full pl-8 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-semibold text-gray-700"
+                                            value={formData.stock}
+                                            onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
+                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all font-semibold text-gray-700"
                                         />
                                     </div>
                                 </div>
 
-                                {/* Description */}
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{t('product:description_label')}</label>
                                     <textarea
                                         rows={4}
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                        placeholder={t('product:brief_desc_placeholder')}
                                         className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all resize-none text-sm"
                                     ></textarea>
                                 </div>
-
-
                             </div>
 
-                            {/* Modal Footer */}
                             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
                                 <button
                                     type="button"
@@ -868,28 +814,16 @@ export default function AdminOurProducts() {
                                         setIsEditModalOpen(false);
                                         resetForm();
                                     }}
-                                    className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 focus:outline-none transition-all disabled:opacity-50"
-                                    style={{ borderRadius: "12px" }}
+                                    className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 !rounded-md transition-all"
                                 >
                                     {t('common:cancel')}
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="px-6 py-2 bg-green-600 text-white hover:bg-green-700 focus:outline-none transition-all flex items-center gap-2 shadow-md shadow-green-200 disabled:bg-green-400"
-                                    style={{ borderRadius: "12px" }}
+                                    className="px-6 py-2 bg-green-600 text-white !rounded-md transition-all flex items-center gap-2 disabled:bg-green-400 font-bold"
                                 >
-                                    {isSubmitting ? (
-                                        <>
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                            {t('product:processing')}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <CheckCircle size={18} />
-                                            {isAddModalOpen ? t('product:add_product_btn') : t('product:update_changes')}
-                                        </>
-                                    )}
+                                    {isSubmitting ? t('product:processing') : (isAddModalOpen ? t('product:add_product_btn') : t('product:update_changes'))}
                                 </button>
                             </div>
                         </form>

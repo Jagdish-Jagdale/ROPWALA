@@ -69,5 +69,9 @@
   "processing": "प्रक्रिया होत आहे...",
   "delete_company_product_q": "कंपनीचे उत्पादन हटवायचे?",
   "delete_company_product_msg": "ही क्रिया पूर्ववत केली जाऊ शकत नाही. हे डेटाबेसमधून उत्पादन आणि त्याच्या प्रतिमा कायमचे काढून टाकेल.",
-  "delete_our_product_confirm": "आमचे उत्पादन हटवा"
+  "delete_our_product_confirm": "आमचे उत्पादन हटवा",
+  "feature": "वैशिष्ट्य",
+  "popular": "लोकप्रिय",
+  "trending": "ट्रेंडिंग"
 }
+

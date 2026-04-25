@@ -247,21 +247,37 @@ export default function Reports() {
           setRevenueData(regionsMapped);
         }
 
-        // 4. Top Nurseries
-        const sortedNurseries = [...ownersList].sort((a, b) => (b.rating || Math.random()) - (a.rating || Math.random())).slice(0, 5);
+        // 4. Top Nurseries - Dynamic fetching
+        // Sort by totalRevenue descending, then by totalOrders
+        const sortedNurseries = [...ownersList]
+          .sort((a, b) => {
+            const revA = Number(a.totalRevenue || 0);
+            const revB = Number(b.totalRevenue || 0);
+            if (revB !== revA) return revB - revA;
+            return (b.rating || 0) - (a.rating || 0);
+          })
+          .slice(0, 10); // Get top 10
+
         if (sortedNurseries.length > 0) {
-          const colors = ["green", "emerald", "amber", "purple", "rose"];
-          const mappedTop = sortedNurseries.map((n, i) => ({
-            id: n.id,
-            name: n.nurseryName || n.name || "Unknown Nursery",
-            location: n.city || n.address || "India",
-            revenue: `₹${((n.totalRevenue || (Math.random() * 15 + 2)) * 1).toFixed(1)}L`,
-            orders: n.totalOrders || Math.floor(Math.random() * 1000 + 100),
-            status: n.status || "Active",
-            rating: n.rating || 4.5,
-            initial: (n.nurseryName || n.name || "U")[0].toUpperCase(),
-            color: colors[i % colors.length]
-          }));
+          const colors = ["green", "emerald", "amber", "purple", "rose", "blue", "indigo", "violet", "cyan", "teal"];
+          const mappedTop = sortedNurseries.map((n, i) => {
+            const revenueValue = Number(n.totalRevenue || 0);
+            const revenueDisplay = revenueValue >= 100000 
+              ? `₹${(revenueValue / 100000).toFixed(1)}L` 
+              : `₹${(revenueValue / 1000).toFixed(1)}K`;
+
+            return {
+              id: n.id,
+              name: n.nurseryName || n.name || "Unknown Nursery",
+              location: n.city || n.address || "India",
+              revenue: revenueDisplay,
+              orders: n.totalOrders || 0,
+              status: n.status || "Active",
+              rating: n.rating || 0,
+              initial: (n.nurseryName || n.name || "U")[0].toUpperCase(),
+              color: colors[i % colors.length]
+            };
+          });
           setTopNurseriesList(mappedTop);
         }
 
@@ -549,15 +565,15 @@ export default function Reports() {
                         <div className={`w-9 h-9 flex items-center justify-center rounded-lg bg-${nursery.color}-100 text-${nursery.color}-700 font-bold text-sm`}>
                           {nursery.initial}
                         </div>
-                        <span className="font-medium text-gray-900 text-base">
+                        <span className="font-medium text-gray-900 text-[15px] truncate max-w-[180px]" title={nursery.name}>
                           {nursery.name}
                         </span>
                       </div>
                     </td>
                     <td className="px-5 py-3 text-base text-gray-500">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin size={14} className="text-gray-400" />
-                        {nursery.location}
+                      <div className="flex items-center gap-1.5 truncate max-w-[220px]" title={nursery.location}>
+                        <MapPin size={14} className="text-gray-400 shrink-0" />
+                        <span className="truncate">{nursery.location}</span>
                       </div>
                     </td>
                     <td className="px-5 py-3">

@@ -170,6 +170,11 @@ export default function AdminLayout() {
       icon: Package,
     },
     {
+      to: "/admin/orders",
+      label: t('orders'),
+      icon: FileText,
+    },
+    {
       to: "/admin/manageusers",
       label: t('users'),
       icon: Users,
