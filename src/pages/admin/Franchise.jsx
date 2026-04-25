@@ -409,7 +409,7 @@ export default function AdminFranchise() {
                                 </div>
                             </div>
 
-                            {/* Rows Selector */}
+                            {/* Rows Selectors */}
                             <div className="flex flex-col gap-1.5 col-span-2 lg:flex-none lg:w-[100px]">
                                 <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('common:rows')}</label>
                                 <select
@@ -486,15 +486,15 @@ export default function AdminFranchise() {
                                             </td>
 
                                             <td className="px-6 py-2.5 whitespace-nowrap">
-                                                    <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center shadow-sm">
-                                                        {app.profilePhotoUrl ? (
-                                                            <img src={app.profilePhotoUrl} className="w-full h-full object-cover" alt="" />
-                                                        ) : (
-                                                            <div className="flex items-center justify-center w-full h-full bg-slate-100">
-                                                                <User size={18} className="text-slate-400" />
-                                                            </div>
-                                                        )}
-                                                    </div>
+                                                <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center shadow-sm">
+                                                    {app.profilePhotoUrl ? (
+                                                        <img src={app.profilePhotoUrl} className="w-full h-full object-cover" alt="" />
+                                                    ) : (
+                                                        <div className="flex items-center justify-center w-full h-full bg-slate-100">
+                                                            <User size={18} className="text-slate-400" />
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </td>
 
                                             <td className="px-6 py-2.5 whitespace-nowrap">
