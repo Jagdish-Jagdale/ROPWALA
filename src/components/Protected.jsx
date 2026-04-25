@@ -13,7 +13,7 @@ export default function Protected({ roles }) {
     return <Navigate to="/login" replace />;
   }
 
-  // Show loading spinner while checking authentications
+  // Show loading spinner while checking authentication
   if (loading) {
     return <Loader />;
 
