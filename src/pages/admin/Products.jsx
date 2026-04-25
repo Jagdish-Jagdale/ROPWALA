@@ -675,7 +675,7 @@ export default function AdminProducts() {
                                                         <CheckCircle size={18} />
                                                     </button>
 
-                                                    {/* Reject Buttons */}
+                                                    {/* Reject Button */}
                                                     <button
                                                         onClick={() => handleUpdateStatus(product.id, "REJECT")}
                                                         className={`p-1.5 rounded-full transition-colors border ${String(product.status || "").toUpperCase() === 'REJECT' ? 'bg-red-100 text-red-700 border-red-200' : 'text-red-600 hover:text-red-800 hover:bg-red-50 border-red-100'}`}
