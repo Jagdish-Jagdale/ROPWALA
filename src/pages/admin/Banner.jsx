@@ -235,7 +235,7 @@ export default function AdminBanners() {
     };
 
     // Filter and Pagination logic
-    const filteredBanners = banners; // No text search required for banners usually, but keeping skeleton
+    const filteredBanners = banners; // No text search required for banners usually, but keeping skeletons
 
     const totalPages = Math.ceil(filteredBanners.length / rowsPerPage);
     const startIndex = (currentPage - 1) * rowsPerPage;
