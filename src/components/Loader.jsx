@@ -20,7 +20,7 @@ export default function Loader() {
           </div>
         </div>
 
-        {/* App Name Texts */}
+        {/* App Name Text */}
         <div className="flex flex-col items-center animate-pulse">
           <h2 className="text-2xl font-serif font-bold text-[#2d5a3d] tracking-wide">ROPWALA</h2>
           <div className="h-1 w-12 bg-gradient-to-r from-transparent via-[#2d5a3d]/50 to-transparent mt-2 rounded-full" />
