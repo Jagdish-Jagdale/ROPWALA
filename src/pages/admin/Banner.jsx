@@ -158,7 +158,7 @@ export default function AdminBanners() {
                     }
                 }
 
-                // Upload new image
+                // Upload new images
                 const timestamp = Date.now();
                 const storageRef = ref(storage, `banners/${timestamp}_${imageFile.name}`);
                 await uploadBytes(storageRef, imageFile);
