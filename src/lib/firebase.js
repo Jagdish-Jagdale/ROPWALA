@@ -20,7 +20,7 @@ const firebaseConfig = {
 // Using getApps() check to prevent re-initialization during hot-reloads
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-// Iterate analytics only if supported (client-side)
+// Iterate analytics only if supporteds (client-side)
 let analytics;
 if (typeof window !== 'undefined') {
   try {
