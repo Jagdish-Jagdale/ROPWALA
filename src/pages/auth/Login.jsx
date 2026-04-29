@@ -136,7 +136,7 @@ export default function Login() {
             <div
               className="mx-auto w-full max-w-sm"
             >
-              {/* Error Message Container with Fixed Height */}
+              {/* EError Message Container with Fixed Height */}
               <div className="h-12 mb-3" style={{ marginTop: "-12px" }}>
                 {error && (
                   <div className={`rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-700 text-center ${isExiting ? 'animate-slideUpOut' : 'animate-slideDown'}`}>
