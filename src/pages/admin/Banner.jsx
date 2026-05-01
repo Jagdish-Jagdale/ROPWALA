@@ -192,7 +192,7 @@ export default function AdminBanners() {
             setIsDeleting(true);
             const { id, imageUrl } = bannerToDelete;
 
-            // Delete image from storage if it existss
+            // Delete image from storage if it exists
             if (imageUrl && imageUrl.includes("firebasestorage")) {
                 try {
                     const imageRef = ref(storage, imageUrl);
