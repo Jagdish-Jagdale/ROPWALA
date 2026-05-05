@@ -51,7 +51,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<RoleRedirect />} />
 
-        {/* ADMIN (formerly SuperAdmin) */}
+        {/* ADMIN (formerly SuperAdminm) */}
         <Route element={<Protected roles={[ROLES.ADMIN]} />}>
           <Route element={<AdminLayout />}>
             <Route
