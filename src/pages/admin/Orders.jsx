@@ -43,8 +43,8 @@ export default function AdminOrders() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    
-    // Delete Modal State
+
+    // Delete Modal Stateq
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [orderToDelete, setOrderToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -109,14 +109,14 @@ export default function AdminOrders() {
         const orderId = (order.orderId || order.id || "").toLowerCase();
         const items = (order.items || "").toLowerCase();
 
-        const matchesSearch = 
+        const matchesSearch =
             customerName.includes(searchLower) ||
             deliveryPhone.includes(searchLower) ||
             orderId.includes(searchLower) ||
             items.includes(searchLower);
-        
+
         const matchesStatus = statusFilter === "all" || (order.status || "pending").toLowerCase() === statusFilter.toLowerCase();
-        
+
         return matchesSearch && matchesStatus;
     });
 
@@ -288,58 +288,58 @@ export default function AdminOrders() {
                                     </tr>
                                 ) : paginatedOrders.length > 0 ? (
                                     paginatedOrders.map((order, index) => (
-                                         <tr key={order.id} className="hover:bg-green-50/50 transition-colors border-b border-gray-100 last:border-0">
-                                             <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 font-medium">
-                                                 {String(startIndex + index + 1).padStart(2, "0")}
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                 <div className="flex items-center gap-2 text-sm text-gray-900 font-medium">
-                                                     <Calendar size={14} className="text-gray-400" />
-                                                     {formatDate(order.orderDate)}
-                                                 </div>
-                                             </td>
-                                             <td className="px-6 py-4">
-                                                 <div className="text-sm text-gray-900 font-medium line-clamp-1 max-w-xs" title={order.items}>
-                                                     {order.items || "N/A"}
-                                                 </div>
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                 <div className="flex flex-col">
-                                                     <span className="text-sm font-bold text-gray-900">{order.customerName || order.deliveryName || "Unknown Customer"}</span>
-                                                     <span className="text-xs text-gray-500 font-medium">{order.deliveryPhone || "No Phone"}</span>
-                                                 </div>
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                 <span className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 text-xs font-bold">
-                                                     {calculateTotalQuantity(order.items)}
-                                                 </span>
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                 <select
-                                                     value={(order.status || "pending").toLowerCase()}
-                                                     onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                                                     className={`px-3 py-1.5 text-sm font-medium border rounded-lg outline-none cursor-pointer transition-all focus:ring-2 focus:ring-green-500/20 tracking-wider ${getStatusColor(order.status || "pending")}`}
-                                                 >
-                                                     <option value="pending">Pending</option>
-                                                     <option value="placed">Placed</option>
-                                                     <option value="processing">Processing</option>
-                                                     <option value="completed">Completed</option>
-                                                     <option value="cancelled">Cancelled</option>
-                                                 </select>
-                                             </td>
-                                             <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                 <div className="flex items-center justify-center gap-2">
-                                                     <button 
-                                                         className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                         title="Edit Status"
-                                                         onClick={() => {
-                                                             const newStatus = prompt("Enter new status (pending, processing, completed, cancelled):", order.status || "pending");
-                                                             if (newStatus) updateOrderStatus(order.id, newStatus.toLowerCase());
-                                                         }}
-                                                     >
-                                                         <Edit2 size={18} />
+                                        <tr key={order.id} className="hover:bg-green-50/50 transition-colors border-b border-gray-100 last:border-0">
+                                            <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 font-medium">
+                                                {String(startIndex + index + 1).padStart(2, "0")}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center gap-2 text-sm text-gray-900 font-medium">
+                                                    <Calendar size={14} className="text-gray-400" />
+                                                    {formatDate(order.orderDate)}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm text-gray-900 font-medium line-clamp-1 max-w-xs" title={order.items}>
+                                                    {order.items || "N/A"}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-bold text-gray-900">{order.customerName || order.deliveryName || "Unknown Customer"}</span>
+                                                    <span className="text-xs text-gray-500 font-medium">{order.deliveryPhone || "No Phone"}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                                                <span className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 text-xs font-bold">
+                                                    {calculateTotalQuantity(order.items)}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                                                <select
+                                                    value={(order.status || "pending").toLowerCase()}
+                                                    onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                                                    className={`px-3 py-1.5 text-sm font-medium border rounded-lg outline-none cursor-pointer transition-all focus:ring-2 focus:ring-green-500/20 tracking-wider ${getStatusColor(order.status || "pending")}`}
+                                                >
+                                                    <option value="pending">Pending</option>
+                                                    <option value="placed">Placed</option>
+                                                    <option value="processing">Processing</option>
+                                                    <option value="completed">Completed</option>
+                                                    <option value="cancelled">Cancelled</option>
+                                                </select>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <button
+                                                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                        title="Edit Status"
+                                                        onClick={() => {
+                                                            const newStatus = prompt("Enter new status (pending, processing, completed, cancelled):", order.status || "pending");
+                                                            if (newStatus) updateOrderStatus(order.id, newStatus.toLowerCase());
+                                                        }}
+                                                    >
+                                                        <Edit2 size={18} />
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                         title="Delete Order"
                                                         onClick={() => {
