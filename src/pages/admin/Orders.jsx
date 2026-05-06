@@ -44,7 +44,7 @@ export default function AdminOrders() {
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    // Delete Modal Stateq
+    // Delete Modal State
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [orderToDelete, setOrderToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
