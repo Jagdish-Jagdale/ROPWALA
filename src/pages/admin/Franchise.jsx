@@ -409,7 +409,7 @@ export default function AdminFranchise() {
                                 </div>
                             </div>
 
-                            {/* Rows Selector */}
+                            {/* Rows Selectorm */}
                             <div className="flex flex-col gap-1.5 col-span-2 lg:flex-none lg:w-[100px]">
                                 <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('common:rows')}</label>
                                 <select
