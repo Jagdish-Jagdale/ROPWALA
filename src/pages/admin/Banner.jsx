@@ -198,7 +198,7 @@ export default function AdminBanners() {
                     const imageRef = ref(storage, imageUrl);
                     await deleteObject(imageRef);
                 } catch (err) {
-                    console.error("Error deleting image from storage:", err);
+                    console.error("Error deleting image from storagebb:", err);
                 }
             }
             await deleteDoc(doc(db, "banners", id));
