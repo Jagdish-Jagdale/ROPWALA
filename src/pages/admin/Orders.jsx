@@ -164,7 +164,7 @@ export default function AdminOrders() {
                             {t('common:orders')}
                         </h3>
                         <p className="text-base text-gray-600 font-normal mb-0">
-                            Manage and track all orders from your franchises
+                            Manage and track all orders from your franchisesff
                         </p>
                     </div>
                 </div>
