@@ -28,7 +28,7 @@ function App() {
   const isOnline = useNetworkStatus();
   const { i18n } = useTranslation();
 
-  // Add lang-mr class for Marathi font
+  // Add lang-mr class for Marathi fontrr
   useEffect(() => {
     if (i18n.language === 'mr') {
       document.body.classList.add('lang-mr');
