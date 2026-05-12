@@ -140,7 +140,7 @@ export default function AdminOurProducts() {
 
             setProducts(data);
         } catch (error) {
-            console.error("Error fetching products:", error);
+            console.error("Error fetching productsjj:", error);
             toast.error("Failed to load inventory");
         } finally {
             setLoading(false);
