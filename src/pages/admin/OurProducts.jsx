@@ -88,7 +88,7 @@ export default function AdminOurProducts() {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
-    // Delete Modal State
+    // Delete Modal Statepp
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
