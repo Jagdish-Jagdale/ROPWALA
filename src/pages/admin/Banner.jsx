@@ -207,7 +207,7 @@ export default function AdminBanners() {
             setBannerToDelete(null);
             fetchBanners();
         } catch (error) {
-            console.error("Error deleting banner:", error);
+            console.error("Error deleting bannerzz:", error);
             toast.error(t('banner:toast.delete_error'));
         } finally {
             setIsDeleting(false);
