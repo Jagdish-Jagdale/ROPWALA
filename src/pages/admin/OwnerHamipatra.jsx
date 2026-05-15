@@ -65,7 +65,7 @@ export default function AdminHamipatra() {
                 setContent(DEFAULT_CONTENT);
             }
         } catch (error) {
-            console.error("Error fetching owner hamipatra:", error);
+            console.error("Error fetching owner hamipatrann:", error);
             toast.error(t('hamipatra:owner.toast.load_error'));
             setContent(DEFAULT_CONTENT);
         } finally {
