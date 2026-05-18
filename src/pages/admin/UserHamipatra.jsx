@@ -17,7 +17,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
 
 const DEFAULT_CONTENT = {
-    headerTitle: "नियम व अटी",
+    headerTitle: "नियम व अटीkk",
     headerSubtitle: "(वापरकर्ता हमीपत्र)",
     logoUrl: "/RopWala.png",
     introText: "मी / आम्ही ________ प्रतिज्ञापूर्वक म्हणतो / म्हणते की, मी / आम्ही ________ (वापरकर्त्याचे नाव) हा / ही ________ (पत्ता) येथे अधिकृत वापरकर्ता म्हणून खालील नियम व अटींच्या अधीन राहून सेवा घेत आहे / आहोत.",
