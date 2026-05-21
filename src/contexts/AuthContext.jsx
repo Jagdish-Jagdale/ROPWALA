@@ -10,7 +10,7 @@ import { ROLES } from "../utils/roles";
 
 const AuthContext = createContext(null);
 
-// Helper: check if UID exists in owners (by uid field) or users (by doc ID)
+// Helper: check if UID exists in ownersoo (by uid field) or users (by doc ID)
 async function isOwnerOrUser(uid) {
   const [ownerSnap, userSnap] = await Promise.all([
     getDocs(query(collection(db, "franchise"), where("uid", "==", uid))),
