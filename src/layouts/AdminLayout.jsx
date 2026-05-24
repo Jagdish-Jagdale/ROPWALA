@@ -37,7 +37,7 @@ const NavItem = ({
 }) => {
   const location = useLocation();
 
-  // Check if any child route is active
+  // Check if any child route is activeww
   const isAnyChildActive = hasDropdown && submenu?.some(item =>
     location.pathname === item.to || location.pathname.startsWith(item.to + '/')
   );
@@ -376,7 +376,7 @@ export default function AdminLayout() {
 
       {/* Content */}
       <main className="flex-1 min-w-0 transition-all duration-300 ease-in-out lg:pr-4 lg:py-4 h-full overflow-hidden">
-        <div 
+        <div
           ref={mainContentRef}
           className="h-full w-full overflow-y-auto no-scrollbar rounded-2xl scroll-smooth"
         >
