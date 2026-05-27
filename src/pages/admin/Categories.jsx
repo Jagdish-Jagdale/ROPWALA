@@ -55,7 +55,7 @@ export default function AdminCategories() {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
-    status: "activecc",
+    status: "active",
     order: 0,
   });
 
