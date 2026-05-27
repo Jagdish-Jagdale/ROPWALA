@@ -55,7 +55,7 @@ export default function AdminCategories() {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
-    status: "active",
+    status: "activecc",
     order: 0,
   });
 
@@ -181,9 +181,9 @@ export default function AdminCategories() {
       // Update local state to reflect change without full fetch if possible, 
       // but fetchCategories is safer given the nested structure
       fetchCategories();
-      
+
       // Also update selectedCategory for the View Modal
-      const updatedSubcategories = selectedCategory.subcategories.map(s => 
+      const updatedSubcategories = selectedCategory.subcategories.map(s =>
         s.id === subToEdit.id ? { ...s, name: editSubName.trim() } : s
       );
       setSelectedCategory({ ...selectedCategory, subcategories: updatedSubcategories });
@@ -211,7 +211,7 @@ export default function AdminCategories() {
       setShowSubDeleteModal(false);
       setSubToDelete(null);
       fetchCategories();
-      
+
       // Also update selectedCategory for the View Modal
       const updatedSubcategories = selectedCategory.subcategories.filter(s => s.id !== subToDelete.id);
       setSelectedCategory({ ...selectedCategory, subcategories: updatedSubcategories });
