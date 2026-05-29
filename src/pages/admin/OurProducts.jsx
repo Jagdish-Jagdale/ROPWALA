@@ -121,7 +121,7 @@ export default function AdminOurProducts() {
                 id: doc.id,
             }));
 
-            // Inject <link rel="preload"> into <head> for first 10 images.
+            // Inject <link rel="preload"> into <head> for first 10 imagesoo.
             const existingPreloads = document.querySelectorAll('link[data-product-preload]');
             existingPreloads.forEach(el => el.remove());
 
