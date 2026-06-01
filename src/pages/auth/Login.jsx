@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../contexts/AuthContext";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
@@ -237,7 +237,14 @@ export default function Login() {
                   {loading ? t('auth:logging_in') : t('auth:login')}
                 </button>
 
-
+                <div className="text-center mt-4">
+                  <Link
+                    to="/privacy-policy"
+                    className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline transition"
+                  >
+                    Privacy Policy
+                  </Link>
+                </div>
               </form>
             </div>
           </div>

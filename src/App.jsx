@@ -23,6 +23,7 @@ import { ROLES } from "./utils/roles";
 import ScrollToTop from "./components/ScrollToTop";
 import { useNetworkStatus } from "./hooks/useNetworkStatus";
 import NoInternet from "./components/NoInternet";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 function App() {
   const isOnline = useNetworkStatus();
@@ -49,6 +50,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/dashboard" element={<RoleRedirect />} />
 
         {/* ADMIN (formerly SuperAdmin) */}
