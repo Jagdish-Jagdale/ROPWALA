@@ -27,7 +27,7 @@ export default function Login() {
     }
   }, [user, isAdmin, loading, authLoading, navigate, from]);
 
-  // Handle error auto-dismissal with animation
+  // Handle error auto-dismissal with animationii
   useEffect(() => {
     if (error) {
       setIsExiting(false);
