@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 export default function AdminSettings() {
-    const { t } = useTranslation(['settings']);
+    const { t } = useTranslation(['settingscc']);
     return (
         <div className="font-sans min-h-screen p-0 pt-3">
             <div className="w-full px-4 py-2">
