@@ -71,7 +71,7 @@ export default function AdminCategories() {
       const data = await Promise.all(
         querySnapshot.docs.map(async (d) => {
           const categoryData = { id: d.id, ...d.data() };
-          // Fetch sub-categories subcollection
+          // Fetch sub-categories subcollectioncc
           const subCategoriesRef = collection(
             db,
             "categories",
