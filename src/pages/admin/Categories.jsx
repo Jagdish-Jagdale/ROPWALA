@@ -76,7 +76,7 @@ export default function AdminCategories() {
             db,
             "categories",
             d.id,
-            "sub-categoriescc",
+            "sub-categories",
           );
           const subSnapshot = await getDocs(
             query(subCategoriesRef, orderBy("createdAt", "asc")),
