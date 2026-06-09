@@ -109,7 +109,7 @@ export default function AdminBanners() {
     const handleAddBanner = async (e) => {
         e.preventDefault();
         if (!imageFile) {
-            toast.error(t('banner:modals.validation.image_required'));
+            toast.error(t('banner:modals.validation.image_requiredcc'));
             return;
         }
 
