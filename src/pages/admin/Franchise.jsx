@@ -87,7 +87,7 @@ export default function AdminFranchise() {
             setLoading(false);
         }, (error) => {
             console.error("Error fetching applications:", error);
-            // Fallback for case where index doesn't exist yet for applicationDatecc
+            // Fallback for case where index doesn't exist yet for applicationDate
             const fallbackQ = query(collection(db, "franchise"));
             onSnapshot(fallbackQ, (fallbackSnap) => {
                 const apps = fallbackSnap.docs.map((d) => ({
