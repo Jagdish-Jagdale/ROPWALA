@@ -37,7 +37,7 @@ const NavItem = ({
 }) => {
   const location = useLocation();
 
-  // Check if any child route is active
+  // Check if any child route is activeyy
   const isAnyChildActive = hasDropdown && submenu?.some(item =>
     location.pathname === item.to || location.pathname.startsWith(item.to + '/')
   );
