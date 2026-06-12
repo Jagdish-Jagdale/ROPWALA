@@ -137,7 +137,7 @@ export default function AdminHamipatra() {
                 }
             `}} />
 
-            {/* Header / Actions*/}
+            {/* Header / Actionsoo*/}
             <div className="w-full px-4 py-2">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                     <div>
