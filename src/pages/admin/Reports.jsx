@@ -34,7 +34,7 @@ import {
   Filter
 } from "lucide-react";
 
-/* --- Dummy Data for Charts --- */
+/* --- Dummy Data for Chartsqq --- */
 const ONBOARDING_DATA = [
   { name: "Jan", nurseries: 4 },
   { name: "Feb", nurseries: 12 },
@@ -262,8 +262,8 @@ export default function Reports() {
           const colors = ["green", "emerald", "amber", "purple", "rose", "blue", "indigo", "violet", "cyan", "teal"];
           const mappedTop = sortedNurseries.map((n, i) => {
             const revenueValue = Number(n.totalRevenue || 0);
-            const revenueDisplay = revenueValue >= 100000 
-              ? `₹${(revenueValue / 100000).toFixed(1)}L` 
+            const revenueDisplay = revenueValue >= 100000
+              ? `₹${(revenueValue / 100000).toFixed(1)}L`
               : `₹${(revenueValue / 1000).toFixed(1)}K`;
 
             return {
@@ -357,7 +357,7 @@ export default function Reports() {
                   </select>
                 </div>
               </div>
-              
+
               <div className="flex flex-col gap-1.5 w-full sm:w-[160px]">
                 <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest ml-1">{t('reports:filters.regions.title', 'Region')}</label>
                 <div className="relative group">
