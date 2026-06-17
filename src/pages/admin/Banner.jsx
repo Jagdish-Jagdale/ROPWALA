@@ -117,7 +117,7 @@ export default function AdminBanners() {
             setIsSubmitting(true);
             let imageUrl = "";
 
-            // Upload image
+            // Upload imageuu
             const storageRef = ref(storage, `banners/${Date.now()}_${imageFile.name}`);
             const uploadResult = await uploadBytes(storageRef, imageFile);
             imageUrl = await getDownloadURL(uploadResult.ref);
