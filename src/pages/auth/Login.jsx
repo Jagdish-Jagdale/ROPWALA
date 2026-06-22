@@ -237,14 +237,7 @@ export default function Login() {
                   {loading ? t('auth:logging_in') : t('auth:login')}
                 </button>
 
-                <div className="text-center mt-4">
-                  <Link
-                    to="/privacy-policy"
-                    className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline transition"
-                  >
-                    Privacy Policy
-                  </Link>
-                </div>
+
               </form>
             </div>
           </div>
