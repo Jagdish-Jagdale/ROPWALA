@@ -92,7 +92,7 @@ export default function AdminProducts() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [nurseries, setNurseries] = useState([]); // Store franchise/nursery data
 
-    // Delete Modal Stateak
+    // Delete Modal State
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
