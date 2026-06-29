@@ -34,7 +34,7 @@ import {
   Filter
 } from "lucide-react";
 
-/* --- Dummy Data for Chartsaz --- */
+/* --- Dummy Data for Charts --- */
 const ONBOARDING_DATA = [
   { name: "Jan", nurseries: 4 },
   { name: "Feb", nurseries: 12 },
