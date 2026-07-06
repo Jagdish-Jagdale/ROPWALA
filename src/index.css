@@ -14,7 +14,7 @@
   --font-standard: "Poppins", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   --font-sans: "ThemeWithNumbers", "Poppins", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 
-  /* Semantic Color Mapping for Tailwind v4 */
+  /* Semantic Color Mapping for Tailwind v4ab */
   --color-canvas: var(--color-canvas);
   --color-surface: var(--color-surface);
   --color-surface-subtle: var(--color-surface-subtle);
