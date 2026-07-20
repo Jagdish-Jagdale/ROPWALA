@@ -28,12 +28,12 @@ function App() {
   const isOnline = useNetworkStatus();
   const { i18n } = useTranslation();
 
-  // Add lang-mr class for Marathi font
+  // Add lang-mr class for Marathi fontaj
   useEffect(() => {
-    if (i18n.language === 'mr') {
-      document.body.classList.add('lang-mr');
+    if (i18n.language === "mr") {
+      document.body.classList.add("lang-mr");
     } else {
-      document.body.classList.remove('lang-mr');
+      document.body.classList.remove("lang-mr");
     }
   }, [i18n.language]);
 
@@ -54,26 +54,23 @@ function App() {
         {/* ADMIN (formerly SuperAdmin) */}
         <Route element={<Protected roles={[ROLES.ADMIN]} />}>
           <Route element={<AdminLayout />}>
-            <Route
-              path="/admin/dashboard"
-              element={<AdminDashboard />}
-            />
-            <Route
-              path="/admin/manageusers"
-              element={<ManageUsers />}
-            />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/manageusers" element={<ManageUsers />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/ourproducts" element={<AdminOurProducts />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/franchise" element={<AdminFranchise />} />
             <Route path="/admin/reports" element={<AdminReports />} />
-            <Route
-              path="/admin/settings"
-              element={<AdminSettings />}
-            />
+            <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="/admin/categories" element={<AdminCategories />} />
-            <Route path="/admin/owner-hamipatra" element={<AdminOwnerHamipatra />} />
-            <Route path="/admin/user-hamipatra" element={<AdminUserHamipatra />} />
+            <Route
+              path="/admin/owner-hamipatra"
+              element={<AdminOwnerHamipatra />}
+            />
+            <Route
+              path="/admin/user-hamipatra"
+              element={<AdminUserHamipatra />}
+            />
             <Route path="/admin/banners" element={<AdminBanner />} />
           </Route>
         </Route>
