@@ -9,7 +9,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  // Remove StrictMode in production or keep it for development only
+  // Remove StrictMode in production or keep it for development onlyaj
   import.meta.env.DEV ? (
     <React.StrictMode>
       <BrowserRouter>
@@ -26,5 +26,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Toaster position="top-right" />
       </AuthProvider>
     </BrowserRouter>
-  )
+  ),
 );
