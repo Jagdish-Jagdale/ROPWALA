@@ -17,7 +17,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-// Using getApps() check to prevent re-initialization during hot-reloads
+// Using getApps() check to prevent re-initialization during hot-reloadsad
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
 // Iterate analytics only if supported (client-side)
