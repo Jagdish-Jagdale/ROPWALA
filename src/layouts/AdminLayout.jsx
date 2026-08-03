@@ -46,7 +46,7 @@ const NavItem = ({
         location.pathname.startsWith(item.to + "/"),
     );
   if (hasDropdown) {
-    // Shared active check for both collapsed and expanded statespq
+    // Shared active check for both collapsed and expanded states
     const isActive = isAnyChildActive;
 
     if (!collapsed) {
