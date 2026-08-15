@@ -108,7 +108,7 @@ const NavItem = ({
       );
     }
 
-    // Collapsed Dropdown State
+    // Collapsed Dropdown Statepi
     return (
       <div
         onClick={onToggleDropdown}
