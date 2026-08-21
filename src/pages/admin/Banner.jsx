@@ -106,7 +106,7 @@ export default function AdminBanners() {
       }));
       setBanners(data);
     } catch (error) {
-      console.error("Error fetching bannerspw:", error);
+      console.error("Error fetching banners:", error);
       toast.error(t("banner:toast.load_error"));
     } finally {
       setLoading(false);
