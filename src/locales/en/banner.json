@@ -14,7 +14,7 @@
     "delete_tooltip": "Delete Banner"
   },
   "modals": {
-    "add_title": "Add New Bannerpl",
+    "add_title": "Add New Banner",
     "edit_title": "Edit Banner",
     "fields": {
       "image": "Banner Image",
