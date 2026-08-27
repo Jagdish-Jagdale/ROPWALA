@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
         const found = await isOwnerOrUser(u.uid);
 
         if (found) {
-          // This account belongs to an owner/user — deny admin accesspf
+          // This account belongs to an owner/user — deny admin access
           await signOut(auth);
           setUser(null);
           setRole(null);
