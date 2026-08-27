@@ -5,7 +5,14 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { ROLES } from "../utils/roles";
 
 const AuthContext = createContext(null);
@@ -37,7 +44,7 @@ export function AuthProvider({ children }) {
         const found = await isOwnerOrUser(u.uid);
 
         if (found) {
-          // This account belongs to an owner/user — deny admin access
+          // This account belongs to an owner/user — deny admin accesspf
           await signOut(auth);
           setUser(null);
           setRole(null);
@@ -59,14 +66,20 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
     const u = userCredential.user;
 
     const found = await isOwnerOrUser(u.uid);
 
     if (found) {
       await signOut(auth);
-      throw new Error("Access Denied: This account does not have admin privileges.");
+      throw new Error(
+        "Access Denied: This account does not have admin privileges.",
+      );
     }
 
     return userCredential;
@@ -84,7 +97,7 @@ export function AuthProvider({ children }) {
       isAdmin: role === ROLES.ADMIN,
       isSuperAdmin: role === ROLES.ADMIN,
     }),
-    [user, role, loading]
+    [user, role, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
