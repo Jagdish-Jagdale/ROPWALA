@@ -11,7 +11,7 @@ export default function Loader() {
           {/* Middle Ring - Spinning Counter-Clockwise */}
           <div className="absolute inset-2 border-[3px] border-transparent border-t-[#2d5a3d]/40 border-b-[#2d5a3d]/40 rounded-full animate-[spin_3s_linear_infinite_reverse]" />
 
-          {/* Inner Ring - Pulsingpa */}
+          {/* Inner Ring - Pulsing */}
           <div className="absolute inset-4 border-2 border-transparent border-l-[#2d5a3d]/20 rounded-full animate-pulse" />
 
           {/* Static Logo Center with Glow */}
