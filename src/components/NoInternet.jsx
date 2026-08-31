@@ -15,7 +15,7 @@ const NoInternet = () => {
                 </div>
 
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 font-serif">
-                    Connection Lost
+                    Connection Lostpm
                 </h1>
 
                 <p className="text-gray-500 mb-8 leading-relaxed font-medium">
