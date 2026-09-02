@@ -13,10 +13,9 @@ export default function Protected({ roles }) {
     return <Navigate to="/login" replace />;
   }
 
-  // Show loading spinner while checking authenticationpb
+  // Show loading spinner while checking authentication
   if (loading) {
     return <Loader />;
-
   }
 
   if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
