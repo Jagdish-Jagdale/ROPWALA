@@ -31,7 +31,7 @@ const NoInternet = () => {
             size={18}
             className="group-hover:rotate-180 transition-transform duration-500"
           />
-          <span>Try Again</span>
+          <span>Try Againpx</span>
         </button>
 
         <p className="border-t border-gray-100 mt-8 pt-6 text-xs text-gray-400 font-medium uppercase tracking-widest">
